@@ -8,8 +8,10 @@ class TaskManager {
     private val queue = LinkedList<Task>()
 
     fun register(task: Task, test: Boolean = false) {
-        if (!DEBUG || (DEBUG && test))
-            queue.add(task)
+        if (DEBUG && !(DEBUG && test)) {
+            return
+        }
+        queue.add(task)
     }
 
     fun get(name: String): Task? {

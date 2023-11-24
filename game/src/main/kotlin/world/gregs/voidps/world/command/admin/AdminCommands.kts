@@ -51,6 +51,7 @@ import world.gregs.voidps.world.activity.combat.prayer.PrayerConfigs.PRAYERS
 import world.gregs.voidps.world.activity.combat.prayer.isCurses
 import world.gregs.voidps.world.activity.quest.Books
 import world.gregs.voidps.world.interact.entity.npc.shop.OpenShop
+import world.gregs.voidps.world.interact.entity.obj.Teleports
 import world.gregs.voidps.world.interact.entity.player.combat.MAX_SPECIAL_ATTACK
 import world.gregs.voidps.world.interact.entity.player.combat.specialAttackEnergy
 import world.gregs.voidps.world.interact.entity.player.effect.skull
@@ -60,7 +61,6 @@ import world.gregs.voidps.world.interact.entity.player.music.MusicTracks
 import world.gregs.voidps.world.interact.entity.sound.playJingle
 import world.gregs.voidps.world.interact.entity.sound.playMidi
 import world.gregs.voidps.world.interact.entity.sound.playSound
-import world.gregs.voidps.world.interact.world.spawn.Stairs
 import world.gregs.voidps.world.interact.world.spawn.loadNpcSpawns
 import world.gregs.voidps.world.interact.world.spawn.loadObjectSpawns
 import java.util.concurrent.TimeUnit
@@ -321,7 +321,7 @@ on<Command>({ prefix == "pos" || prefix == "mypos" }) { player: Player ->
 on<Command>({ prefix == "reload" }) { player: Player ->
     when (content) {
         "book", "books" -> get<Books>().load()
-        "stairs" -> get<Stairs>().load()
+        "stairs" -> get<Teleports>().load()
         "tracks", "songs" -> get<MusicTracks>().load()
         "objects" -> {
             val defs: ObjectDefinitions = get()
@@ -368,6 +368,7 @@ on<Command>({ prefix == "debug" }) { player: Player ->
         return@on
     }
     target["debug"] = !target["debug", false]
+    player.message("Debugging ${if (target["debug", false]) "enabled" else "disabled"} for player '${target.name}'.")
 }
 
 val tables: DropTables by inject()
@@ -411,7 +412,7 @@ on<Command>({ prefix == "sim" }) { player: Player ->
                             val temp = Inventory.debug(capacity = 40)
                             val list = InventoryDelegate(temp)
                             for (i in 0L until if (it == sections) count.rem(divisor) else divisor) {
-                                table.role(list = list)
+                                table.role(list = list, members = true)
                             }
                             temp
                         }
