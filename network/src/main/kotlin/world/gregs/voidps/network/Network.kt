@@ -48,7 +48,7 @@ class Network(
                 logger.trace { "New connection accepted ${socket.remoteAddress}" }
                 val read = socket.openReadChannel()
                 val write = socket.openWriteChannel(autoFlush = false)
-                launch(Dispatchers.IO) {
+                launch(Client.context) {
                     connect(read, write, socket.remoteAddress.toJavaAddress().hostname)
                 }
             }
@@ -171,7 +171,7 @@ class Network(
     }
 
     private suspend fun readPackets(client: Client, instructions: MutableSharedFlow<Instruction>, read: ByteReadChannel) {
-        while (true) {
+        while (!client.disconnected) {
             val cipher = client.cipherIn.nextInt()
             val opcode = (read.readUByte() - cipher) and 0xff
             val decoder = protocol[opcode]

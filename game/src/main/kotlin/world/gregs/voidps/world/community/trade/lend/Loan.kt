@@ -50,7 +50,7 @@ object Loan {
         }
         reset(player)
         logger.info { "$player discarded item $item" }
-        val name: String? = player.getOrNull("borrowed_from")
+        val name: String? = player["borrowed_from"]
         if (name == null) {
             logger.error { "Unable to find borrowed item partner for $player" }
         } else {
@@ -68,7 +68,7 @@ object Loan {
         val def = definitions.get(item)
         val lend = definitions.get(def.lendId).stringId
         if (!borrower.inventory.add(lend)) {
-            logger.error { "Unable to add $lender's loan $item for $duration to $borrower" }
+            logger.error { "Unable to add $lender's loan $item '$lend' for $duration to $borrower" }
             return
         }
         if (duration > 0) {

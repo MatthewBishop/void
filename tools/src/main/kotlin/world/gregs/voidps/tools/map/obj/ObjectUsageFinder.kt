@@ -17,7 +17,7 @@ object ObjectUsageFinder {
     fun main(args: Array<String>) {
         val cache: Cache = CacheDelegate(property("cachePath"))
         val xteas: Xteas = Xteas().load(property("xteaPath"), propertyOrNull("xteaJsonKey") ?: Xteas.DEFAULT_KEY, propertyOrNull("xteaJsonValue") ?: Xteas.DEFAULT_VALUE)
-        val decoder = ObjectDecoderFull(member = false, lowDetail = false).loadCache(cache)
+        val decoder = ObjectDecoderFull(members = false, lowDetail = false).loadCache(cache)
         val maps = MapDecoder(xteas).loadCache(cache)
         for (map in maps) {
             val region = Region(map.id)
@@ -30,5 +30,5 @@ object ObjectUsageFinder {
         }
     }
 
-    private fun matches(obj: MapObject, def: ObjectDefinitionFull) = obj.id in 2452..2462
+    private fun matches(obj: MapObject, def: ObjectDefinitionFull) = obj.id == 24368 || obj.id == 2397
 }

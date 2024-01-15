@@ -60,7 +60,7 @@ internal class MovementTest : KoinMock() {
     fun `Player queues smart route`() {
         player.tile = Tile(10, 10)
         val movement = Movement(player, TileTargetStrategy(Tile.EMPTY))
-        movement.start()
+        movement.calculate()
         assertTrue(player.steps.isNotEmpty())
     }
 
@@ -68,7 +68,7 @@ internal class MovementTest : KoinMock() {
     fun `Npc queues step`() {
         val npc = NPC(tile = Tile(10, 10))
         val movement = Movement(npc, TileTargetStrategy(Tile.EMPTY))
-        movement.start()
+        movement.calculate()
         assertTrue(npc.steps.isNotEmpty())
         verify(exactly = 0) {
             pathFinder.findPath(any(), any(), any(), any(), any())
@@ -79,8 +79,7 @@ internal class MovementTest : KoinMock() {
     fun `Delayed player processes forced movement`() {
         player.start("delay", -1)
         val movement = Movement(player)
-        player.steps.queueStep(Tile(10, 10))
-        player.start("no_clip", -1)
+        player.steps.queueStep(Tile(10, 10), noCollision = true)
         movement.tick()
         assertTrue(player.visuals.moved)
         assertEquals(1, player.visuals.walkStep)
@@ -91,8 +90,7 @@ internal class MovementTest : KoinMock() {
     fun `Unloaded viewport isn't processed`() = listOf("unloaded", "frozen", "delayed").map { type ->
         dynamicTest("$type viewport isn't processed") {
             val movement = Movement(player)
-            player.steps.queueStep(Tile(10, 10))
-            player.start("no_clip", -1)
+            player.steps.queueStep(Tile(10, 10), noCollision = true)
             when (type) {
                 "unloaded" -> player.viewport = Viewport()
                 "frozen" -> player.start("movement_delay", -1)
@@ -163,7 +161,7 @@ internal class MovementTest : KoinMock() {
             override val exitStrategy: Int = 0
         }
         val movement = Movement(player, strategy)
-        movement.start()
+        movement.calculate()
         target = Tile(1, 1)
         repeat(5) {
             movement.tick()

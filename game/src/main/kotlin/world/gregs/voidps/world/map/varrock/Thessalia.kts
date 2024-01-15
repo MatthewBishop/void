@@ -26,35 +26,21 @@ import world.gregs.voidps.world.interact.dialogue.type.choice
 import world.gregs.voidps.world.interact.dialogue.type.npc
 import world.gregs.voidps.world.interact.dialogue.type.player
 import world.gregs.voidps.world.interact.entity.npc.shop.openShop
-import world.gregs.voidps.world.interact.entity.player.display.CharacterStyle.armParam
 import world.gregs.voidps.world.interact.entity.player.display.CharacterStyle.onStyle
-import world.gregs.voidps.world.interact.entity.player.display.CharacterStyle.wristParam
 import world.gregs.voidps.world.map.falador.openDressingRoom
 
 val enums: EnumDefinitions by inject()
 
 on<NPCOption>({ operate && target.id == "thessalia" && option == "Talk-to" }) { player: Player ->
     npc<Cheerful>("Would you like to buy any fine clothes?")
-    npc<Cheerful>("""
-        Or if you're more after fancy dress costumes or
-        commemorative capes, talk to granny Iffie.
-    """)
+    npc<Cheerful>("Or if you're more after fancy dress costumes or commemorative capes, talk to granny Iffie.")
     choice {
         option<Unsure>("What do you have?") {
-            npc<Cheerful>("""
-                Well, I have a number of fine pieces of clothing on sale or,
-                if you prefer, I can offer you an exclusive, total clothing
-                makeover?
-            """)
+            npc<Cheerful>("Well, I have a number of fine pieces of clothing on sale or, if you prefer, I can offer you an exclusive, total clothing makeover?")
             choice {
                 option<Unsure>("Tell me more about this makeover.") {
                     npc<Cheerful>("Certainly!")
-                    npc<Cheerful>("""
-                        Here at Thessalia's Fine Clothing Boutique we offer a
-                        unique service, where we will totally revamp your outfit to
-                        your choosing. Tired of always wearing the same old
-                        outfit, day-in, day-out? Then this is the service for you!
-                    """)
+                    npc<Cheerful>("Here at Thessalia's Fine Clothing Boutique we offer a unique service, where we will totally revamp your outfit to your choosing. Tired of always wearing the same old outfit, day-in, day-out? Then this is the service for you!")
                     npc<Cheerful>("So, what do you say? Interested?")
                     choice {
                         openShop()
@@ -74,16 +60,10 @@ on<NPCOption>({ operate && target.id == "thessalia" && option == "Change-clothes
 
 fun PlayerChoice.changeOutfit(): Unit = option<Cheerful>("I'd like to change my outfit, please.") {
     if (!player.equipment.isEmpty()) {
-        npc<Talk>("""
-            You can't try them on while wearing armour. Take it off
-            and speak to me again.
-        """)
+        npc<Talk>("You can't try them on while wearing armour. Take it off and speak to me again.")
         return@option
     }
-    npc<Cheerful>("""
-        Wonderful. Feel free to try on some items and see if
-        there's anything you would like.
-    """)
+    npc<Cheerful>("Wonderful. Feel free to try on some items and see if there's anything you would like.")
     player<Cheerful>("Okay, thanks.")
     startMakeover()
 }
@@ -95,10 +75,7 @@ fun PlayerChoice.openShop(): Unit = option("I'd just like to buy some clothes.")
 suspend fun CharacterContext.startMakeover() {
     player.closeDialogue()
     if (!player.equipment.isEmpty()) {
-        npc<Talk>("""
-            You're not able to try on my clothes with all that armour.
-            Take it off and then speak to me again.
-        """)
+        npc<Talk>("You're not able to try on my clothes with all that armour. Take it off and then speak to me again.")
         return
     }
     openDressingRoom("thessalias_makeovers")
@@ -126,7 +103,7 @@ on<InterfaceOption>({ id == "thessalias_makeovers" && component.startsWith("part
 
 on<InterfaceOption>({ id == "thessalias_makeovers" && component == "styles" }) { player: Player ->
     val part = player["makeover_body_part", "top"]
-    val previous = fullBodyChest(player["makeover_top"], player.male)
+    val previous = fullBodyChest(player["makeover_top", 0], player.male)
     if ((part == "arms" || part == "wrists") && previous) {
         return@on
     }
@@ -137,8 +114,8 @@ on<InterfaceOption>({ id == "thessalias_makeovers" && component == "styles" }) {
             setDefaultArms(player)
         } else if (current) {
             onStyle(value) {
-                player["makeover_arms"] = it.getParam<Int>(armParam)
-                player["makeover_wrists"] = it.getParam<Int>(wristParam)
+                player["makeover_arms"] = it.get<Int>("character_style_arms")
+                player["makeover_wrists"] = it.get<Int>("character_style_wrists")
             }
         }
     }
@@ -156,12 +133,12 @@ on<InterfaceOption>({ id == "thessalias_makeovers" && component == "colours" }) 
 }
 
 on<InterfaceOption>({ id == "thessalias_makeovers" && component == "confirm" }) { player: Player ->
-    player.body.setLook(BodyPart.Chest, player["makeover_top"])
-    player.body.setLook(BodyPart.Arms, player["makeover_arms"])
-    player.body.setLook(BodyPart.Hands, player["makeover_wrists"])
-    player.body.setLook(BodyPart.Legs, player["makeover_legs"])
-    player.body.setColour(BodyColour.Top, player["makeover_colour_top"])
-    player.body.setColour(BodyColour.Legs, player["makeover_colour_legs"])
+    player.body.setLook(BodyPart.Chest, player["makeover_top", 0])
+    player.body.setLook(BodyPart.Arms, player["makeover_arms", 0])
+    player.body.setLook(BodyPart.Hands, player["makeover_wrists", 0])
+    player.body.setLook(BodyPart.Legs, player["makeover_legs", 0])
+    player.body.setColour(BodyColour.Top, player["makeover_colour_top", 0])
+    player.body.setColour(BodyColour.Legs, player["makeover_colour_legs", 0])
     player.flagAppearance()
     player.closeMenu()
     npc<Cheerful>("thessalia", "A marvellous choice. You look splendid!")

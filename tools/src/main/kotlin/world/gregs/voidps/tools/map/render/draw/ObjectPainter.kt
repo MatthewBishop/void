@@ -114,8 +114,8 @@ class ObjectPainter(
             return
         }
         var settings = settings
-        val mapSceneDefinition = mapSceneDefinitions.get(objectdefinition.mapscene)
-        if (mapSceneDefinition.sprite != -1) {
+        val mapSceneDefinition = mapSceneDefinitions.getOrNull(objectdefinition.mapscene)
+        if (mapSceneDefinition != null && mapSceneDefinition.sprite != -1) {
             if (objectdefinition.aBoolean3056) {
                 settings += objectdefinition.anInt2958
                 settings = settings and 0x3
@@ -163,7 +163,7 @@ class ObjectPainter(
     }
 
     internal fun MapSceneDefinition.method1606(i: Int, bool: Boolean): IndexedSprite? {
-        val image = spriteDefinitions.get(sprite).sprites?.first()
+        val image = spriteDefinitions[sprite].sprites?.first()
         if (image != null) {
             image.offsetY = 0
             image.deltaWidth = image.offsetY
@@ -221,8 +221,10 @@ class ObjectPainter(
     fun paint(g: Graphics2D, region: Region, objects: Map<Int, List<MapObject>?>) {
         objects.forEach { (regionId, list) ->
             list?.forEach { obj ->
-                val definition = objectDefinitions.get(obj.id)
-                drawObject(g, region, regionId, obj, definition)
+                val definition = objectDefinitions.getOrNull(obj.id)
+                if (definition != null) {
+                    drawObject(g, region, regionId, obj, definition)
+                }
             }
         }
     }

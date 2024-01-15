@@ -24,16 +24,10 @@ import world.gregs.voidps.world.interact.dialogue.type.npc
 val enums: EnumDefinitions by inject()
 
 on<NPCOption>({ operate && target.id == "hairdresser" && option == "Talk-to" }) { player: Player ->
-    npc<Happy>("""
-        Good afternoon ${if (player.male) "sir" else "madam"}. In need of a haircut${if (player.male) " or shave" else ""} are
-        we?
-    """)
+    npc<Happy>("Good afternoon ${if (player.male) "sir" else "madam"}. In need of a haircut${if (player.male) " or shave" else ""} are we?")
     choice {
         option<Talk>("Yes, please.") {
-            npc<Happy>("""
-                Please select the hairstyle you would like from this
-                brochure. I'll even throw in a free recolour.
-            """)
+            npc<Happy>("Please select the hairstyle you would like from this brochure. I'll even throw in a free recolour.")
             startHairdressing()
         }
         option<Talk>("No, thank you.") {
@@ -49,11 +43,7 @@ on<NPCOption>({ operate && target.id == "hairdresser" && option == "Hair-cut" })
 suspend fun NPCOption.startHairdressing() {
     player.closeDialogue()
     if (player.equipped(EquipSlot.Weapon).isNotEmpty() || player.equipped(EquipSlot.Shield).isNotEmpty()) {
-        npc<Afraid>("""
-            I don't feel comfortable cutting hair when you are
-            wielding something. Please remove what you are holding
-            first.
-        """)
+        npc<Afraid>("I don't feel comfortable cutting hair when you are wielding something. Please remove what you are holding first.")
         return
     }
     if (player.equipped(EquipSlot.Hat).isNotEmpty()) {
@@ -85,7 +75,7 @@ on<InterfaceOption>({ id == "hairdressers_salon" && component == "styles" }) { p
     val value = if (beard) {
         enums.get(key).getInt(itemSlot / 2)
     } else {
-        enums.getStruct(key, itemSlot / 2, "id")
+        enums.getStruct(key, itemSlot / 2, "body_look_id")
     }
     player["makeover_$type"] = value
 }
@@ -99,9 +89,9 @@ on<InterfaceClosed>({ id == "hairdressers_salon" }) { player: Player ->
 }
 
 on<InterfaceOption>({ id == "hairdressers_salon" && component == "confirm" }) { player: Player ->
-    player.body.setLook(BodyPart.Hair, player["makeover_hair"])
-    player.body.setLook(BodyPart.Beard, player["makeover_beard"])
-    player.body.setColour(BodyColour.Hair, player["makeover_colour_hair"])
+    player.body.setLook(BodyPart.Hair, player["makeover_hair", 0])
+    player.body.setLook(BodyPart.Beard, player["makeover_beard", 0])
+    player.body.setColour(BodyColour.Hair, player["makeover_colour_hair", 0])
     player.flagAppearance()
     player.closeMenu()
     npc<Cheerful>("hairdresser", if (player.male) {

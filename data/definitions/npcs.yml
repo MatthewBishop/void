@@ -8,17 +8,6 @@ man:
   id: 1
   max_hit_melee: 10
   hitpoints: 70
-  att: 1
-  str: 1
-  def: 1
-  mage: 1
-  range: 1
-  stab_def: -21
-  slash_def: -21
-  crush_def: -21
-  magic_def: -21
-  range_def: -21
-  attack_speed: 4
   wander_radius: 4
   respawn_delay: 25
   style: crush
@@ -43,20 +32,8 @@ musician_draynor_village:
 chicken:
   id: 41
   hitpoints: 30
-  att: 1
-  str: 1
-  def: 1
-  mage: 1
-  range: 1
-  att_bonus: -47
-  str_bonus: -42
-  stab_def: -42
-  slash_def: -42
-  crush_def: -42
-  magic_def: -42
-  range_def: -42
+  attack_bonus: -47
   height: 15
-  attack_speed: 4
   wander_radius: 8
   attack_radius: 6
   slayer_xp: 3.0
@@ -85,21 +62,8 @@ banker_2:
 duck_swim:
   &duck_swim
   id: 46
-  att: 1
-  str: 1
-  def: 1
-  mage: 1
-  range: 1
-  att_bonus: -47
-  str_bonus: -53
-  stab_def: -42
-  slash_def: -42
-  crush_def: -42
-  magic_def: -42
-  range_def: -42
-  attack_speed: 4
+  attack_bonus: -47
   wander_radius: 8
-  attack_radius: 8
   hitpoints: 30
   slayer_xp: 3.0
   max_hit_melee: 1
@@ -113,21 +77,9 @@ rat:
   &rat
   id: 47
   hitpoints: 20
-  att: 1
-  str: 1
-  def: 1
-  mage: 1
-  range: 1
-  att_bonus: -47
-  str_bonus: -53
-  stab_def: -42
-  slash_def: -42
-  crush_def: -42
-  magic_def: -42
-  range_def: -42
-  attack_speed: 4
+  attack_bonus: -47
   wander_radius: 8
-  attack_radius: 8
+  attack_radius: 18
   slayer_xp: 2.0
   max_hit_melee: 1
   style: crush
@@ -135,23 +87,31 @@ rat:
   race: rat
   height: 5
   examine: "A popular dwarven delicacy."
+king_black_dragon:
+  id: 50
+  hitpoints: 2400
+  att: 240
+  str: 240
+  def: 240
+  mage: 240
+  style: stab
+  attack_range: 8
+  attack_radius: 8
+  max_hit_melee: 250
+  max_hit_dragonfire: 650
+  hunt_mode: aggressive
+  allowed_under: true
+  slayer_xp: 258.0
+  race: dragon
+  categories: [ black_dragons, bosses ]
+  aka: [ kbd ]
+  respawn_delay: 16
+  examine: "One of the biggest, meanest dragons around."
 giant_spider:
   id: 59
   hitpoints: 50
-  att: 1
-  str: 1
-  def: 1
-  mage: 1
-  range: 1
-  att_bonus: -10
-  str_bonus: -10
-  stab_def: -10
-  slash_def: -10
-  crush_def: -10
-  magic_def: -10
-  range_def: -10
-  attack_speed: 4
-  attack_radius: 8
+  attack_bonus: -10
+  attack_radius: 13
   wander_radius: 10
   hunt_mode: cowardly
   hunt_range: 1
@@ -168,10 +128,6 @@ giant_spider_2:
   att: 20
   str: 24
   def: 21
-  mage: 1
-  range: 1
-  attack_speed: 4
-  attack_radius: 8
   wander_radius: 6
   respawn_delay: 30
   hunt_mode: cowardly
@@ -186,21 +142,8 @@ cow:
   &cow
   id: 81
   hitpoints: 80
-  att: 1
-  str: 1
-  def: 1
-  mage: 1
-  range: 1
-  att_bonus: -15
-  str_bonus: -15
-  stab_def: -21
-  slash_def: -21
-  crush_def: -21
-  magic_def: -21
-  range_def: -21
-  attack_speed: 4
+  attack_bonus: -15
   wander_radius: 12
-  attack_radius: 8
   immune_poison: true
   slayer_xp: 8.0
   max_hit_melee: 10
@@ -215,10 +158,6 @@ giant_rat:
   att: 2
   str: 3
   def: 2
-  mage: 1
-  range: 1
-  attack_speed: 4
-  attack_radius: 8
   wander_radius: 10
   hitpoints: 50
   slayer_xp: 5.0
@@ -460,6 +399,11 @@ thurgo:
   race: dwarf
   wander_radius: 4
   examine: "Dwarvish."
+sir_vyvin:
+  id: 605
+  race: human
+  wander_radius: 4
+  examine: "A White Knight officer with an injured eye."
 squire_asrol:
   id: 606
   race: human
@@ -485,7 +429,6 @@ delrith:
   str: 10
   def: 5
   magic: 1
-  range: 1
   attack_speed: 6
   race: demon
   examine: "A freshly summoned demon."
@@ -556,18 +499,7 @@ quest_guide:
 giant_rat_tutorial_island:
   id: 950
   race: giant_rat
-  att: 1
-  str: 1
-  def: 1
-  mage: 1
-  range: 1
-  stab_def: -100
-  slash_def: -100
-  crush_def: -100
-  range_def: -100
   style: stab
-  attack_speed: 4
-  attack_radius: 8
   hitpoints: 30
   wander_radius: 2
   respawn_delay: 30
@@ -715,21 +647,8 @@ cow_calf:
   &cow_calf
   id: 2310
   hitpoints: 60
-  attack_speed: 4
-  att: 1
-  str: 1
-  def: 1
-  mage: 1
-  range: 1
-  att_bonus: -20
-  str_bonus: -20
-  stab_def: -26
-  slash_def: -26
-  crush_def: -26
-  magic_def: -26
-  range_def: -26
+  attack_bonus: -20
   wander_radius: 10
-  attack_radius: 8
   slayer_xp: 6.0
   max_hit_melee: 10
   style: crush
@@ -829,12 +748,8 @@ goblin_orange_hat_spear:
   &goblin_orange_hat_spear
   id: 3264
   att: 3
-  str: 1
   def: 4
-  mage: 1
-  range: 1
-  att_bonus: 12
-  str_bonus: 12
+  attack_bonus: 12
   attack_speed: 6
   style: crush
   max_hit_melee: 10
@@ -844,7 +759,8 @@ goblin_orange_hat_spear:
   slayer_xp: 12
   race: goblin_spear
   height: 30
-  examine: "An ugly, green creature."
+  large_head: true
+  examine: "An ugly, orange creature."
 frog_9_frogland:
   <<: *frog_frogland
   id: 3300
@@ -863,11 +779,25 @@ hari:
 barfy_bill:
   id: 3331
   examine: "Looks a little green around the gills."
+grubfoot_brown:
+  id: 4496
+  large_head: true
+  examine: "Smaller than the average goblin."
+grubfoot_orange:
+  id: 4497
+  large_head: true
+  examine: "Smaller than the average goblin."
+grubfoot_blue:
+  id: 4498
+  large_head: true
+  examine: "Smaller than the average goblin."
 general_wartface_rfd:
   id: 3391
+  large_head: true
   examine: "An ugly green creature."
 general_bentnoze_rfd:
   id: 3392
+  large_head: true
   examine: "An ugly green creature."
 sheep_penguin:
   <<: *sheep
@@ -904,20 +834,7 @@ fishing_spot_harpoon_small_net_piscatoris:
 goblin_mohawk_blue:
   &goblin_mohawk_blue
   id: 4262
-  att: 1
-  str: 1
-  def: 1
-  mage: 1
-  range: 1
-  att_bonus: -21
-  str_bonus: -15
-  stab_def: -15
-  slash_def: -15
-  crush_def: -15
-  magic_def: -15
-  range_def: -15
-  attack_speed: 4
-  attack_radius: 8
+  attack_bonus: -21
   wander_radius: 10
   hitpoints: 50
   slayer_xp: 5.0
@@ -926,7 +843,7 @@ goblin_mohawk_blue:
   master2: turael
   master3: spria
   respawn_delay: 35
-  examine: "An ugly, green creature."
+  examine: "An ugly, blue creature."
   race: goblin
   height: 30
 goblin_mohawk_grey:
@@ -962,17 +879,7 @@ giant_spider_3:
   att: 41
   str: 51
   def: 31
-  mage: 1
-  range: 1
-  att_bonus: 10
-  str_bonus: 10
-  stab_def: 10
-  slash_def: 10
-  crush_def: 10
-  magic_def: 10
-  range_def: 10
-  attack_speed: 4
-  attack_radius: 8
+  attack_bonus: 10
   wander_radius: 6
   respawn_delay: 25
   hunt_mode: cowardly
@@ -993,54 +900,58 @@ magic_dummy:
   retaliates: false
   examine: "This is ready for you to cast magic at it."
 goblin_shield_battleaxe_red:
+  &goblin_shield_battleaxe_red
   id: 4479
   <<: *goblin_orange_hat_spear
   race: goblin_battleaxe
+  examine: "An ugly, red creature."
 goblin_staff_red:
   id: 4480
-  <<: *goblin_orange_hat_spear
+  <<: *goblin_shield_battleaxe_red
   race: goblin_staff
 goblin_shield_warhammer_red:
   id: 4481
-  <<: *goblin_orange_hat_spear
+  <<: *goblin_shield_battleaxe_red
   race: goblin_battleaxe
 goblin_shield_spear_red:
   id: 4482
-  <<: *goblin_orange_hat_spear
+  <<: *goblin_shield_battleaxe_red
 goblin_battleaxe_red:
   id: 4483
-  <<: *goblin_orange_hat_spear
+  <<: *goblin_shield_battleaxe_red
   race: goblin_battleaxe
 goblin_mohawk_staff_red:
   id: 4484
-  <<: *goblin_orange_hat_spear
+  <<: *goblin_shield_battleaxe_red
   race: goblin_staff
 goblin_ponytail_staff_red:
   id: 4485
-  <<: *goblin_orange_hat_spear
+  <<: *goblin_shield_battleaxe_red
   race: goblin_staff
 goblin_shield_battleaxe_green:
+  &goblin_shield_battleaxe_green
   id: 4486
   <<: *goblin_orange_hat_spear
   race: goblin_battleaxe
+  examine: "An ugly, green creature."
 goblin_staff_green:
   id: 4487
-  <<: *goblin_orange_hat_spear
+  <<: *goblin_shield_battleaxe_green
   race: goblin_staff
 goblin_shield_warhammer_green:
   id: 4488
-  <<: *goblin_orange_hat_spear
+  <<: *goblin_shield_battleaxe_green
   race: goblin_battleaxe
 goblin_shield_spear_green:
   id: 4489
-  <<: *goblin_orange_hat_spear
+  <<: *goblin_shield_battleaxe_green
 goblin_staff_2_green:
   id: 4491
-  <<: *goblin_orange_hat_spear
+  <<: *goblin_shield_battleaxe_green
   race: goblin_staff
 goblin_mohawk_staff_green:
   id: 4492
-  <<: *goblin_orange_hat_spear
+  <<: *goblin_shield_battleaxe_green
   race: goblin_staff
 crow_5:
   <<: *crow
@@ -1566,16 +1477,12 @@ dark_wizard_water:
   str: 2
   def: 5
   mage: 6
-  range: 1
-  magic_def: 3
-  attack_speed: 4
-  attack_radius: 8
+  attack_range: 5
+  attack_radius: 11
   hitpoints: 120
   max_hit_magic: 60
   respawn_delay: 50
   hunt_mode: cowardly
-  hunt_range: 5
-  wander_radius: 5
   examine: "He works evil magic."
 dark_wizard_water_2:
   <<: *dark_wizard_water
@@ -1708,6 +1615,11 @@ cow_light_spots_2:
 cow_calf_3:
   <<: *cow_calf
   id: 12366
+leela:
+  id: 13172
+  race: human
+  wander_radius: 4
+  examine: "She comes from Al Kharid."  
 seal:
   id: 13255
   wander_radius: 2
@@ -1732,3 +1644,46 @@ seal_6:
   id: 13260
   wander_radius: 2
   examine: "Arf arf."
+greater_demon:
+  id: 83
+  att: 76
+  str: 78
+  def: 81
+  attack_range: 5
+  attack_radius: 11
+  hitpoints: 870
+  slayer_xp: 87
+  max_hit_melee: 90
+  style: slash
+  race: demon
+  respawn_delay: 15
+  hunt_mode: aggressive
+  height: 60
+  examine: "Big, red, and incredibly evil."
+zombie:
+  &low_level_zombie
+  id: 73
+  att: 8
+  str: 9
+  def: 10
+  attack_bonus: 5
+  attack_speed: 5
+  wander_radius: 10
+  hitpoints: 220
+  slayer_xp: 22.0
+  max_hit_melee: 20
+  style: slash
+  respawn_delay: 35
+  examine: "Dead man walking."
+  race: zombie
+guardian_mummy:
+  id: 4476
+  race: mummy
+  large_head: true
+  examine: "Who's your mummy?"
+al_the_camel:
+  id: 2809
+  race: camel
+  large_head: true
+  wander_radius: 4
+  examine: "A camel who has the soul of a poet."

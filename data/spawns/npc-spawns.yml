@@ -41,6 +41,8 @@
 - { id: rat, x: 1945, y: 4686, members: true }
 # 7754
 - { id: quiz_master, x: 1952, y: 4768, level: 1, direction: SOUTH }
+# 7749
+- { id: guardian_mummy, x: 1934, y: 4427, level: 3, direction: SOUTH }
 # 8261
 - { id: prison_pete, x: 2084, y: 4460, direction: NORTH }
 - { id: balloon_animal_dog, x: 2078, y: 4462 }
@@ -252,6 +254,8 @@
 - { id: butterfly_1, x: 2269, y: 3224, members: true }
 - { id: butterfly_1, x: 2270, y: 3223, members: true }
 - { id: butterfly_1, x: 2269, y: 3222, members: true }
+# 9033
+- { id: king_black_dragon, x: 2272, y: 4698, members: true }
 # 9265
 - { id: butterfly_1, x: 2323, y: 3175, members: true }
 - { id: butterfly_1, x: 2323, y: 3175, members: true }
@@ -1190,6 +1194,7 @@
 - { id: duck_grey_swim, x: 2978, y: 3356 }
 - { id: duck_grey_swim, x: 3982, y: 3357 }
 - { id: chicken, x: 2966, y: 3346 }
+- { id: sir_vyvin, x: 2983, y: 3335, level: 2 }
 # 11829
 - { id: doric, x: 2952, y: 3451 }
 - { id: musician_falador, x: 2967, y: 3412, direction: SOUTH }
@@ -1321,6 +1326,7 @@
 - { id: crow_4, x: 3100, y: 3239 }
 - { id: crow_4, x: 3131, y: 3251 }
 - { id: crow_6, x: 3113, y: 3242 }
+- { id: leela, x: 3113, y: 3263 }
 # 12339
 - { id: rat, x: 3100, y: 3277 }
 - { id: rat, x: 3100, y: 3273 }
@@ -1942,11 +1948,12 @@
 - { id: man_2, x: 3294, y: 3196 }
 - { id: man_3, x: 3303, y: 3199 }
 - { id: ellis, x: 3276, y: 3193 }
+- { id: al_the_camel, x: 3274, y: 3168 }
 # 13106
 - { id: mubariz, x: 3314, y: 3240 }
-- { id: border_guard_al_kharid, x: 3267, y: 3229, direction: SOUTH }
+- { id: border_guard_al_kharid, x: 3266, y: 3229, direction: SOUTH }
 - { id: border_guard_al_kharid, x: 3267, y: 3226, direction: NORTH }
-- { id: border_guard_al_kharid_2, x: 3268, y: 3229, direction: SOUTH }
+- { id: border_guard_al_kharid_2, x: 3269, y: 3229, direction: SOUTH }
 - { id: border_guard_al_kharid_2, x: 3268, y: 3226, direction: NORTH }
 - { id: musician_al_kharid, x: 3292, y: 3212, direction: NORTH }
 - { id: man_3, x: 3298, y: 3206 }

@@ -14,12 +14,14 @@ import world.gregs.voidps.engine.inv.equipment
 import world.gregs.voidps.network.encode.message
 import world.gregs.voidps.network.instruct.ClanChatJoin
 import world.gregs.voidps.network.visual.update.player.EquipSlot
+import world.gregs.voidps.type.setRandom
 import world.gregs.voidps.world.interact.entity.combat.damageDealers
 import world.gregs.voidps.world.interact.entity.combat.inMultiCombat
 import world.gregs.voidps.world.script.WorldTest
 import world.gregs.voidps.world.script.interfaceOption
 import world.gregs.voidps.world.script.npcOption
 import kotlin.collections.set
+import kotlin.random.Random
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -27,6 +29,7 @@ internal class LootShareTest : WorldTest() {
 
     @BeforeEach
     fun start() {
+        setRandom(Random)
         mockkStatic("world.gregs.voidps.engine.client.EncodeExtensionsKt")
         mockkStatic("world.gregs.voidps.network.encode.ChatEncoderKt")
         mockkStatic("world.gregs.voidps.network.encode.ClanEncoderKt")
@@ -42,7 +45,7 @@ internal class LootShareTest : WorldTest() {
 
         player.interfaceOption("clan_chat", "loot_share", "Toggle-LootShare")
 
-        assertFalse(player["loot_share"])
+        assertFalse(player["loot_share", false])
         verify {
             client.message("LootShare is disabled by the clan owner.", ChatType.ClanChat.id)
         }
@@ -60,7 +63,7 @@ internal class LootShareTest : WorldTest() {
         player.interfaceOption("clan_chat", "loot_share", "Toggle-LootShare")
         tickIf(limit = 210) { !player["loot_share", false] }
 
-        assertTrue(player["loot_share"])
+        assertTrue(player["loot_share", false])
         verify {
             client.message("LootShare is now active. The CoinShare option is off.", ChatType.ClanChat.id)
         }
@@ -80,7 +83,7 @@ internal class LootShareTest : WorldTest() {
         player.interfaceOption("clan_chat_setup", "coin_share", "Toggle CoinShare")
         tickIf { !player["coin_share", false] }
 
-        assertTrue(player["coin_share"])
+        assertTrue(player["coin_share", false])
         verify {
             client.message("CoinShare has been switched on.", ChatType.ClanChat.id)
         }
@@ -102,7 +105,7 @@ internal class LootShareTest : WorldTest() {
         player.interfaceOption("clan_chat_setup", "coin_share", "Toggle CoinShare")
         tickIf { clan.coinShare }
 
-        assertFalse(player["coin_share_setting"])
+        assertFalse(player["coin_share_setting", false])
         verify {
             client.message("CoinShare has been switched off.", ChatType.ClanChat.id)
         }
@@ -110,7 +113,7 @@ internal class LootShareTest : WorldTest() {
 
     @Test
     fun `Killing rat with loot share in single combat changes nothing`() = runTest {
-        mockkStatic("world.gregs.voidps.world.interact.entity.combat.CombatKt")
+        mockkStatic("world.gregs.voidps.world.interact.entity.combat.WildernessKt")
         val (player, client) = createClient("player", emptyTile)
         repeat(2) {
             player.instructions.emit(ClanChatJoin("player"))
@@ -137,7 +140,7 @@ internal class LootShareTest : WorldTest() {
 
     @Test
     fun `Killing rat with loot share in multi combat gives messages`() = runTest {
-        mockkStatic("world.gregs.voidps.world.interact.entity.combat.CombatKt")
+        mockkStatic("world.gregs.voidps.world.interact.entity.combat.WildernessKt")
         val (player, client) = createClient("player", emptyTile)
         player["loot_share"] = true
         player.equipment.set(EquipSlot.Weapon.index, "dragon_longsword")

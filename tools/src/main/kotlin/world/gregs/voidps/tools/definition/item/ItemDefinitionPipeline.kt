@@ -61,7 +61,7 @@ object ItemDefinitionPipeline {
         val output = buildItemExtras(revisionDate, decoder, cache718, rs2Wiki, pages)
         val map = convertToYaml(output)
         val yaml = Yaml()
-        val config = YamlWriterConfiguration(quoteStrings = true)
+        val config = YamlWriterConfiguration(forceQuoteStrings = true)
         val file = File("items.yml")
         yaml.save(file.path, map, config)
         val contents = "# Don't edit; apply changes to the ItemDefinitionPipeline tool's ItemManualChanges class instead.\n${file.readText()}"
@@ -144,7 +144,7 @@ object ItemDefinitionPipeline {
         }
 
         collectUnknownPages("rs2-item", incomplete, rs2Wiki, pages, infoboxes.map { it.first }) { id, page ->
-            (pages[id] ?: PageCollector(id, decoder.get(id).name)).apply {
+            (pages[id] ?: PageCollector(id, decoder[id].name)).apply {
                 rs2 = page
             }
         }

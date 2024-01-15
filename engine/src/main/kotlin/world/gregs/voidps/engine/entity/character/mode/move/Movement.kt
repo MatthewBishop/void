@@ -14,6 +14,7 @@ import world.gregs.voidps.engine.entity.character.mode.Mode
 import world.gregs.voidps.engine.entity.character.mode.move.target.TargetStrategy
 import world.gregs.voidps.engine.entity.character.move.previousTile
 import world.gregs.voidps.engine.entity.character.move.running
+import world.gregs.voidps.engine.entity.character.npc.NPC
 import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.player.movementType
 import world.gregs.voidps.engine.entity.character.player.temporaryMoveType
@@ -37,21 +38,19 @@ open class Movement(
     private val stepValidator: StepValidator = get()
     private val lineValidator: LineValidator = get()
     private val pathFinder: PathFinder = get()
+    private var needsCalculation = true
 
-    private fun calculate() {
-        if (strategy == null) {
+    internal fun calculate() {
+        if (!needsCalculation || strategy == null) {
             return
         }
-        if (character is Player) {
+        if (character is Player && !strategy.tile.noCollision) {
             val route = pathFinder.findPath(character, strategy, shape)
-            character.steps.queueRoute(route, strategy.tile)
+            character.steps.queueRoute(route, strategy.tile, strategy.tile.noCollision, strategy.tile.noRun)
         } else {
-            character.steps.queueStep(strategy.tile)
+            character.steps.queueStep(strategy.tile, strategy.tile.noCollision, strategy.tile.noRun)
         }
-    }
-
-    override fun start() {
-        calculate()
+        needsCalculation = false
     }
 
     override fun tick() {
@@ -62,10 +61,11 @@ open class Movement(
             }
             return
         }
-        if (hasDelay() && !character.hasClock("no_clip")) {
+        if (hasDelay() && !character.steps.destination.noCollision) {
             return
         }
-        if (step(runStep = false) && character.running && !character.hasClock("slow_run")) {
+        calculate()
+        if (step(runStep = false) && character.running) {
             if (character.steps.isNotEmpty()) {
                 step(runStep = true)
             } else {
@@ -86,9 +86,12 @@ open class Movement(
             onCompletion()
             return false
         }
+        if (runStep && target.noRun) {
+            return false
+        }
         val direction = nextDirection(target)
         if (direction == null) {
-            character.steps.clear()
+            clearSteps()
             return false
         }
         character.clearAnimation()
@@ -104,6 +107,11 @@ open class Movement(
         return true
     }
 
+    internal fun clearSteps() {
+        character.steps.clear()
+        needsCalculation = false
+    }
+
     private fun setMovementType(run: Boolean, end: Boolean) {
         if (character is Player) {
             character.start("last_movement", 1)
@@ -115,7 +123,7 @@ open class Movement(
     /**
      * @return the first unreached step from [Character.steps]
      */
-    protected open fun getTarget(): Tile? {
+    protected open fun getTarget(): Step? {
         val target = character.steps.peek() ?: return null
         if (character.tile.equals(target.x, target.y)) {
             character.steps.poll()
@@ -127,7 +135,8 @@ open class Movement(
 
     open fun recalculate(): Boolean {
         val strategy = strategy ?: return false
-        if (strategy.tile != character.steps.destination) {
+        if (!equals(strategy.tile, character.steps.destination)) {
+            needsCalculation = true
             calculate()
             return true
         }
@@ -140,7 +149,7 @@ open class Movement(
         }
     }
 
-    protected fun nextDirection(target: Tile?): Direction? {
+    protected fun nextDirection(target: Step?): Direction? {
         target ?: return null
         val dx = (target.x - character.tile.x).sign
         val dy = (target.y - character.tile.y).sign
@@ -148,7 +157,7 @@ open class Movement(
         if (direction == Direction.NONE) {
             return null
         }
-        if (character.hasClock("no_clip") || canStep(dx, dy)) {
+        if (target.noCollision || canStep(dx, dy)) {
             return direction
         }
         if (dx != 0 && canStep(dx, 0)) {
@@ -169,7 +178,7 @@ open class Movement(
         if (distance == -1) {
             return strategy.reached(character)
         }
-        if (Overlap.isUnder(character.tile, character.size, character.size, strategy.tile, strategy.width, strategy.height)) {
+        if ((character !is NPC || !character.def["allowed_under", false]) && Overlap.isUnder(character.tile, character.size, character.size, strategy.tile, strategy.width, strategy.height)) {
             return false
         }
         if (!character.tile.within(strategy.tile, distance)) {
@@ -179,6 +188,12 @@ open class Movement(
     }
 
     companion object {
+
+        /**
+         * Alternative comparator as an updated Step with no collision won't match a regular tile if using Tile.equals()
+         */
+        fun equals(one: Tile, two: Tile) = one.level == two.level && one.x == two.x && one.y == two.y
+
         fun move(character: Character, delta: Delta) {
             val from = character.tile
             character.tile = character.tile.add(delta)

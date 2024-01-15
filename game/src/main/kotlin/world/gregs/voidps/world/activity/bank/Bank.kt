@@ -5,7 +5,7 @@ import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.item.Item
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.engine.inv.Inventory
-import world.gregs.voidps.engine.inv.hasItem
+import world.gregs.voidps.engine.inv.holdsItem
 
 object Bank {
     const val tabCount = 8
@@ -17,7 +17,7 @@ object Bank {
         val max = player.bank.count
         var total = 0
         for (tab in tabs) {
-            val count: Int = player["bank_tab_$tab"]
+            val count: Int = player["bank_tab_$tab", 0]
             if (count == 0) {
                 continue
             }
@@ -51,16 +51,16 @@ object Bank {
     }
 
     fun tabIndex(player: Player, tab: Int): Int {
-        return (1 until tab).sumOf { t -> player.get<Int>("bank_tab_$t") }
+        return (1 until tab).sumOf { t -> player.get<Int>("bank_tab_$t", 0) }
     }
 }
 
 val Player.bank: Inventory
     get() = inventories.inventory("bank")
 
-fun Player.hasBanked(id: String) = hasItem(id) || bank.contains(id)
+fun Player.ownsItem(id: String) = holdsItem(id) || bank.contains(id)
 
-fun Player.hasBanked(id: String, amount: Int) = hasItem(id, amount) || bank.contains(id, amount)
+fun Player.ownsItem(id: String, amount: Int) = holdsItem(id, amount) || bank.contains(id, amount)
 
 val Item.isNote: Boolean
     get() = def.notedTemplateId != -1

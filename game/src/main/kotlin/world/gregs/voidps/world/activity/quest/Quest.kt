@@ -7,6 +7,8 @@ import world.gregs.voidps.engine.entity.item.Item
 
 fun Player.quest(name: String): String = this[name, "unstarted"]
 
+fun Player.questComplete(name: String): Boolean = quest(name) == "completed"
+
 fun Player.refreshQuestJournal() {
     sendScript(2165)
 }
@@ -28,7 +30,7 @@ fun Player.sendQuestJournal(name: String, lines: List<String>) {
 fun Player.sendQuestComplete(name: String, lines: List<String>, item: Item = Item.EMPTY) {
     open("quest_complete")
     interfaces.sendText("quest_complete", "quest_name", "You have completed $name!")
-    interfaces.sendText("quest_complete", "quest_points", get<Int>("quest_points").toString())
+    interfaces.sendText("quest_complete", "quest_points", get("quest_points", 0).toString())
     if (item != Item.EMPTY) {
         interfaces.sendItem("quest_complete", "item_slot", item)
     }

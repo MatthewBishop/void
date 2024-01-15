@@ -26,7 +26,7 @@ class YamlWriterScenarioTest {
     }
 
     @Test
-    fun `Write object as map`() {
+    fun `Write object as explicit map`() {
         val config = object : YamlWriterConfiguration(forceExplicit = true) {
             override fun write(value: Any?, indent: Int, parentMap: String?): Any? {
                 return if (value is SpawnData) {
@@ -48,11 +48,36 @@ class YamlWriterScenarioTest {
     }
 
     @Test
+    fun `Write object as map`() {
+        val config = object : YamlWriterConfiguration() {
+            override fun write(value: Any?, indent: Int, parentMap: String?): Any? {
+                return if (value is SpawnData) {
+                    value.toMap()
+                } else {
+                    super.write(value, indent, parentMap)
+                }
+            }
+        }
+        val input = mapOf(
+            "pete" to SpawnData("prison_pete", 2084, 4460, Direction.NORTH)
+        )
+        val actual = yaml.writeToString(input, config)
+        val expected = """
+            pete:
+              id: prison_pete
+              x: 2084
+              y: 4460
+              direction: NORTH
+        """.trimIndent()
+        assertEquals(expected, actual)
+    }
+
+    @Test
     fun `Write json`() {
         val config = YamlWriterConfiguration(
-            quoteStrings = true,
+            forceQuoteStrings = true,
             forceExplicit = true,
-            quoteKeys = true,
+            forceQuoteKeys = true,
             formatExplicitMap = true,
             formatExplicitListSizeLimit = 0
         )
@@ -112,6 +137,62 @@ class YamlWriterScenarioTest {
                 ]
               }
             ]
+        """.trimIndent()
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `Write yaml`() {
+        val config = object : YamlWriterConfiguration(
+            formatExplicitListSizeLimit = 10
+        ) {
+            override fun explicit(list: List<*>, indent: Int, parentMap: String?): Boolean {
+                return indent != 0
+            }
+        }
+        val input = mapOf(
+            "John Doe" to mapOf(
+                "age" to 30,
+                "address" to "123 Street",
+                "info" to mapOf(
+                    "height" to 180,
+                    "employed" to true
+                ),
+                "favourite_fruits" to listOf(
+                    "apple",
+                    "banana",
+                    "star fruit"
+                )
+            ),
+            "Jane Doe" to mapOf(
+                "age" to 28,
+                "address" to "123 Street",
+                "info" to mapOf(
+                    "height" to 164,
+                    "employed" to true
+                ),
+                "favourite_fruits" to listOf(
+                    "grapes",
+                    "pear"
+                )
+            )
+        )
+        val actual = yaml.writeToString(input, config)
+        val expected = """
+            "John Doe":
+              age: 30
+              address: "123 Street"
+              info:
+                height: 180
+                employed: true
+              favourite_fruits: [ apple, banana, "star fruit" ]
+            "Jane Doe":
+              age: 28
+              address: "123 Street"
+              info:
+                height: 164
+                employed: true
+              favourite_fruits: [ grapes, pear ]
         """.trimIndent()
         assertEquals(expected, actual)
     }

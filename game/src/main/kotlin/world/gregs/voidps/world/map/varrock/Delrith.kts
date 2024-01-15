@@ -75,7 +75,7 @@ fun CharacterContext.setCutsceneEnd(instance: Region) {
 }
 
 fun CharacterContext.endCutscene(instance: Region, tile: Tile? = null) {
-    val offset: Delta = player.getOrNull("demon_slayer_offset") ?: return
+    val offset: Delta = player["demon_slayer_offset"] ?: return
     player.tele(tile ?: player.tile.minus(offset))
     stopCutscene(instance)
     player.clearCamera()
@@ -91,7 +91,7 @@ on<Unregistered>({ it.contains("demon_slayer_instance") }) { player: Player ->
 }
 
 fun exitArea(player: Player, to: Tile): Boolean {
-    val offset: Delta = player.getOrNull("demon_slayer_offset") ?: return false
+    val offset: Delta = player["demon_slayer_offset"] ?: return false
     val actual = to.minus(offset)
     return !area.contains(actual) && !player.hasClock("demon_slayer_instance_exit")
 }
@@ -115,7 +115,6 @@ suspend fun CharacterContext.cutscene() {
     val region = Region(12852)
     val instance = startCutscene(region)
     val offset = instance.offset(region)
-    println("Instance ${instance.x} ${instance.y} <- ${region.x} ${region.y}")
     player["demon_slayer_instance"] = instance
     player["demon_slayer_offset"] = offset
     player.steps.clear()
@@ -155,10 +154,7 @@ suspend fun CharacterContext.cutscene() {
     player.moveCamera(Tile(3224, 3376).add(offset), 475, 232, 232)
     player.turnCamera(Tile(3227, 3369).add(offset), 300, 232, 232)
     player.moveCamera(Tile(3231, 3376).add(offset), 475, 1, 1)
-    npc<Cheerful>("denath", """
-        Arise, O mighty Delrith! Bring destruction to this soft,
-        weak city!
-    """)
+    npc<Cheerful>("denath", "Arise, O mighty Delrith! Bring destruction to this soft, weak city!")
     for (wizard in wizards) {
         wizard.forceChat = "Arise, Delrith!"
     }

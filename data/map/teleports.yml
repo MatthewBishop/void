@@ -229,6 +229,15 @@
   to:
     x: 2926
     y: 3444
+######## 9033 ########
+- id: lever_kbd_lair
+  option: Pull
+  tile:
+    x: 2273
+    y: 4680
+  to:
+    x: 3067
+    y: 10254
 ######## 9297 ########
 - id: 16049
   option: Climb-up
@@ -263,6 +272,15 @@
   to:
     x: 2867
     y: 3020
+######## 10291 ########
+- id: lever_ardougne_edgeville
+  option: Pull
+  tile:
+    x: 2561
+    y: 3311
+  to:
+    x: 3154
+    y: 3924
 ######## 11311 ########
 - id: nature_altar_ruins_enter
   option: Enter
@@ -2273,14 +2291,16 @@
     x: 3017
     y: 3849
   delta:
-    y: 6400
+    x: 52
+    y: 6407
 - id: 1767
   option: Climb-down
   tile:
     x: 3069
     y: 3857
   delta:
-    y: 6399
+    x: -52
+    y: 6392
 ######## 12093 ########
 - id: 1733
   option: Climb-down
@@ -2342,21 +2362,31 @@
     y: 9850
   delta:
     y: -6400
-######## 12192 ######## 
+######## 12192 ########
+- id: lever_poison_spiders
+  option: Pull
+  tile:
+    x: 3067
+    y: 10252
+  to:
+    x: 2271
+    y: 4680
 - id: 32015
   option: Climb-up
   tile:
     x: 3017
     y: 10249
   delta:
-    y: -6400
+    x: 52
+    y: -6392
 - id: 32015
   option: Climb-up
   tile:
     x: 3069
     y: 10256
   delta:
-    y: -6399
+    x: -52
+    y: -6407
 ######## 12193 ########
 - id: 32048
   option: Climb-up
@@ -2675,7 +2705,15 @@
   to:
     x: 3086
     y: 4247
-######## 12342 ######## 
+######## 12342 ########
+- id: lever_ardougne_edgeville
+  option: Pull
+  tile:
+    x: 3090
+    y: 3474
+  to:
+    x: 3154
+    y: 3924
 - id: 29728
   option: Enter
   tile:
@@ -3166,6 +3204,15 @@
   delta:
     y: 6401
     x: 2
+######## 12605 ########
+- id: lever_deserted_keep
+  option: Pull
+  tile:
+    x: 3153
+    y: 3923
+  to:
+    x: 2562
+    y: 3311
 ######## 12610 ########
 - id: 29729
   option: Climb
@@ -4178,7 +4225,24 @@
     y: 3458
   delta:
     x: -1
-    y: 6400 
+    y: 6400
+######## 12855 ########
+- id: fist_of_guthix_cave
+  option: Enter
+  tile:
+    x: 3240
+    y: 3575
+  to:
+    x: 1675
+    y: 5599
+- id: fist_of_guthix_stairs
+  option: Exit
+  tile:
+    x: 1673
+    y: 5598
+  to:
+    x: 3242
+    y: 3574
 ######## 12870 ########
 - id: 39273
   option: Climb-up
@@ -4868,3 +4932,98 @@
   to:
     x: 3560
     y: 9779
+######## 11575 ########
+- id: games_room_stairs_up_2
+  option: Climb-up
+  tile:
+    x: 2897
+    y: 3566
+    level: 0
+  delta:
+    y: 4
+    level: 1
+- id: games_room_stairs_down
+  option: Climb-down
+  tile:
+    x: 2897
+    y: 3567
+    level: 1
+  delta:
+    y: -4
+    level: -1
+- id: games_room_stairs_down_2
+  option: Climb-down
+  tile:
+    x: 2899
+    y: 3566
+  delta:
+    x: -694
+    y: 1369
+    level: 1
+######## 8781 ########
+- id: games_room_basement_stairs_up
+  option: Climb-up
+  tile:
+    x: 2207
+    y: 4935
+  delta:
+    y: -4
+    level: 1
+- id: games_room_basement_stairs_down
+  option: Climb-down
+  tile:
+    x: 2207
+    y: 4935
+    level: 1
+  delta:
+    y: 4
+    level: -1
+- id: games_room_stairs_up
+  option: Climb-up
+  tile:
+    x: 2205
+    y: 4935
+    level: 1
+  delta:
+    x: 694
+    y: -1369
+    level: -1
+######## 7749 ########
+- id: jalsavrah_tomb_door
+  option: Leave Tomb
+  tile:
+    x: 1934
+    y: 4419
+    level: 3
+  to:
+    x: 3288
+    y: 2801
+######## 13099 ########
+- id: jalsavrah_door_north
+  option: Search
+  tile:
+    x: 3288
+    y: 2799
+  to:
+    &guardian_mummy_room
+    x: 1934
+    y: 4420
+    level: 3
+- id: jalsavrah_door_east
+  option: Search
+  tile:
+    x: 3293
+    y: 2794
+  to: *guardian_mummy_room
+- id: jalsavrah_door_south
+  option: Search
+  tile:
+    x: 3288
+    y: 2789
+  to: *guardian_mummy_room
+- id: jalsavrah_door_west
+  option: Search
+  tile:
+    x: 3283
+    y: 2794
+  to: *guardian_mummy_room

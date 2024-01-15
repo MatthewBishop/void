@@ -9,14 +9,12 @@ object ObjectDefinitions {
     @JvmStatic
     fun main(args: Array<String>) {
         val cache = CacheDelegate("./data/cache")
-
         val decoder = ObjectDecoderFull(false, true).loadCache(cache)
-
-        var all = mutableSetOf<ObjectDefinitionFull>()
-        for(def in decoder.findMatchingName("mysterious ruins")) {
-            all.addAll(decoder.findTransforms(def.id))
+        for (def in decoder) {
+            if(def.params?.containsKey(599) == true) {
+                println("${def.id} ${def.name} ${def.params}")
+            }
         }
-        println(all.map { it.id })
     }
 
     fun Array<ObjectDefinitionFull>.findMatchingName(name: String): List<ObjectDefinitionFull> {

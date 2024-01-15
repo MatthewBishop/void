@@ -11,7 +11,7 @@ import world.gregs.voidps.world.interact.entity.player.equip.InventoryOption
 
 val books: Books by inject()
 
-on<InventoryOption>({ item.def.has("book") && option == "Read" }) { player: Player ->
+on<InventoryOption>({ item.def.contains("book") && option == "Read" }) { player: Player ->
     player.openBook(item.def["book"])
 }
 
@@ -32,8 +32,8 @@ on<ContinueDialogue>({ id == "book" && component == "turn_page_left" }) { player
 }
 
 fun refreshBook(player: Player) {
-    val name: String = player.getOrNull("book") ?: return
-    val pageNumber: Int = player.getOrNull("book_page") ?: return
+    val name: String = player["book"] ?: return
+    val pageNumber: Int = player["book_page"] ?: return
     player.interfaces.apply {
         sendText("book", "title", books.title(name))
         sendText("book", "page_number_left", (pageNumber + 1).toString())

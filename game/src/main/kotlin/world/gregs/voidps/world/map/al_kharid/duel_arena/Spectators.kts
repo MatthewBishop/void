@@ -3,16 +3,16 @@ package world.gregs.voidps.world.map.al_kharid.duel_arena
 import world.gregs.voidps.engine.entity.character.npc.NPCOption
 import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.type.random
 import world.gregs.voidps.world.interact.dialogue.*
 import world.gregs.voidps.world.interact.dialogue.type.npc
 import world.gregs.voidps.world.interact.dialogue.type.player
-import kotlin.random.Random
 
 fun isSpectator(id: String) = id == "afrah" || id == "dalal" || id == "jadid" || id == "jeed" || id == "ima" || id == "sabeil"
 
 on<NPCOption>({ operate && isSpectator(target.id) && option == "Talk-to" }) { player: Player ->
     player<Cheerful>("Hi!")
-    when (Random.nextInt(0, 14)) {
+    when (random.nextInt(0, 14)) {
         0 -> {
             npc<Cheerful>("Knock knock!")
             player<Talking>("Who's there?")
@@ -21,10 +21,7 @@ on<NPCOption>({ operate && isSpectator(target.id) && option == "Talk-to" }) { pl
             npc<Laugh>("Don't cry, it's just me!")
         }
         1 -> {
-            npc<Sad>("""
-                I wouldn't want to be the poor guy that has to clean up
-                after the duels.
-            """)
+            npc<Sad>("I wouldn't want to be the poor guy that has to clean up after the duels.")
             player<Surprised>("Me neither.")
         }
         2 -> npc<Sad>("Hmph.")
@@ -46,10 +43,7 @@ on<NPCOption>({ operate && isSpectator(target.id) && option == "Talk-to" }) { pl
             npc<Laugh>("'Cause it didn't have the guts to fart!")
         }
         6 -> {
-            npc<Talking>("""
-                Did you know they think this place dates back to the
-                second age?!
-            """)
+            npc<Talking>("Did you know they think this place dates back to the second age?!")
             player<Talking>("Really?")
             npc<Talking>("Yeah. The guy at the information kiosk was telling me.")
         }

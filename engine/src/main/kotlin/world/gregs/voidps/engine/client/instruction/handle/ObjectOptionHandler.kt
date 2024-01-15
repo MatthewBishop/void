@@ -24,7 +24,7 @@ class ObjectOptionHandler(
     private val logger = InlineLogger()
 
     override fun validate(player: Player, instruction: InteractObject) {
-        if (player.hasClock("delay")) {
+        if (player.hasClock("delay") || player.hasClock("input_delay")) {
             return
         }
         val (objectId, x, y, option) = instruction
@@ -77,7 +77,7 @@ class ObjectOptionHandler(
 
         private fun getInt(definitions: VariableDefinitions, key: String, player: Player): Int {
             val variable = definitions.get(key) ?: return 0
-            val value = player.variables.getOrNull<Any>(key) ?: return 0
+            val value = player.variables.get<Any>(key) ?: return 0
             return variable.values.toInt(value)
         }
 

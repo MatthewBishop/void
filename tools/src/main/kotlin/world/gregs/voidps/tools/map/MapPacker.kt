@@ -16,8 +16,8 @@ object MapPacker {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        val target = CacheDelegate("${System.getProperty("user.home")}/rs634_cache/")
-        val xteas = Xteas().load("./data/xteas.dat")
+        val target = CacheDelegate("${System.getProperty("user.home")}/Downloads/rs634_cache/")
+        val xteas = Xteas().load("./data/xteas.dat", Xteas.DEFAULT_KEY, Xteas.DEFAULT_VALUE)
         packMissingMaps(target, xteas, CacheDelegate("${System.getProperty("user.home")}/Downloads/727 cache with most xteas/"), Xteas(), all())
         packMissingMaps(target, xteas, CacheDelegate("${System.getProperty("user.home")}/Downloads/cache-280/"), getKeys(280), all()) // revision 681
         packEaster08Map(target, CacheDelegate("${System.getProperty("user.home")}/Downloads/cache-257/")) // revision 537
@@ -77,7 +77,7 @@ object MapPacker {
     }
 
     private fun getKeys(target: Int): Xteas {
-        val file = File("./temp/runescape-${target}.keys")
+        val file = File("./temp/xteas/runescape-${target}.keys.json")
         val content = if (file.exists()) {
             file.readText()
         } else {
