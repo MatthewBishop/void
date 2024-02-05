@@ -1,26 +1,36 @@
 package world.gregs.voidps.cache
 
+import java.util.*
+
 interface Cache {
 
-    fun getFile(index: Int, archive: Int, file: Int = 0, xtea: IntArray? = null): ByteArray?
+    val versionTable: ByteArray
 
-    fun getFile(index: Int, name: String, xtea: IntArray? = null): ByteArray?
+    fun indexCount(): Int
 
-    fun close()
+    fun indices(): IntArray
 
-    fun getIndexCrc(indexId: Int): Int
+    fun sector(index: Int, archive: Int): ByteArray?
 
-    fun archiveCount(indexId: Int, archiveId: Int): Int
+    fun archives(index: Int): IntArray
 
-    fun lastFileId(indexId: Int, archive: Int): Int
+    fun archiveCount(index: Int): Int
 
     fun lastArchiveId(indexId: Int): Int
 
-    fun getArchiveId(index: Int, name: String): Int
+    fun archiveId(index: Int, hash: Int): Int
 
-    fun getArchiveId(index: Int, archive: Int): Int
+    fun archiveId(index: Int, name: String): Int = archiveId(index, name.hashCode())
 
-    fun getArchives(index: Int): IntArray
+    fun files(index: Int, archive: Int): IntArray
+
+    fun fileCount(indexId: Int, archiveId: Int): Int
+
+    fun lastFileId(indexId: Int, archive: Int): Int
+
+    fun data(index: Int, archive: Int, file: Int = 0, xtea: IntArray? = null): ByteArray?
+
+    fun data(index: Int, name: String, xtea: IntArray? = null) = data(index, archiveId(index, name), xtea = xtea)
 
     fun write(index: Int, archive: Int, file: Int, data: ByteArray, xteas: IntArray? = null)
 
@@ -28,6 +38,13 @@ interface Cache {
 
     fun update(): Boolean
 
-    fun getArchiveData(index: Int, archive: Int): Map<Int, ByteArray?>?
+    fun close()
 
+    companion object {
+        fun load(properties: Properties): Cache {
+            val live = properties.getProperty("live").toBoolean()
+            val loader = if (live) MemoryCache else FileCache
+            return loader.load(properties)
+        }
+    }
 }

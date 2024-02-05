@@ -3,14 +3,11 @@ package world.gregs.voidps
 import com.github.michaelbull.logging.InlineLogger
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
-import org.koin.core.module.Module
 import org.koin.dsl.module
 import org.koin.fileProperties
 import org.koin.logger.slf4jLogger
 import world.gregs.voidps.cache.Cache
-import world.gregs.voidps.cache.CacheDelegate
 import world.gregs.voidps.cache.Index
-import world.gregs.voidps.cache.active.ActiveCache
 import world.gregs.voidps.cache.config.decoder.InventoryDecoder
 import world.gregs.voidps.cache.config.decoder.StructDecoder
 import world.gregs.voidps.cache.definition.decoder.*
@@ -19,22 +16,18 @@ import world.gregs.voidps.engine.*
 import world.gregs.voidps.engine.client.ConnectionGatekeeper
 import world.gregs.voidps.engine.client.ConnectionQueue
 import world.gregs.voidps.engine.client.PlayerAccountLoader
-import world.gregs.voidps.engine.client.instruction.InterfaceHandler
 import world.gregs.voidps.engine.client.update.CharacterTask
 import world.gregs.voidps.engine.client.update.iterator.ParallelIterator
 import world.gregs.voidps.engine.client.update.iterator.SequentialIterator
-import world.gregs.voidps.engine.data.PlayerAccounts
 import world.gregs.voidps.engine.data.definition.*
 import world.gregs.voidps.engine.entity.World
-import world.gregs.voidps.engine.entity.character.npc.NPCs
-import world.gregs.voidps.engine.entity.character.player.Players
-import world.gregs.voidps.engine.entity.item.floor.FloorItems
-import world.gregs.voidps.engine.map.region.Xteas
-import world.gregs.voidps.network.Network
+import world.gregs.voidps.engine.map.collision.CollisionDecoder
+import world.gregs.voidps.network.GameServer
+import world.gregs.voidps.network.LoginServer
 import world.gregs.voidps.network.protocol
 import world.gregs.voidps.script.loadScripts
 import java.io.File
-import java.math.BigInteger
+import java.util.*
 
 /**
  * @author GregHib <greg@gregs.world>
@@ -44,115 +37,77 @@ object Main {
 
     lateinit var name: String
     private val logger = InlineLogger()
-    private const val USE_ACTIVE_CACHE = true
+    private const val PROPERTY_FILE_NAME = "game.properties"
 
     @OptIn(ExperimentalUnsignedTypes::class)
     @JvmStatic
     fun main(args: Array<String>) {
         val startTime = System.currentTimeMillis()
-        val module = if (USE_ACTIVE_CACHE) {
-            val activeDir = File("./data/cache/active/")
-            ActiveCache().checkChanges(activeDir.parent, activeDir.name)
-            active(activeDir)
-        } else {
-            cache(CacheDelegate("./data/cache/"))
-        }
-        preload(module)
-        name = getProperty("name")
-        val revision = getProperty("revision").toInt()
-        val limit = getProperty("loginLimit").toInt()
-        val modulus = BigInteger(getProperty("rsaModulus"), 16)
-        val private = BigInteger(getProperty("rsaPrivate"), 16)
+        val properties = properties()
+        name = properties.getProperty("name")
 
-        val huffman: Huffman = get()
-        val players: Players = get()
-        val accounts: PlayerAccounts = get()
-        val queue: ConnectionQueue = get()
+        val cache = timed("cache") { Cache.load(properties) }
+        preload(cache, properties)
+
+        val accountLoader = PlayerAccountLoader(get<ConnectionQueue>(), get(), Contexts.Game)
+        val protocol = protocol(get<Huffman>())
+
         val gatekeeper: ConnectionGatekeeper = get()
+        val loginServer = LoginServer.load(properties, protocol, gatekeeper, accountLoader, Contexts.Game)
+        val server = GameServer.load(cache, properties, gatekeeper, loginServer)
 
-        val accountLoader = PlayerAccountLoader(queue, accounts, Contexts.Game)
-        val protocol = protocol(huffman)
-        val server = Network(revision, modulus, private, gatekeeper, accountLoader, limit, Contexts.Game, protocol)
-
-        val interfaceDefinitions: InterfaceDefinitions = get()
-        val npcs: NPCs = get()
-        val items: FloorItems = get()
-        val objectDefinitions: ObjectDefinitions = get()
-
-        val handler = InterfaceHandler(get(), interfaceDefinitions, get())
-        val tickStages = getTickStages(
-            players,
-            npcs,
-            items,
-            get(),
-            get(),
-            queue,
-            get(),
-            get(),
-            get(),
-            objectDefinitions,
-            get(),
-            interfaceDefinitions,
-            get(),
-            handler,
-            if (CharacterTask.DEBUG) SequentialIterator() else ParallelIterator())
+        val tickStages = getTickStages(iterator = if (CharacterTask.DEBUG) SequentialIterator() else ParallelIterator())
         val engine = GameLoop(tickStages)
-
-        World.start(getProperty("members") == "true")
+        World.start(properties)
         engine.start()
-        logger.info { "${getProperty("name")} loaded in ${System.currentTimeMillis() - startTime}ms" }
+
+        logger.info { "$name loaded in ${System.currentTimeMillis() - startTime}ms" }
         server.start(getIntProperty("port"))
     }
 
-    private fun preload(module: Module) {
+    private fun properties(): Properties = timed("properties") {
+        val properties = Properties()
+        val file = File("./$PROPERTY_FILE_NAME")
+        if (file.exists()) {
+            properties.load(file.inputStream())
+        } else {
+            logger.debug { "Property file not found; defaulting to internal." }
+            properties.load(Main::class.java.getResourceAsStream("/$PROPERTY_FILE_NAME"))
+        }
+        return@timed properties
+    }
+
+    private fun preload(cache: Cache, properties: Properties) {
+        val module = cache(cache, properties)
         startKoin {
             slf4jLogger(level = Level.ERROR)
             fileProperties("/game.properties")
-            fileProperties("/private.properties")
             modules(engineModule, gameModule, module)
         }
         val saves = File(getProperty("savePath"))
         if (!saves.exists()) {
             saves.mkdir()
         }
-        loadScripts(getProperty("scriptModule"))
+        loadScripts()
     }
 
-    private fun active(activeDir: File) = module {
-        single(createdAtStart = true) { MapDefinitions(get(), get(), get()).load(activeDir) }
-        single(createdAtStart = true) { Huffman().load(activeDir.resolve(ActiveCache.indexFile(Index.HUFFMAN)).readBytes()) }
-        single(createdAtStart = true) { ObjectDefinitions(ObjectDecoder(member = getProperty<String>("members") == "true", lowDetail = false, get<ParameterDefinitions>()).load(activeDir)).load() }
-        single(createdAtStart = true) { NPCDefinitions(NPCDecoder(member = getProperty<String>("members") == "true", get<ParameterDefinitions>()).load(activeDir)).load() }
-        single(createdAtStart = true) { ItemDefinitions(ItemDecoder(get<ParameterDefinitions>()).load(activeDir)).load() }
-        single(createdAtStart = true) { AnimationDefinitions(AnimationDecoder().load(activeDir)).load() }
-        single(createdAtStart = true) { EnumDefinitions(EnumDecoder().load(activeDir), get()).load() }
-        single(createdAtStart = true) { GraphicDefinitions(GraphicDecoder().load(activeDir)).load() }
-        single(createdAtStart = true) { InterfaceDefinitions(InterfaceDecoder().load(activeDir)).load() }
-        single(createdAtStart = true) { InventoryDefinitions(InventoryDecoder().load(activeDir)).load() }
-        single(createdAtStart = true) { StructDefinitions(StructDecoder(get<ParameterDefinitions>()).load(activeDir)).load() }
-        single(createdAtStart = true) { QuickChatPhraseDefinitions(QuickChatPhraseDecoder().load(activeDir)).load() }
+    private fun cache(cache: Cache, properties: Properties) = module {
+        val members = properties.getProperty("members").toBoolean()
+        single(createdAtStart = true) { MapDefinitions(CollisionDecoder(get()), get(), get(), cache).loadCache() }
+        single(createdAtStart = true) { Huffman().load(cache.data(Index.HUFFMAN, 1)!!) }
+        single(createdAtStart = true) { ObjectDefinitions(ObjectDecoder(members, lowDetail = false, get<ParameterDefinitions>()).load(cache)).load() }
+        single(createdAtStart = true) { NPCDefinitions(NPCDecoder(members, get<ParameterDefinitions>()).load(cache)).load() }
+        single(createdAtStart = true) { ItemDefinitions(ItemDecoder(get<ParameterDefinitions>()).load(cache)).load() }
+        single(createdAtStart = true) { AnimationDefinitions(AnimationDecoder().load(cache)).load() }
+        single(createdAtStart = true) { EnumDefinitions(EnumDecoder().load(cache), get()).load() }
+        single(createdAtStart = true) { GraphicDefinitions(GraphicDecoder().load(cache)).load() }
+        single(createdAtStart = true) { InterfaceDefinitions(InterfaceDecoder().load(cache)).load() }
+        single(createdAtStart = true) { InventoryDefinitions(InventoryDecoder().load(cache)).load() }
+        single(createdAtStart = true) { StructDefinitions(StructDecoder(get<ParameterDefinitions>()).load(cache)).load() }
+        single(createdAtStart = true) { QuickChatPhraseDefinitions(QuickChatPhraseDecoder().load(cache)).load() }
         single(createdAtStart = true) { WeaponStyleDefinitions().load() }
         single(createdAtStart = true) { AmmoDefinitions().load() }
         single(createdAtStart = true) { ParameterDefinitions(CategoryDefinitions().load(), get()).load() }
-        single(createdAtStart = true) { FontDefinitions(FontDecoder().load(activeDir)).load() }
-    }
-
-    private fun cache(cache: Cache) = module {
-        single(createdAtStart = true) { MapDefinitions(get(), get(), get()).loadCache(cache, get<Xteas>()) }
-        single(createdAtStart = true) { Huffman().load(cache.getFile(Index.HUFFMAN, 1)!!) }
-        single(createdAtStart = true) { ObjectDefinitions(ObjectDecoder(member = getProperty<String>("members") == "true", lowDetail = false, get<ParameterDefinitions>()).loadCache(cache)).load() }
-        single(createdAtStart = true) { NPCDefinitions(NPCDecoder(member = getProperty<String>("members") == "true", get<ParameterDefinitions>()).loadCache(cache)).load() }
-        single(createdAtStart = true) { ItemDefinitions(ItemDecoder(get<ParameterDefinitions>()).loadCache(cache)).load() }
-        single(createdAtStart = true) { AnimationDefinitions(AnimationDecoder().loadCache(cache)).load() }
-        single(createdAtStart = true) { EnumDefinitions(EnumDecoder().loadCache(cache), get()).load() }
-        single(createdAtStart = true) { GraphicDefinitions(GraphicDecoder().loadCache(cache)).load() }
-        single(createdAtStart = true) { InterfaceDefinitions(InterfaceDecoder().loadCache(cache)).load() }
-        single(createdAtStart = true) { InventoryDefinitions(InventoryDecoder().loadCache(cache)).load() }
-        single(createdAtStart = true) { StructDefinitions(StructDecoder(get<ParameterDefinitions>()).loadCache(cache)).load() }
-        single(createdAtStart = true) { QuickChatPhraseDefinitions(QuickChatPhraseDecoder().loadCache(cache)).load() }
-        single(createdAtStart = true) { WeaponStyleDefinitions().load() }
-        single(createdAtStart = true) { AmmoDefinitions().load() }
-        single(createdAtStart = true) { ParameterDefinitions(CategoryDefinitions().load(), get()).load() }
-        single(createdAtStart = true) { FontDefinitions(FontDecoder().loadCache(cache)).load() }
+        single(createdAtStart = true) { FontDefinitions(FontDecoder().load(cache)).load() }
     }
 }

@@ -8,6 +8,7 @@ import world.gregs.voidps.engine.client.ui.chat.toDigitGroupString
 import world.gregs.voidps.engine.client.ui.chat.toTag
 import world.gregs.voidps.engine.client.ui.closeMenu
 import world.gregs.voidps.engine.entity.character.player.Player
+import world.gregs.voidps.engine.entity.character.player.chat.ChatType
 import world.gregs.voidps.engine.entity.character.player.req.request
 import world.gregs.voidps.engine.entity.item.Item
 import world.gregs.voidps.engine.event.on
@@ -70,6 +71,8 @@ on<InterfaceOption>({ id == "trade_confirm" && component == "accept" && option =
             requester.closeMenu()
             return@request
         }
+        acceptor.message("Accepted trade.", ChatType.Trade)
+        requester.message("Accepted trade.", ChatType.Trade)
         loanItem(requester, acceptorLoan, acceptor)
         loanItem(acceptor, requesterLoan, requester)
         requester.closeMenu()
@@ -94,7 +97,7 @@ fun sendLoan(player: Player, inventory: Inventory, key: String, prefix: String) 
     player.interfaces.sendVisibility("trade_confirm", "${prefix}_container", lend)
     if (lend) {
         val time = if (player[key, -1] <= 0) "until logout" else "${player[key, -1]} hours"
-        val description = "Lend: ${Colours.white.toTag()} ${inventory[0].def.name}, $time"
+        val description = "Lend: ${Colours.WHITE.toTag()} ${inventory[0].def.name}, $time"
         player.interfaces.sendText("trade_confirm", "${prefix}_text", description)
     }
 }
@@ -117,10 +120,10 @@ fun itemsList(items: List<Item>, exact: Boolean) = buildString {
         if (item.isEmpty()) {
             continue
         }
-        append(Colours.orange.toTag())
+        append(Colours.ORANGE.toTag())
         append(item.def.name)
         if (item.amount > 1) {
-            append(Colours.white.toTag())
+            append(Colours.WHITE.toTag())
             append(" x ")
             append(item.amount.toPrefix())
             if (exact && item.amount > 10_000) {

@@ -28,7 +28,7 @@ import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.inv.add
 import world.gregs.voidps.engine.inv.inventory
 import world.gregs.voidps.engine.suspend.pause
-import world.gregs.voidps.network.DummyClient
+import world.gregs.voidps.network.client.DummyClient
 import world.gregs.voidps.network.visual.update.player.BodyColour
 import world.gregs.voidps.network.visual.update.player.BodyPart
 import world.gregs.voidps.type.area.Rectangle
@@ -66,7 +66,7 @@ on<Command>({ prefix == "bots" }) { _: Player ->
     GlobalScope.launch {
         repeat(count) {
             if (it % 25 == 0) {
-                suspendCancellableCoroutine<Unit> { cont ->
+                suspendCancellableCoroutine { cont ->
                     World.run("bot_${counter}", 0) {
                         cont.resume(Unit)
                     }
@@ -133,9 +133,9 @@ fun setAppearance(player: Player): Player {
     player.body.setLook(BodyPart.Feet, struct["character_style_shoes"])
     val offset = random.nextInt(0, 8)
     player.body.setColour(BodyColour.Hair, enums.get("colour_hair").randomInt())
-    player.body.setColour(BodyColour.Top, struct["character_style_top_colour_$offset"])
-    player.body.setColour(BodyColour.Legs, struct["character_style_legs_colour_$offset"])
-    player.body.setColour(BodyColour.Feet, struct["character_style_shoes_colour_$offset"])
+    player.body.setColour(BodyColour.Top, struct["character_style_colour_top_$offset"])
+    player.body.setColour(BodyColour.Legs, struct["character_style_colour_legs_$offset"])
+    player.body.setColour(BodyColour.Feet, struct["character_style_colour_shoes_$offset"])
     player.body.setColour(BodyColour.Skin, enums.get("character_skin").randomInt())
     player.appearance.emote = 1426
     return player

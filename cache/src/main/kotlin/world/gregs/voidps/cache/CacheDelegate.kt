@@ -2,53 +2,38 @@ package world.gregs.voidps.cache
 
 import com.displee.cache.CacheLibrary
 import com.github.michaelbull.logging.InlineLogger
-import java.lang.ref.Reference
-import java.lang.ref.SoftReference
+import java.math.BigInteger
 
-class CacheDelegate(directory: String) : Cache {
+class CacheDelegate(private val library: CacheLibrary, exponent: BigInteger? = null, modulus: BigInteger? = null) : Cache {
 
-    private val delegate: Reference<CacheLibrary>
+    constructor(directory: String, exponent: BigInteger? = null, modulus: BigInteger? = null) : this(timed(directory), exponent, modulus)
 
-    private val logger = InlineLogger()
-
-    init {
-        val start = System.currentTimeMillis()
-        delegate = SoftReference(CacheLibrary(directory))
-        logger.info { "Cache read from $directory in ${System.currentTimeMillis() - start}ms" }
+    override val versionTable: ByteArray = if (exponent == null || modulus == null) ByteArray(0) else {
+        library.generateUkeys(exponent = exponent, modulus = modulus)
     }
 
-    override fun getFile(index: Int, archive: Int, file: Int, xtea: IntArray?) =
-        delegate.get()?.data(index, archive, file, xtea)
+    override fun indexCount() = library.indices().size
 
-    override fun getFile(index: Int, name: String, xtea: IntArray?) = delegate.get()?.data(index, name, xtea)
+    override fun indices() = library.indices().map { it.id }.toIntArray()
 
-    override fun close() {
-        delegate.get()?.close()
-        delegate.clear()
+    override fun sector(index: Int, archive: Int): ByteArray? {
+        return if (index == 255) {
+            library.index255
+        } else {
+            library.index(index)
+        }?.readArchiveSector(archive)?.data
     }
 
-    override fun getIndexCrc(indexId: Int): Int {
-        return delegate.get()?.index(indexId)?.crc ?: 0
-    }
+    override fun archives(index: Int) = library.index(index).archiveIds()
 
-    override fun archiveCount(indexId: Int, archiveId: Int): Int {
-        return delegate.get()?.index(indexId)?.archive(archiveId)?.fileIds()?.size ?: 0
-    }
+    override fun archiveCount(index: Int) = library.index(index).archiveIds().size
 
-    override fun lastFileId(indexId: Int, archive: Int): Int {
-        return delegate.get()?.index(indexId)?.archive(archive)?.last()?.id ?: -1
-    }
+    override fun lastArchiveId(indexId: Int) = library.index(indexId).last()?.id ?: -1
 
-    override fun lastArchiveId(indexId: Int): Int {
-        return delegate.get()?.index(indexId)?.last()?.id ?: 0
-    }
+    override fun archiveId(index: Int, name: String) = library.index(index).archiveId(name)
 
-    override fun getArchiveId(index: Int, name: String): Int {
-        return delegate.get()?.index(index)?.archiveId(name) ?: -1
-    }
-
-    override fun getArchiveId(index: Int, hash: Int): Int {
-        delegate.get()?.index(index)?.archives()?.forEach { archive ->
+    override fun archiveId(index: Int, hash: Int): Int {
+        for (archive in library.index(index).archives()) {
             if (archive.hashName == hash) {
                 return archive.id
             }
@@ -56,24 +41,41 @@ class CacheDelegate(directory: String) : Cache {
         return -1
     }
 
-    override fun getArchiveData(index: Int, archive: Int): Map<Int, ByteArray?>? {
-        return delegate.get()?.index(index)?.archive(archive)?.files?.mapValues { it.value?.data }
-    }
+    override fun files(index: Int, archive: Int) = library.index(index).archive(archive)?.fileIds() ?: IntArray(0)
 
-    override fun getArchives(index: Int): IntArray {
-        return delegate.get()?.index(index)?.archiveIds() ?: intArrayOf()
-    }
+    override fun fileCount(indexId: Int, archiveId: Int) = library.index(indexId).archive(archiveId)?.fileIds()?.size ?: 0
+
+    override fun lastFileId(indexId: Int, archive: Int) = library.index(indexId).archive(archive)?.last()?.id ?: -1
+
+    override fun data(index: Int, archive: Int, file: Int, xtea: IntArray?) = library.data(index, archive, file, xtea)
+
+    override fun data(index: Int, name: String, xtea: IntArray?) = library.data(index, name, xtea)
 
     override fun write(index: Int, archive: Int, file: Int, data: ByteArray, xteas: IntArray?) {
-        delegate.get()?.put(index, archive, file, data, xteas)
+        library.put(index, archive, file, data, xteas)
     }
 
     override fun write(index: Int, archive: String, data: ByteArray, xteas: IntArray?) {
-        delegate.get()?.put(index, archive, data, xteas)
+        library.put(index, archive, data, xteas)
     }
 
     override fun update(): Boolean {
-        delegate.get()?.update()
+        library.update()
         return true
+    }
+
+    override fun close() {
+        library.close()
+    }
+
+    companion object {
+        private val logger = InlineLogger()
+
+        private fun timed(directory: String): CacheLibrary {
+            val start = System.currentTimeMillis()
+            val library = CacheLibrary(directory)
+            logger.info { "Cache read from $directory in ${System.currentTimeMillis() - start}ms" }
+            return library
+        }
     }
 }
