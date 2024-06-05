@@ -1,30 +1,17 @@
 package world.gregs.voidps.world.interact.entity.player.combat.melee.special
 
-import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.setAnimation
 import world.gregs.voidps.engine.entity.character.setGraphic
-import world.gregs.voidps.engine.entity.item.Item
-import world.gregs.voidps.engine.event.Priority
-import world.gregs.voidps.engine.event.on
 import world.gregs.voidps.type.random
-import world.gregs.voidps.world.interact.entity.combat.CombatSwing
 import world.gregs.voidps.world.interact.entity.combat.hit.Damage
 import world.gregs.voidps.world.interact.entity.combat.hit.Hit
 import world.gregs.voidps.world.interact.entity.combat.hit.hit
 import world.gregs.voidps.world.interact.entity.combat.weapon
-import world.gregs.voidps.world.interact.entity.player.combat.special.MAX_SPECIAL_ATTACK
-import world.gregs.voidps.world.interact.entity.player.combat.special.drainSpecialEnergy
 import world.gregs.voidps.world.interact.entity.player.combat.special.specialAttack
 
-fun isDragonClaws(weapon: Item?) = weapon != null && weapon.id == "dragon_claws"
-
-on<CombatSwing>({ !swung() && it.specialAttack && isDragonClaws(it.weapon) }, Priority.LOW) { player: Player ->
-    if (!drainSpecialEnergy(player, MAX_SPECIAL_ATTACK / 2)) {
-        delay = -1
-        return@on
-    }
-    player.setAnimation("slice_and_dice")
-    player.setGraphic("slice_and_dice")
+specialAttack("slice_and_dice") { player ->
+    player.setAnimation("${id}_special")
+    player.setGraphic("${id}_special")
 
     val weapon = player.weapon
     var (hit1, hit2, hit3, hit4) = intArrayOf(0, 0, 0, 0)
@@ -50,7 +37,6 @@ on<CombatSwing>({ !swung() && it.specialAttack && isDragonClaws(it.weapon) }, Pr
 
     player.hit(target, damage = hit1)
     player.hit(target, damage = hit2)
-    player.hit(target, damage = hit3, delay = 1)
-    player.hit(target, damage = hit4, delay = 1)
-    delay = 4
+    player.hit(target, damage = hit3, delay = 30)
+    player.hit(target, damage = hit4, delay = 30)
 }

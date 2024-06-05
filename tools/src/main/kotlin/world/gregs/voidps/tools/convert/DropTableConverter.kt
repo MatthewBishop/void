@@ -12,20 +12,26 @@ object DropTableConverter {
     @JvmStatic
     fun main(args: Array<String>) {
         val string = """
-{{DropsTableHead}}
-{{DropsLine|name=Key (elite)|quantity=1|rarity=Always|raritynotes=<ref group=d>The key is only dropped when completing an elite clue scroll asking you to kill the King Black Dragon.</ref>|gemw=No}}
-{{DropsLine|name=Kbd heads|quantity=1|rarity=1/128|gemw=No}}
-{{DropsLineClue|type=elite|rarity=1/450}}
-{{DropsLine|name=Prince black dragon|quantity=1|rarity=1/3000|gemw=No}}
-{{DropsLine|name=Draconic visage|quantity=1|rarity=1/5000}}
+===Catalytic runes===
+{{DropsTableHead|version=Low level}}
+{{DropsLine|name=Nature rune|quantity=4|rarity=7/128}}
+{{DropsLine|name=Chaos rune|quantity=5|rarity=6/128}}
+{{DropsLine|name=Mind rune|quantity=10|rarity=3/128}}
+{{DropsLine|name=Body rune|quantity=10|rarity=3/128}}
+{{DropsLine|name=Mind rune|quantity=18|rarity=2/128}}
+{{DropsLine|name=Body rune|quantity=18|rarity=2/128}}
+{{DropsLine|name=Blood rune|namenotes={{(m)}}|quantity=2|rarity=2/128}}
+{{DropsLine|name=Cosmic rune|quantity=2|rarity=1/128}}
+{{DropsLine|name=Law rune|quantity=3|rarity=1/128}}
 {{DropsTableBottom}}
         """.trimIndent()
         val all = mutableListOf<DropTable>()
         var builder = DropTable.Builder()
-        var name = ""
         for (line in string.lines()) {
             if (line.startsWith("=")) {
-                name = toIdentifier(line.replace("=", ""))
+                val name = toIdentifier(line.replace("=", ""))
+            } else if (line.startsWith("{{DropsLineClue|")) {
+                process(builder, line.replace("Clue|type=", "|name=").replace("|rarity=", " clue scroll|quantity=1|rarity="))
             } else if (line.startsWith("{{DropsLine|")) {
                 process(builder, line)
             } else if (line.startsWith("{{DropsTableBottom")) {
@@ -34,7 +40,11 @@ object DropTableConverter {
                 builder = DropTable.Builder()
             }
         }
-        println(mapper.writeToString(mapOf("drop_table" to combine(all)), writer))
+        val element = builder.build()
+        if (element.drops.isNotEmpty()) {
+            all.add(element)
+        }
+        println(Yaml().writeToString(mapOf("drop_table" to combine(all)), writer))
     }
 
     private fun combine(all: MutableList<DropTable>): DropTable {
@@ -63,6 +73,10 @@ object DropTableConverter {
     }
 
     private val writer = object : YamlWriterConfiguration() {
+        override fun explicit(list: List<*>, indent: Int, parentMap: String?): Boolean {
+            return false
+        }
+
         override fun write(value: Any?, indent: Int, parentMap: String?): Any? {
             return when (value) {
                 is ItemDrop -> {
@@ -98,7 +112,6 @@ object DropTableConverter {
             }
         }
     }
-    private val mapper = Yaml()
 
     fun process(builder: DropTable.Builder, string: String) {
         val parts = string.split("|", "=").drop(1)
@@ -135,13 +148,19 @@ object DropTableConverter {
             id = "${id}_noted"
         }
 
-        val (low, high) = if (quantity.contains("-")) {
-            quantity.split("-")
-        } else {
-            val amount = quantity.removeSuffix(" (noted)")
-            listOf(amount, amount)
-        }
         builder.withRoll(total.toInt())
-        builder.addDrop(ItemDrop(id, low.toInt()..high.toInt(), chance.toInt(), members))
+
+        if (quantity.contains("-")) {
+            val (low, high) = quantity.split("-")
+            builder.addDrop(ItemDrop(id, low.toInt()..high.toInt(), chance.toInt(), members))
+        } else if (quantity.contains(",")) {
+            val values = quantity.split(",").map { it.toInt() }
+            val low = values.min()
+            val high = values.max()
+            builder.addDrop(ItemDrop(id, low..high, chance.toInt(), members))
+        } else {
+            val amount = quantity.removeSuffix(" (noted)").toInt()
+            builder.addDrop(ItemDrop(id, amount..amount, chance.toInt(), members))
+        }
     }
 }

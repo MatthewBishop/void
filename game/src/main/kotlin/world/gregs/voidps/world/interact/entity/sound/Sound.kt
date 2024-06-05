@@ -6,9 +6,9 @@ import world.gregs.voidps.engine.data.definition.SoundDefinitions
 import world.gregs.voidps.engine.entity.character.Character
 import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.get
-import world.gregs.voidps.network.encode.playJingle
-import world.gregs.voidps.network.encode.playMIDI
-import world.gregs.voidps.network.encode.playSoundEffect
+import world.gregs.voidps.network.login.protocol.encode.playJingle
+import world.gregs.voidps.network.login.protocol.encode.playMIDI
+import world.gregs.voidps.network.login.protocol.encode.playSoundEffect
 
 fun Character.playSound(
     id: String,
@@ -25,7 +25,7 @@ fun Character.playSound(
 
 fun Player.playGlobalSound(
     id: String,
-    radius: Int = 10,
+    radius: Int = 5,
     delay: Int = 0,
     volume: Int = 255,
     speed: Int = 255,

@@ -4,13 +4,13 @@ import world.gregs.voidps.engine.entity.character.*
 import world.gregs.voidps.engine.entity.character.mode.PauseMode
 import world.gregs.voidps.engine.entity.character.move.tele
 import world.gregs.voidps.engine.entity.character.npc.NPCOption
-import world.gregs.voidps.engine.entity.character.player.Player
+import world.gregs.voidps.engine.entity.character.npc.npcOperate
 import world.gregs.voidps.engine.entity.obj.GameObjects
-import world.gregs.voidps.engine.event.on
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.inv.add
 import world.gregs.voidps.engine.inv.holdsItem
 import world.gregs.voidps.engine.inv.inventory
+import world.gregs.voidps.engine.inv.remove
 import world.gregs.voidps.engine.suspend.delay
 import world.gregs.voidps.type.Direction
 import world.gregs.voidps.type.Tile
@@ -20,31 +20,31 @@ import world.gregs.voidps.world.interact.dialogue.*
 import world.gregs.voidps.world.interact.dialogue.type.*
 import world.gregs.voidps.world.interact.entity.sound.playSound
 
-on<NPCOption>({ operate && target.id == "sir_prysin" && option == "Talk-to" }) { player: Player ->
+npcOperate("Talk-to", "sir_prysin") {
     when (player.quest("demon_slayer")) {
         "key_hunt" -> {
             if (!player["demon_slayer_silverlight", false]) {
                 keyProgressCheck()
-                return@on
+                return@npcOperate
             }
             npc<Talk>("Have you sorted that demon out yet?")
             if (player.ownsItem("silverlight")) {
                 player<Upset>("No, not yet.")
                 npc<Talk>("Well get on with it. He'll be pretty powerful when he gets to full strength.")
-                return@on
+                return@npcOperate
             }
             player<Upset>("Not yet. And I, um, lost Silverlight.")
             if (player.inventory.add("silverlight")) {
-                npc<Furious>("Yes, I know, someone returned it to me. Take better care of it this time.")
+                npc<Angry>("Yes, I know, someone returned it to me. Take better care of it this time.")
             } else {
-                npc<Furious>("Yes, I know, someone returned it to me. I'll keep it until you have free inventory space.")
+                npc<Angry>("Yes, I know, someone returned it to me. I'll keep it until you have free inventory space.")
             }
         }
         "completed" -> {
-            npc<Talking>("Hello. I've heard you stopped the demon, well done.")
-            player<Talking>("Yes, that's right.")
-            npc<Talking>("A good job well done then.")
-            player<Talking>("Thank you.")
+            npc<Neutral>("Hello. I've heard you stopped the demon, well done.")
+            player<Neutral>("Yes, that's right.")
+            npc<Neutral>("A good job well done then.")
+            player<Neutral>("Thank you.")
         }
         else -> {
             npc<Talk>("Hello, who are you?")
@@ -68,7 +68,7 @@ suspend fun PlayerChoice.arisWantsToTalk(): Unit = option(
             findSilverlight()
         }
         option("Yes, she is still alive.") {
-            player<Cheerful>("Yes she is still alive. She lives right outside the castle!")
+            player<Happy>("Yes she is still alive. She lives right outside the castle!")
             npc<Talk>("Oh, is that the same Aris? I would have thought she would have died by now. She was pretty old when I was a lad.")
             npc<Talk>("Anyway, what can I do for you?")
             findSilverlight()
@@ -101,7 +101,7 @@ suspend fun CharacterContext.problemIs() {
     npc<Talk>("Oh I do have it, but it is so powerful that the king made me put it in a special box which needs three different keys to open it. That way it won't fall into the wrong hands.")
     choice {
         option("So give me the keys!") {
-            player<Furious>("So give me the keys!")
+            player<Angry>("So give me the keys!")
             npc<Upset>("Um, well, it's not so easy.")
             theKeys()
         }
@@ -220,13 +220,9 @@ val objects: GameObjects by inject()
 val cupboardTile = Tile(3204, 3469)
 
 suspend fun NPCOption.giveSilverlight() {
-    player<Talking>("I've got all three keys!")
-    npc<Talking>("Excellent! Now I can give you Silverlight.")
-    player.inventory.transaction {
-        remove("silverlight_key_wizard_traiborn")
-        remove("silverlight_key_captain_rovin")
-        remove("silverlight_key_sir_prysin")
-    }
+    player<Neutral>("I've got all three keys!")
+    npc<Neutral>("Excellent! Now I can give you Silverlight.")
+    player.inventory.remove("silverlight_key_wizard_traiborn", "silverlight_key_captain_rovin", "silverlight_key_sir_prysin")
     val tile = Tile(3204, 3470)
     target.mode = PauseMode
     target.clearWatch()
@@ -239,19 +235,19 @@ suspend fun NPCOption.giveSilverlight() {
     target.face(cupboard)
     player.face(target)
     cupboard.animate("silverlight_sword_case_open")
-    target.setAnimation("silverlight_open_sword_case")
+    target.setAnimation("silverlight_unlock_sword_case")
     player.playSound("cupboard_open", delay = 19)
     delay(3)
     player.playSound("cupboard_open")
     delay(2)
     player.playSound("cupboard_open", delay = 10)
     delay(2)
-    target.setAnimation("silverlight_remove_sword")
+    target.setAnimation("silverlight_open_sword_case")
     cupboard.animate("silverlight_sword_removed")
     delay(8)
     player["demon_slayer_silverlight_case"] = "open"
     player.playSound("casket_open")
-    target.setAnimation("12628")
+    target.setAnimation("silverlight_remove_sword")
     delay()
     player["demon_slayer_sir_prysin_sword"] = true
     player["demon_slayer_silverlight_case"] = "empty"
@@ -263,9 +259,7 @@ suspend fun NPCOption.giveSilverlight() {
     delay()
     player["demon_slayer_silverlight"] = true
     player["demon_slayer_sir_prysin_sword"] = false
-    player.inventory.transaction {
-        add("silverlight")
-    }
+    player.inventory.add("silverlight")
     item("silverlight", 600, "Sir Prysin hands you a very shiny sword.")
     player.setAnimation("silverlight_showoff")
     player.setGraphic("silverlight_sparkle")
@@ -274,5 +268,5 @@ suspend fun NPCOption.giveSilverlight() {
     target.face(Direction.NONE)
     delay()
     npc<Talk>("That sword belonged to my great-grandfather. Make sure you treat it with respect!")
-    npc<Talking>("Now go kill that demon!")
+    npc<Neutral>("Now go kill that demon!")
 }

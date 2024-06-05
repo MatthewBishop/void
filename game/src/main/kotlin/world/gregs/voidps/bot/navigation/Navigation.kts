@@ -1,21 +1,29 @@
 package world.gregs.voidps.bot.navigation
 
-import world.gregs.voidps.bot.Bot
-import world.gregs.voidps.bot.onBot
+import world.gregs.voidps.bot.bot
+import world.gregs.voidps.bot.isBot
 import world.gregs.voidps.engine.entity.character.mode.EmptyMode
-import world.gregs.voidps.engine.entity.character.mode.move.Moved
 import world.gregs.voidps.engine.entity.character.mode.move.Movement
-import world.gregs.voidps.world.interact.entity.obj.Teleport
+import world.gregs.voidps.engine.entity.character.mode.move.move
+import world.gregs.voidps.engine.entity.character.player.Player
+import world.gregs.voidps.engine.event.onEvent
 import world.gregs.voidps.world.interact.entity.obj.door.DoorOpened
+import world.gregs.voidps.world.interact.entity.obj.teleport
 
-onBot<Moved>({ (it.player.mode is Movement && it.player.steps.size <= 1) || it.player.mode == EmptyMode }) { bot: Bot ->
-    bot.resume("move")
+move({ (player.mode is Movement && player.steps.size <= 1) || player.mode == EmptyMode }) { player ->
+    if (player.isBot) {
+        player.bot.resume("move")
+    }
 }
 
-onBot<DoorOpened> { bot: Bot ->
-    bot.resume("move")
+onEvent<Player, DoorOpened> { player ->
+    if (player.isBot) {
+        player.bot.resume("move")
+    }
 }
 
-onBot<Teleport> { bot: Bot ->
-    bot.resume("move")
+teleport {
+    if (player.isBot) {
+        player.bot.resume("move")
+    }
 }

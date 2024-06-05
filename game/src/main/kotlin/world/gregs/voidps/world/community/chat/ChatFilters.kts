@@ -2,12 +2,10 @@ package world.gregs.voidps.world.community.chat
 
 import world.gregs.voidps.engine.client.privateStatus
 import world.gregs.voidps.engine.client.publicStatus
-import world.gregs.voidps.engine.client.ui.InterfaceOption
-import world.gregs.voidps.engine.entity.Registered
-import world.gregs.voidps.engine.entity.character.player.Player
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.client.ui.interfaceOption
+import world.gregs.voidps.engine.entity.playerSpawn
 
-on<Registered> { player: Player ->
+playerSpawn { player ->
     player.privateStatus(player.privateStatus)
     player.publicStatus(player.publicStatus, player.tradeStatus)
     player.sendVariable("game_status")
@@ -15,7 +13,7 @@ on<Registered> { player: Player ->
     player.sendVariable("clan_status")
 }
 
-on<InterfaceOption>({ id == "filter_buttons" && component != "report" && component != "assist" && option != "View" }) { player: Player ->
+interfaceOption("View", id = "filter_buttons") {
     when (component) {
         "game", "clan" -> player["${component}_status"] = option.lowercase()
         "public" -> player.publicStatus = option.lowercase()

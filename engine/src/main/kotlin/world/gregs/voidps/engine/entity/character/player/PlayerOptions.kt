@@ -1,6 +1,6 @@
 package world.gregs.voidps.engine.entity.character.player
 
-import world.gregs.voidps.network.encode.contextMenuOption
+import world.gregs.voidps.network.login.protocol.encode.contextMenuOption
 
 class PlayerOptions(
     private val player: Player
@@ -35,7 +35,7 @@ class PlayerOptions(
     }
 
     fun get(slot: Int): String {
-        return options[slot]
+        return options.getOrNull(slot) ?: EMPTY_OPTION
     }
 
     fun has(slot: Int): Boolean {

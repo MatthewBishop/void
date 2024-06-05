@@ -1,7 +1,9 @@
 package world.gregs.voidps.world.interact.entity.combat
 
+import world.gregs.voidps.engine.client.ui.chat.toInt
 import world.gregs.voidps.engine.client.variable.hasClock
 import world.gregs.voidps.engine.client.variable.start
+import world.gregs.voidps.engine.data.definition.WeaponStyleDefinitions
 import world.gregs.voidps.engine.entity.character.Character
 import world.gregs.voidps.engine.entity.character.npc.NPC
 import world.gregs.voidps.engine.entity.character.player.Player
@@ -9,12 +11,14 @@ import world.gregs.voidps.engine.entity.character.player.equip.equipped
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.distanceTo
 import world.gregs.voidps.engine.entity.item.Item
-import world.gregs.voidps.network.visual.update.player.EquipSlot
+import world.gregs.voidps.engine.get
+import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
 import world.gregs.voidps.type.random
 import world.gregs.voidps.world.interact.entity.player.combat.magic.spell.spell
 import world.gregs.voidps.world.interact.entity.player.combat.prayer.Prayer
 import world.gregs.voidps.world.interact.entity.player.combat.range.Ammo
 import world.gregs.voidps.world.interact.entity.player.combat.range.ammo
+import world.gregs.voidps.world.interact.entity.player.combat.special.specialAttack
 import kotlin.random.nextInt
 
 object Weapon {
@@ -31,7 +35,7 @@ object Weapon {
         if (type == "melee" && source.contains("veracs_set_effect") && random.nextInt(4) == 0) {
             target.start("veracs_effect", 1)
             return true
-        } else if(weapon.id.startsWith("bone_dagger")) {
+        } else if (weapon.id.startsWith("bone_dagger")) {
             val last = target.attackers.lastOrNull()
             return last != null && last != source
         } else if (type == "magic" && special && weapon.id == "korasis_sword") {
@@ -77,26 +81,26 @@ object Weapon {
 
     private fun isOutlier(special: Boolean, id: String): Boolean = (special && id.startsWith("magic") || id == "seercull" || id == "rune_thrownaxe") || id == "ogre_bow"
 
-    fun isBowOrCrossbow(item: Item) = item.id.endsWith("bow") || item.id == "seercull" || item.id.endsWith("longbow_sighted")
-
     fun type(character: Character, weapon: Item = character.weapon): String {
         if (character.spell.isNotBlank()) {
             return "magic"
         }
-        return when (weapon.def["weapon_style", 0]) {
-            13, 16, 17, 18, 19 -> "range"
-            20 -> if (character.attackType == "aim_and_fire") "range" else "melee"
-            21 -> when (character.attackType) {
-                "flare" -> "range"
+        val definitions = get<WeaponStyleDefinitions>()
+        val style = if (character is NPC) definitions.get(character.def["weapon_style", "unarmed"]) else definitions.get(weapon.def["weapon_style", 0])
+        return when (style.stringId) {
+            "pie", "bow", "crossbow", "thrown", "chinchompa", "sling" -> "range"
+            "fixed_device" -> if (character.attackType == "aim_and_fire") "range" else "melee"
+            "salamander" -> when (character.attackType) {
                 "blaze" -> "blaze"
-                else -> "melee"
+                "scorch" -> "scorch"
+                else -> "range"
             }
             else -> "melee"
         }
     }
 
     fun strengthBonus(source: Character, type: String, weapon: Item?) = when {
-        type == "blaze" -> weapon?.def?.getOrNull("magic_strength") ?: 0
+        type == "blaze" -> weapon?.def?.getOrNull<Double>("magic_strength")?.toInt() ?: 0
         // Is thrown or no ammo required
         type == "range" && source is Player && weapon != null && (weapon.id == source.ammo || !Ammo.required(weapon)) -> weapon.def["ranged_strength", 0]
         else -> source[if (type == "range") "ranged_strength" else "strength", 0]
@@ -170,6 +174,14 @@ val Character.fightStyle: String
 var Character.weapon: Item
     get() = get("weapon", Item.EMPTY)
     set(value) = set("weapon", value)
+
+val Character.attackSpeed: Int
+    get() = when {
+        this is NPC -> def["attack_speed", 4]
+        fightStyle == "magic" -> 5
+        this is Player && specialAttack && weapon.id.startsWith("granite_maul") -> 1
+        else -> weapon.def["attack_speed", 4] - (attackType == "rapid" || attackType == "medium_fuse").toInt()
+    }
 
 var Character.attackRange: Int
     get() = get("attack_range", if (this is NPC) def["attack_range", 1] else 1)

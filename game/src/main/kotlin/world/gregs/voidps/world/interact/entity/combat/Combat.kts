@@ -1,5 +1,6 @@
 package world.gregs.voidps.world.interact.entity.combat
 
+import world.gregs.voidps.engine.client.message
 import world.gregs.voidps.engine.client.ui.dialogue
 import world.gregs.voidps.engine.client.variable.hasClock
 import world.gregs.voidps.engine.client.variable.start
@@ -7,27 +8,30 @@ import world.gregs.voidps.engine.client.variable.stop
 import world.gregs.voidps.engine.entity.character.Character
 import world.gregs.voidps.engine.entity.character.clearWatch
 import world.gregs.voidps.engine.entity.character.mode.EmptyMode
-import world.gregs.voidps.engine.entity.character.mode.combat.CombatMovement
-import world.gregs.voidps.engine.entity.character.mode.combat.CombatReached
-import world.gregs.voidps.engine.entity.character.mode.combat.CombatStop
+import world.gregs.voidps.engine.entity.character.mode.combat.*
 import world.gregs.voidps.engine.entity.character.mode.interact.Interact
+import world.gregs.voidps.engine.entity.character.npc.NPC
 import world.gregs.voidps.engine.entity.character.player.Player
-import world.gregs.voidps.engine.event.on
-import world.gregs.voidps.world.interact.entity.death.Death
+import world.gregs.voidps.engine.entity.character.player.skill.Skill
+import world.gregs.voidps.engine.entity.characterDespawn
+import world.gregs.voidps.engine.event.onEvent
+import world.gregs.voidps.world.interact.entity.combat.hit.characterCombatHit
+import world.gregs.voidps.world.interact.entity.death.characterDeath
+import world.gregs.voidps.world.interact.entity.player.combat.special.specialAttack
 
 /**
  * When triggered via [Interact] replace the Interaction with [CombatInteraction]
  * to allow movement & [Interact] to complete and start [combat] on the same tick
  * After [Interact] is complete switch to using [CombatMovement]
  */
-on<CombatInteraction> { character: Character ->
+onEvent<CombatInteraction> {
     combat(character, target)
 }
 
 /**
  * [CombatReached] is emitted by [CombatMovement] every tick the [Character] is within range of the target
  */
-on<CombatReached> { character: Character ->
+onEvent<Character, CombatReached> { character ->
     combat(character, target)
 }
 
@@ -45,43 +49,97 @@ fun combat(character: Character, target: Character) {
         return
     }
     val attackRange = character.attackRange
-    if (!movement.arrived(if (attackRange == 1) -1 else attackRange)) {
+    if (!movement.arrived(if (attackRange == 1 && character.weapon.def["weapon_type", ""] != "salamander") -1 else attackRange)) {
         return
     }
-    if (character.hasClock("hit_delay")) {
+    if (character.hasClock("action_delay")) {
         return
     }
-    val swing = CombatSwing(target)
-    character.events.emit(swing)
-    val nextDelay = swing.delay
-    if (nextDelay == null || nextDelay < 0) {
+    val prepare = CombatPrepare(target)
+    character.emit(prepare)
+    if (prepare.cancelled) {
         character.mode = EmptyMode
         return
     }
-    character.start("hit_delay", nextDelay)
+    if (character["debug", false] || target["debug", false]) {
+        val player = if (character["debug", false] && character is Player) character else target as Player
+        player.message("---- Swing (${character.identifier}) -> (${target.identifier}) -----")
+    }
+    if (!target.hasClock("in_combat")) {
+        character.emit(CombatStart(target))
+    }
+    target.start("in_combat", 8)
+    val swing = CombatSwing(target)
+    character.emit(swing)
+    (character as? Player)?.specialAttack = false
+    var nextDelay = character.attackSpeed
+    if (character.hasClock("miasmic") && (character.fightStyle == "range" || character.fightStyle == "melee")) {
+        nextDelay *= 2
+    }
+    character.start("action_delay", nextDelay)
 }
 
-on<CombatStop> { character: Character ->
+characterDespawn { character ->
+    for (attacker in character.attackers) {
+        attacker.mode = EmptyMode
+    }
+}
+
+characterCombatStart { character ->
+    if (target.inSingleCombat) {
+        target.attackers.clear()
+    }
+    target.attackers.add(character)
+    retaliate(target, character)
+}
+
+characterCombatStop { character ->
     if (target.dead) {
         character["face_entity"] = target
     } else {
         character.clearWatch()
     }
+    character.target?.attackers?.remove(character)
     character.target = null
 }
 
-on<CombatSwing> { character: Character ->
-    target.start("under_attack", 16)
-    if (target.inSingleCombat) {
-        target.attackers.clear()
-    }
-    target.attackers.add(character)
-}
-
-on<Death> { character: Character ->
+characterDeath { character ->
+    character.stop("in_combat")
     for (attacker in character.attackers) {
         if (attacker.target == character) {
-            attacker.stop("under_attack")
+            attacker.stop("in_combat")
         }
     }
+}
+
+characterCombatHit { character ->
+    if (source == character || type == "poison" || type == "disease" || type == "healed") {
+        return@characterCombatHit
+    }
+    if (character.mode !is CombatMovement) {
+        retaliate(character, source)
+    }
+}
+
+fun retaliates(character: Character) = if (character is NPC) {
+    character.def["retaliates", true]
+} else {
+    character["auto_retaliate", false]
+}
+
+fun retaliate(character: Character, source: Character) {
+    if (character.dead || character.levels.get(Skill.Constitution) <= 0 || !retaliates(character)) {
+        return
+    }
+    if (character is Player && character.mode != EmptyMode) {
+        return
+    }
+    if (character is NPC && character.mode is CombatMovement && character.hasClock("in_combat")) {
+        return
+    }
+    character.mode = CombatMovement(character, source)
+    character.target = source
+    val delay = character.attackSpeed / 2
+    character.start("action_delay", delay)
+    character.start("in_combat", delay + 8)
 }

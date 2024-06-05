@@ -3,12 +3,11 @@ package world.gregs.voidps.engine.inv.transact
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
-import world.gregs.voidps.cache.definition.data.ItemDefinition
+import world.gregs.voidps.engine.entity.item.Item
+import world.gregs.voidps.engine.event.EventDispatcher
 import world.gregs.voidps.engine.inv.Inventory
 import world.gregs.voidps.engine.inv.ItemChanged
 import world.gregs.voidps.engine.inv.transact.operation.TransactionOperationTest
-import world.gregs.voidps.engine.entity.item.Item
-import world.gregs.voidps.engine.event.Events
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -18,10 +17,10 @@ class TransactionTest : TransactionOperationTest() {
     @Test
     fun `Set tracks changes`() {
         val inventory = Inventory.debug(1)
-        val events: Events = mockk(relaxed = true)
+        val events: EventDispatcher = mockk(relaxed = true)
         val transaction = inventory.transaction
         transaction.changes.bind(events)
-        transaction.set(0, Item("item", 1, def = ItemDefinition.EMPTY))
+        transaction.set(0, Item("item", 1))
         transaction.changes.send()
         verify { events.emit(any<ItemChanged>()) }
     }
@@ -38,6 +37,7 @@ class TransactionTest : TransactionOperationTest() {
         transaction.link(inventory2)
         assertTrue(transaction.linked(inventory2.transaction))
         assertTrue(inventory2.transaction.state.hasSaved())
+        assertFalse(transaction.failed)
         assertTrue(transaction.commit())
     }
 
@@ -49,6 +49,7 @@ class TransactionTest : TransactionOperationTest() {
         transaction.start()
         val transaction2 = transaction.link(inventory2)
         transaction2.error = TransactionError.Invalid
+        assertTrue(transaction.failed)
         assertFalse(transaction.commit())
         assertEquals(TransactionError.Invalid, transaction.error)
     }

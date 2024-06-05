@@ -7,6 +7,9 @@ import kotlinx.coroutines.isActive
 import world.gregs.voidps.cache.Cache
 import world.gregs.voidps.network.file.FileProvider
 import world.gregs.voidps.network.file.prefetchKeys
+import world.gregs.voidps.network.login.protocol.readMedium
+import world.gregs.voidps.network.login.protocol.readUByte
+import world.gregs.voidps.network.login.protocol.readUMedium
 import java.util.*
 
 /**
@@ -51,7 +54,7 @@ class FileServer(
     }
 
     /**
-     * If the client is up-to-date and in the correct state send it the [prefetchKeys] list so it knows what indices are available to request
+     * If the client is up-to-date and in the correct state send it the [prefetchKeys] list, so it knows what indices are available to request
      */
     private suspend fun synchronise(read: ByteReadChannel, write: ByteWriteChannel) {
         val revision = read.readInt()
@@ -81,6 +84,7 @@ class FileServer(
                     Request.ENCRYPTION_KEY_UPDATE -> read.readUByte()
                     else -> {
                         logger.warn { "Unknown file-server request $opcode." }
+                        read.cancel()
                         write.close()
                     }
                 }
@@ -89,8 +93,6 @@ class FileServer(
             logger.trace { "Client disconnected: ${hostname}." }
         }
     }
-
-
 
     /**
      * Confirm a session value send by the client is as the server [expected]
@@ -112,15 +114,19 @@ class FileServer(
         fun load(cache: Cache, properties: Properties): Server {
             val fileServer = properties.getProperty("fileServer").toBoolean()
             if (!fileServer) {
-                return object : Server {
-                    override suspend fun connect(read: ByteReadChannel, write: ByteWriteChannel, hostname: String) {
-                    }
-                }
+                return offlineFileServer()
             }
             val fileProvider: FileProvider = FileProvider.load(cache, properties)
             val revision = properties.getProperty("revision").toInt()
             val prefetchKeys = prefetchKeys(cache, properties)
             return FileServer(revision, prefetchKeys, fileProvider)
+        }
+
+        private fun offlineFileServer() = object : Server {
+            override suspend fun connect(read: ByteReadChannel, write: ByteWriteChannel, hostname: String) {
+                write.writeByte(Response.LOGIN_SERVER_OFFLINE)
+                write.close()
+            }
         }
     }
 }

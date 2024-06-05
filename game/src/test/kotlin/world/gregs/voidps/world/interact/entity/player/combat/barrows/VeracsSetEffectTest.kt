@@ -8,7 +8,7 @@ import world.gregs.voidps.engine.entity.item.Item
 import world.gregs.voidps.engine.inv.Inventory
 import world.gregs.voidps.engine.inv.clear
 import world.gregs.voidps.engine.inv.equipment
-import world.gregs.voidps.network.visual.update.player.EquipSlot
+import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
 import world.gregs.voidps.world.interact.entity.combat.hit.Hit
 import world.gregs.voidps.world.interact.entity.combat.hit.hit
 import world.gregs.voidps.world.interact.entity.player.combat.CombatFormulaTest
@@ -24,6 +24,7 @@ internal class VeracsSetEffectTest : CombatFormulaTest() {
 
         val chance = Hit.chance(player, target, "magic", Item("veracs_flail"), false)
         player.hit(target, Item("veracs_flail"), "melee", damage = 10)
+        tick()
 
         assertNotEquals(1.0, chance)
         assertEquals(980, target.levels.get(Skill.Constitution))
@@ -37,7 +38,7 @@ internal class VeracsSetEffectTest : CombatFormulaTest() {
 
         val chance = Hit.chance(player, target, "magic", Item("veracs_flail"), false)
         player.hit(target, Item("veracs_flail"), "magic", damage = 10)
-        tick(2)
+        tick(3)
 
         assertNotEquals(1.0, chance)
         assertEquals(980, target.levels.get(Skill.Constitution))

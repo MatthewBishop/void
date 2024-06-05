@@ -1,20 +1,20 @@
 package world.gregs.voidps.world.map.sophanem
 
 import world.gregs.voidps.engine.client.message
-import world.gregs.voidps.engine.client.ui.interact.ItemOnNPC
+import world.gregs.voidps.engine.client.ui.interact.itemOnNPCOperate
 import world.gregs.voidps.engine.entity.character.CharacterContext
-import world.gregs.voidps.engine.entity.character.npc.NPCOption
-import world.gregs.voidps.engine.entity.character.player.Player
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.entity.character.npc.npcOperate
+import world.gregs.voidps.engine.inv.Inventory
 import world.gregs.voidps.engine.inv.holdsItem
 import world.gregs.voidps.engine.inv.inventory
 import world.gregs.voidps.engine.inv.replace
-import world.gregs.voidps.engine.inv.transact.Transaction
 import world.gregs.voidps.engine.inv.transact.TransactionError
-import world.gregs.voidps.world.interact.dialogue.Happy
+import world.gregs.voidps.engine.inv.transact.operation.RemoveItemLimit.removeToLimit
+import world.gregs.voidps.engine.inv.transact.operation.ReplaceItem.replace
+import world.gregs.voidps.world.interact.dialogue.Pleased
+import world.gregs.voidps.world.interact.dialogue.Quiz
 import world.gregs.voidps.world.interact.dialogue.Talk
 import world.gregs.voidps.world.interact.dialogue.Uncertain
-import world.gregs.voidps.world.interact.dialogue.Unsure
 import world.gregs.voidps.world.interact.dialogue.type.choice
 import world.gregs.voidps.world.interact.dialogue.type.npc
 import world.gregs.voidps.world.interact.dialogue.type.player
@@ -24,30 +24,30 @@ val ivory = listOf("ivory_comb", "pottery_scarab", "pottery_statuette")
 val stone = listOf("stone_seal", "stone_scarab", "stone_statuette")
 val gold = listOf("gold_seal", "gold_scarab", "gold_statuette")
 
-on<NPCOption>({ operate && target.id == "guardian_mummy" && option == "Talk-to" }) { player: Player ->
+npcOperate("Talk-to", "guardian_mummy") {
     if (player.holdsItem("pharaohs_sceptre")) {
         sceptreRecharging()
-        return@on
+        return@npcOperate
     }
     notAnother()
 }
 
-on<NPCOption>({ operate && target.id == "guardian_mummy" && option == "Start-activity" }) { player: Player ->
-    player<Happy>("I know what I'm doing - let's get on with it.")
+npcOperate("Start-activity", "guardian_mummy") {
+    player<Pleased>("I know what I'm doing - let's get on with it.")
     iKnowWhatImDoing()
 }
 
-on<ItemOnNPC>({ operate && target.id == "guardian_mummy" && item.id.startsWith("pharaohs_sceptre_") }) { _: Player ->
+itemOnNPCOperate("pharaohs_sceptre_*", "guardian_mummy") {
     discharge(itemSlot)
 }
 
-on<ItemOnNPC>({ operate && target.id == "guardian_mummy" && item.id == "pharaohs_sceptre" }) { player: Player ->
+itemOnNPCOperate("pharaohs_sceptre", "guardian_mummy") {
     sceptreRecharging()
 }
 
 suspend fun CharacterContext.notAnother() {
     npc<Talk>("*sigh* Not another one.")
-    player<Unsure>("Another what?")
+    player<Quiz>("Another what?")
     npc<Talk>("Another 'archaeologist'.")
     npc<Talk>("I'm not going to let you plunder my master's tomb you know.")
     player<Talk>("That's a shame, have you got anything else I could do while I'm here?")
@@ -64,7 +64,7 @@ suspend fun CharacterContext.playPyramidPlunder() {
         option<Talk>("Not right now") {
             npc<Talk>("Well, get out of here then.")
         }
-        option<Happy>("I know what I'm doing let's get on with it.") {
+        option<Pleased>("I know what I'm doing let's get on with it.") {
             iKnowWhatImDoing()
         }
         option("I want to charge or remove charges from my sceptre.") {
@@ -89,21 +89,21 @@ suspend fun CharacterContext.sceptreRecharging() {
     npc<Talk>("*sigh* Oh alright. But only if the sceptre is fully empty, I'm not wasting the King's magic...")
     choice("Recharge the sceptre with...") {
         option("Gold artefacts?") {
-            if (player.inventory.transaction { remove(6, gold); replace("pharaohs_sceptre", "pharaohs_sceptre_3") }) {
+            if (player.inventory.chargeSceptre(6, gold)) {
                 statement("You recharge your sceptre with gold artefacts.")
             } else {
                 npc<Talk>("You need to have 6 gold artefacts to recharge your sceptre.")
             }
         }
         option("Stone artefacts?") {
-            if (player.inventory.transaction { remove(12, stone); replace("pharaohs_sceptre", "pharaohs_sceptre_3") }) {
+            if (player.inventory.chargeSceptre(12, stone)) {
                 statement("You recharge your sceptre with stone artefacts.")
             } else {
                 npc<Talk>("You need to have 12 stone artefacts to recharge your sceptre.")
             }
         }
         option("Pottery and Ivory artefacts?") {
-            if (player.inventory.transaction { remove(24, ivory); replace("pharaohs_sceptre", "pharaohs_sceptre_3") }) {
+            if (player.inventory.chargeSceptre(24, ivory)) {
                 statement("You recharge your sceptre with stone artefacts.")
             } else {
                 npc<Talk>("You need to have 24 pottery or ivory artefacts to recharge your sceptre.")
@@ -120,8 +120,8 @@ suspend fun CharacterContext.sceptreDischarging() {
     if (count < 0) {
         player<Talk>("I want to charge my sceptre.")
         npc<Uncertain>("What sceptre?")
-        player<Unsure>("Er... I don't know.")
-        npc<Unsure>("Right...")
+        player<Quiz>("Er... I don't know.")
+        npc<Quiz>("Right...")
         return
     }
     if (count == 1) {
@@ -146,22 +146,23 @@ suspend fun CharacterContext.sceptreDischarging() {
     }
 }
 
-fun Transaction.remove(amount: Int, items: List<String>) {
-    var remaining = amount
-    for (item in items) {
-        if (remaining <= 0) {
-            break
+fun Inventory.chargeSceptre(amount: Int, items: List<String>): Boolean {
+    return transaction {
+        var remaining = amount
+        for (item in items) {
+            if (remaining <= 0) {
+                break
+            }
+            remaining -= removeToLimit(item, remaining)
         }
-        remaining -= removeToLimit(item, remaining)
+        if (remaining > 0) {
+            error = TransactionError.Deficient(remaining)
+        }
+        replace("pharaohs_sceptre", "pharaohs_sceptre_3")
     }
-    if (remaining > 0) {
-        error = TransactionError.Deficient(remaining)
-    }
-    replace("pharaohs_sceptre", "pharaohs_sceptre_3")
 }
 
-
-on<ItemOnNPC>({ operate && target.id == "guardian_mummy" && item.id != "pharaohs_sceptre" }) { player: Player ->
+itemOnNPCOperate("*", "guardian_mummy") {
     player.message("The Mummy is not interested in this")
 }
 

@@ -10,12 +10,13 @@ import world.gregs.voidps.type.Tile
 import world.gregs.yaml.read.YamlReaderConfiguration
 
 internal class PlayerYamlReaderConfig(
-    private val itemDefinitions: ItemDefinitions
+    private val itemDefinitions: ItemDefinitions,
+    private val experienceRate: Double
 ) : YamlReaderConfiguration() {
     override fun add(list: MutableList<Any>, value: Any, parentMap: String?) {
         if (value is Map<*, *> && value.containsKey("id")) {
             val id = value["id"] as String
-            val item = Item(id, value["amount"] as? Int ?: 0, itemDefinitions.get(id))
+            val item = Item(id, value["amount"] as? Int ?: 0)
             super.add(list, item, parentMap)
         } else if (value is Map<*, *> && value.isEmpty()) {
             super.add(list, Item.EMPTY, parentMap)
@@ -35,7 +36,8 @@ internal class PlayerYamlReaderConfig(
             value as Map<String, Any>
             val exp = Experience(
                 experience = (value["experience"] as List<Double>).toDoubleArray(),
-                blocked = (value["blocked"] as List<Skill>).toMutableSet()
+                blocked = (value["blocked"] as List<Skill>).toMutableSet(),
+                rate = experienceRate
             )
             super.set(map, key, exp, indent, parentMap)
         } else if (key == "levels") {
@@ -46,7 +48,7 @@ internal class PlayerYamlReaderConfig(
             super.set(map, key, value.toIntArray(), indent, parentMap)
         } else if (key == "friends") {
             value as Map<String, Any>
-            super.set(map, key, value.mapValues { ClanRank.of(it.value as String) }, indent, parentMap)
+            super.set(map, key, value.mapValues { ClanRank.valueOf(it.value as String) }, indent, parentMap)
         } else {
             super.set(map, key, value, indent, parentMap)
         }

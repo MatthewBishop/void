@@ -2,6 +2,7 @@ package world.gregs.voidps.type.area
 
 import world.gregs.voidps.type.Area
 import world.gregs.voidps.type.Tile
+import kotlin.math.abs
 
 open class Polygon(
     val xPoints: IntArray,
@@ -24,90 +25,10 @@ open class Polygon(
     override fun toZones(level: Int) = bounds.toZones(level)
 
     override fun contains(x: Int, y: Int, level: Int): Boolean {
-        val pointCount = xPoints.size
         if (xPoints.size <= 2 || !bounds.contains(x, y, level)) {
             return false
         }
-        var hits = 0
-
-        var lastx: Int = xPoints[pointCount - 1]
-        var lasty: Int = yPoints[pointCount - 1]
-        var curx: Int
-        var cury: Int
-
-        // Walk the edges of the polygon
-        var i = 0
-        while (i < pointCount) {
-            curx = xPoints[i]
-            cury = yPoints[i]
-            if (cury == lasty) {
-                lastx = curx
-                lasty = cury
-                i++
-                continue
-            }
-            var leftx: Int
-            if (curx < lastx) {
-                if (x >= lastx) {
-                    lastx = curx
-                    lasty = cury
-                    i++
-                    continue
-                }
-                leftx = curx
-            } else {
-                if (x >= curx) {
-                    lastx = curx
-                    lasty = cury
-                    i++
-                    continue
-                }
-                leftx = lastx
-            }
-            var test1: Int
-            var test2: Int
-            if (cury < lasty) {
-                if (y < cury || y >= lasty) {
-                    lastx = curx
-                    lasty = cury
-                    i++
-                    continue
-                }
-                if (x < leftx) {
-                    hits++
-                    lastx = curx
-                    lasty = cury
-                    i++
-                    continue
-                }
-                test1 = x - curx
-                test2 = y - cury
-            } else {
-                if (y < lasty || y >= cury) {
-                    lastx = curx
-                    lasty = cury
-                    i++
-                    continue
-                }
-                if (x < leftx) {
-                    hits++
-                    lastx = curx
-                    lasty = cury
-                    i++
-                    continue
-                }
-                test1 = x - lastx
-                test2 = y - lasty
-            }
-            if (test1 < test2 / (lasty - cury) * (lastx - curx)) {
-                hits++
-            }
-            lastx = curx
-            lasty = cury
-            i++
-        }
-
-        return hits and 1 != 0
+        return pointInPolygon(x, y, xPoints, yPoints)
     }
 
     override fun random(): Tile {
@@ -150,5 +71,42 @@ open class Polygon(
                 return next
             }
         }
+    }
+
+    companion object {
+
+        /**
+         * Checks if a point [x], [y] is inside (inclusive) or on the edge of the polygon [xPoints], [yPoints]
+         * See: https://wrfranklin.org/Research/Short_Notes/pnpoly.html
+         * See: https://stackoverflow.com/a/11908158/2871826
+         */
+        fun pointInPolygon(x: Int, y: Int, xPoints: IntArray, yPoints: IntArray): Boolean {
+            var j: Int
+            var inside = false
+            var i = 0
+            j = xPoints.size - 1
+            while (i < xPoints.size) {
+                val dxl = xPoints[j] - xPoints[i]
+                val dyl = yPoints[j] - yPoints[i]
+                // Check if inside polygon
+                if ((yPoints[i] > y) != (yPoints[j] > y) && (x < dxl * (y - yPoints[i]) / dyl + xPoints[i])) {
+                    inside = !inside
+                }
+                // Check if crosses edge
+                val cross = (x - xPoints[i]) * dyl - (y - yPoints[i]) * dxl
+                if (cross == 0) {
+                    if (abs(dxl) >= abs(dyl)) {
+                        if (x in xPoints[if (dxl > 0) i else j]..xPoints[if (dxl > 0) j else i]) {
+                            return true
+                        }
+                    } else if (y in yPoints[if (dyl > 0) i else j]..yPoints[if (dyl > 0) j else i]) {
+                        return true
+                    }
+                }
+                j = i++
+            }
+            return inside
+        }
+
     }
 }

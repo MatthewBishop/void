@@ -12,27 +12,27 @@ import world.gregs.voidps.engine.client.ui.chat.toIntRange
 import world.gregs.voidps.engine.data.definition.AreaDefinition
 import world.gregs.voidps.engine.data.definition.AreaDefinitions
 import world.gregs.voidps.engine.data.definition.data.Rock
-import world.gregs.voidps.engine.entity.Registered
-import world.gregs.voidps.engine.entity.World
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.character.player.skill.level.Level.has
 import world.gregs.voidps.engine.entity.distanceTo
 import world.gregs.voidps.engine.entity.obj.GameObject
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.entity.worldSpawn
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.inv.inventory
-import world.gregs.voidps.engine.timer.TimerStop
-import world.gregs.voidps.network.instruct.InteractObject
+import world.gregs.voidps.engine.timer.timerStop
+import world.gregs.voidps.network.client.instruction.InteractObject
 import world.gregs.voidps.world.interact.entity.death.weightedSample
 
 val areas: AreaDefinitions by inject()
 val tasks: TaskManager by inject()
 
-onBot<TimerStop>({ timer == "mining" }) { bot: Bot ->
-    bot.resume(timer)
+timerStop("mining") { player ->
+    if (player.isBot) {
+        player.bot.resume(timer)
+    }
 }
 
-on<World, Registered> {
+worldSpawn {
     for (area in areas.getTagged("mine")) {
         val spaces: Int = area["spaces", 1]
         val type = area["rocks", emptyList<String>()].firstOrNull() ?: continue
@@ -40,15 +40,15 @@ on<World, Registered> {
         val task = Task(
             name = "mine ${type.plural(2)} at ${area.name}".toLowerSpaceCase(),
             block = {
-                while (player.levels.getMax(Skill.Mining) < range.last + 1) {
-                    mineRocks(area, type)
+                while (levels.getMax(Skill.Mining) < range.last + 1) {
+                    bot.mineRocks(area, type)
                 }
             },
             area = area.area,
             spaces = spaces,
             requirements = listOf(
-                { player.levels.getMax(Skill.Mining) in range },
-                { hasExactGear(Skill.Woodcutting) || hasCoins(1000) }
+                { levels.getMax(Skill.Mining) in range },
+                { bot.hasExactGear(Skill.Woodcutting) || bot.hasCoins(1000) }
             )
         )
         tasks.register(task)
@@ -69,7 +69,7 @@ suspend fun Bot.mineRocks(map: AreaDefinition, type: String) {
             }
             continue
         }
-        player.instructions.emit(InteractObject(rock.def.id, rock.tile.x, rock.tile.y, 1))
+        player.instructions.send(InteractObject(rock.def.id, rock.tile.x, rock.tile.y, 1))
         await("mining")
     }
 }

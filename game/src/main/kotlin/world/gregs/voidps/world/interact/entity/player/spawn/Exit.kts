@@ -1,20 +1,22 @@
 package world.gregs.voidps.world.interact.entity.player.spawn
 
 import world.gregs.voidps.engine.client.message
-import world.gregs.voidps.engine.client.ui.InterfaceOption
+import world.gregs.voidps.engine.client.ui.interfaceOption
 import world.gregs.voidps.engine.client.ui.open
-import world.gregs.voidps.engine.entity.character.player.Player
-import world.gregs.voidps.engine.event.on
-import world.gregs.voidps.world.interact.entity.combat.underAttack
+import world.gregs.voidps.engine.data.AccountManager
+import world.gregs.voidps.engine.inject
+import world.gregs.voidps.world.interact.entity.combat.inCombat
 
-on<InterfaceOption>({ id == it.gameFrame.name && component == "logout" && option == "Exit" }) { player: Player ->
+interfaceOption("Exit", "logout", "toplevel*") {
     player.open("logout")
 }
 
-on<InterfaceOption>({ id == "logout" && (component == "lobby" || component == "login") && option == "*" }) { player: Player ->
-    if (player.underAttack) {
+val accounts: AccountManager by inject()
+
+interfaceOption(id = "logout") {
+    if (player.inCombat) {
         player.message("You can't log out until 8 seconds after the end of combat.")
-        return@on
+        return@interfaceOption
     }
-    player.logout(true)
+    accounts.logout(player, true)
 }

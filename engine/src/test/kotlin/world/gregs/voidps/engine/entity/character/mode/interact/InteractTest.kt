@@ -28,12 +28,12 @@ import world.gregs.voidps.engine.entity.character.npc.NPC
 import world.gregs.voidps.engine.entity.character.npc.NPCOption
 import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.player.equip.BodyParts
-import world.gregs.voidps.engine.event.EventHandler
+import world.gregs.voidps.engine.event.Events
 import world.gregs.voidps.engine.map.collision.Collisions
 import world.gregs.voidps.engine.script.KoinMock
 import world.gregs.voidps.engine.suspend.TickSuspension
-import world.gregs.voidps.network.visual.NPCVisuals
-import world.gregs.voidps.network.visual.PlayerVisuals
+import world.gregs.voidps.network.login.protocol.visual.NPCVisuals
+import world.gregs.voidps.network.login.protocol.visual.PlayerVisuals
 import world.gregs.voidps.type.Tile
 import world.gregs.voidps.type.Zone
 import kotlin.test.assertEquals
@@ -91,26 +91,23 @@ internal class InteractTest : KoinMock() {
         interaction = NPCOption(player, target, NPCDefinition.EMPTY, "interact")
         interact = Interact(player, target, interaction)
         player.mode = interact
-        val handlers = mutableListOf<EventHandler>()
+        Events.events.clear()
         if (operate) {
-            handlers.add(EventHandler(NPCOption::class, { (this as NPCOption).operate }, block = {
+            Events.handle<Player, NPCOption>("player_operate_npc", "*", "*") {
                 if (suspend) {
-                    this as NPCOption
                     TickSuspension(2)
                 }
                 operated = true
-            }))
+            }
         }
         if (approach) {
-            handlers.add(EventHandler(NPCOption::class, { (this as NPCOption).approach }, block = {
+            Events.handle<Player, NPCOption>("player_approach_npc", "*", "*") {
                 if (suspend) {
-                    this as NPCOption
                     TickSuspension(2)
                 }
                 approached = true
-            }))
+            }
         }
-        player.events.set(mapOf(NPCOption::class to handlers))
     }
 
     @ParameterizedTest

@@ -1,16 +1,17 @@
 package world.gregs.voidps.engine.entity.character.npc
 
 import com.github.michaelbull.logging.InlineLogger
+import world.gregs.voidps.engine.data.definition.AreaDefinitions
 import world.gregs.voidps.engine.data.definition.NPCDefinitions
+import world.gregs.voidps.engine.entity.Despawn
 import world.gregs.voidps.engine.entity.MAX_NPCS
-import world.gregs.voidps.engine.entity.Registered
-import world.gregs.voidps.engine.entity.Unregistered
+import world.gregs.voidps.engine.entity.Spawn
 import world.gregs.voidps.engine.entity.character.CharacterList
 import world.gregs.voidps.engine.entity.character.CharacterMap
 import world.gregs.voidps.engine.entity.character.face
 import world.gregs.voidps.engine.entity.character.mode.Wander
+import world.gregs.voidps.engine.entity.character.mode.move.AreaEntered
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
-import world.gregs.voidps.engine.event.EventHandlerStore
 import world.gregs.voidps.engine.getProperty
 import world.gregs.voidps.engine.map.collision.CollisionStrategyProvider
 import world.gregs.voidps.engine.map.collision.Collisions
@@ -22,9 +23,9 @@ import world.gregs.voidps.type.Zone
 data class NPCs(
     private val definitions: NPCDefinitions,
     private val collisions: Collisions,
-    private val store: EventHandlerStore,
-    private val collision: CollisionStrategyProvider
-) : CharacterList<NPC>(MAX_NPCS) {
+    private val collision: CollisionStrategyProvider,
+    private val areaDefinitions: AreaDefinitions
+) : CharacterList<NPC>() {
     override val indexArray: Array<NPC?> = arrayOfNulls(MAX_NPCS)
     private val logger = InlineLogger()
     private val map: CharacterMap = CharacterMap()
@@ -69,7 +70,6 @@ data class NPCs(
             val element = indexed(index) ?: continue
             super.remove(element)
             removeIndex(element)
-            releaseIndex(element)
         }
     }
 
@@ -88,7 +88,12 @@ data class NPCs(
             npc["respawn_delay"] = respawnDelay
             npc["respawn_direction"] = direction
         }
-        npc.events.emit(Registered)
+        npc.emit(Spawn)
+        for (def in areaDefinitions.get(npc.tile.zone)) {
+            if (npc.tile in def.area) {
+                npc.emit(AreaEntered(npc, def.name, def.tags, def.area))
+            }
+        }
         return npc
     }
 
@@ -98,9 +103,10 @@ data class NPCs(
             logger.warn { "No npc found for name $id" }
             return null
         }
+        val index = index() ?: return null
         val npc = NPC(id, tile)
         npc.def = def
-        npc.levels.link(npc.events, NPCLevels(def))
+        npc.levels.link(npc, NPCLevels(def))
         npc.levels.clear(Skill.Constitution)
         npc.levels.clear(Skill.Attack)
         npc.levels.clear(Skill.Strength)
@@ -111,9 +117,8 @@ data class NPCs(
         if (Wander.wanders(npc)) {
             npc.mode = Wander(npc, tile)
         }
-        store.populate(npc)
         val dir = if (direction == Direction.NONE) Direction.all.random() else direction
-        npc.index = indexer.obtain() ?: return null
+        npc.index = index
         npc.face(dir)
         npc.collision = collision.get(npc)
         add(npc)
@@ -122,7 +127,8 @@ data class NPCs(
 
     override fun clear() {
         for (npc in this) {
-            npc.events.emit(Unregistered)
+            npc.emit(Despawn)
+            npc.softTimers.stopAll()
         }
         super.clear()
     }

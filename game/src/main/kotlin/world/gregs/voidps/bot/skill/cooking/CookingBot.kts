@@ -13,41 +13,41 @@ import world.gregs.voidps.engine.client.ui.chat.plural
 import world.gregs.voidps.engine.data.config.GearDefinition
 import world.gregs.voidps.engine.data.definition.AreaDefinition
 import world.gregs.voidps.engine.data.definition.AreaDefinitions
-import world.gregs.voidps.engine.entity.Registered
-import world.gregs.voidps.engine.entity.World
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.item.Item
 import world.gregs.voidps.engine.entity.obj.GameObject
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.entity.worldSpawn
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.inv.inventory
-import world.gregs.voidps.engine.timer.TimerStop
-import world.gregs.voidps.network.instruct.InteractDialogue
-import world.gregs.voidps.network.instruct.InteractInterfaceObject
+import world.gregs.voidps.engine.timer.timerStop
+import world.gregs.voidps.network.client.instruction.InteractDialogue
+import world.gregs.voidps.network.client.instruction.InteractInterfaceObject
 
 val areas: AreaDefinitions by inject()
 val tasks: TaskManager by inject()
 
-onBot<TimerStop>({ timer == "cooking" }) { bot: Bot ->
-    bot.resume(timer)
+timerStop("cooking") { player ->
+    if (player.isBot) {
+        player.bot.resume(timer)
+    }
 }
 
-on<World, Registered> {
+worldSpawn {
     for (area in areas.getTagged("cooking")) {
         val spaces: Int = area["spaces", 1]
         val type: String = area.getOrNull("type") ?: ""
         val task = Task(
             name = "cook on ${type.plural(2)} at ${area.name}".toLowerSpaceCase(),
             block = {
-                val gear = getGear(Skill.Cooking) ?: return@Task
-                val item = getSuitableItem(gear.inventory.first())
-                while (player.levels.getMax(Skill.Cooking) < gear.levels.last + 1) {
-                    cook(area, item, gear)
+                val gear = bot.getGear(Skill.Cooking) ?: return@Task
+                val item = bot.getSuitableItem(gear.inventory.first())
+                while (levels.getMax(Skill.Cooking) < gear.levels.last + 1) {
+                    bot.cook(area, item, gear)
                 }
             },
             area = area.area,
             spaces = spaces,
-            requirements = listOf { hasExactGear(Skill.Cooking) }
+            requirements = listOf { bot.hasExactGear(Skill.Cooking) }
         )
         tasks.register(task)
     }
@@ -63,18 +63,18 @@ suspend fun Bot.cook(map: AreaDefinition, rawItem: Item, set: GearDefinition) {
             return
         }
         // Use item on range
-        player.instructions.emit(InteractInterfaceObject(range.def.id, range.tile.x, range.tile.y, 149, 0, rawItem.def.id, player.inventory.indexOf(rawItem.id)))
+        player.instructions.send(InteractInterfaceObject(range.def.id, range.tile.x, range.tile.y, 149, 0, rawItem.def.id, player.inventory.indexOf(rawItem.id)))
         await("tick")
         await("tick")
         if (rawItem.id == "raw_beef") {
-            player.instructions.emit(InteractDialogue(228, 3, -1))
+            player.instructions.send(InteractDialogue(228, 3, -1))
             await("tick")
         }
         // Select all
         clickInterface(916, 8, 0)
         await("tick")
         // First option
-        player.instructions.emit(InteractDialogue(905, 14, -1))
+        player.instructions.send(InteractDialogue(905, 14, -1))
     }
     var count = 0
     while (player.inventory.contains(rawItem.id)) {

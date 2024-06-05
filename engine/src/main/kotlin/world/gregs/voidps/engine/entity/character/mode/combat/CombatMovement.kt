@@ -2,8 +2,10 @@ package world.gregs.voidps.engine.entity.character.mode.combat
 
 import world.gregs.voidps.engine.client.ui.dialogue
 import world.gregs.voidps.engine.client.variable.hasClock
+import world.gregs.voidps.engine.client.variable.stop
 import world.gregs.voidps.engine.entity.character.Character
 import world.gregs.voidps.engine.entity.character.mode.EmptyMode
+import world.gregs.voidps.engine.entity.character.mode.Mode
 import world.gregs.voidps.engine.entity.character.mode.Retreat
 import world.gregs.voidps.engine.entity.character.mode.interact.Interact
 import world.gregs.voidps.engine.entity.character.mode.move.Movement
@@ -13,7 +15,10 @@ import world.gregs.voidps.engine.entity.character.move.walkTo
 import world.gregs.voidps.engine.entity.character.npc.NPC
 import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.player.chat.cantReach
+import world.gregs.voidps.engine.entity.character.size
 import world.gregs.voidps.engine.entity.character.watch
+import world.gregs.voidps.engine.entity.item.Item
+import world.gregs.voidps.engine.map.Overlap
 import world.gregs.voidps.type.Direction
 import world.gregs.voidps.type.Tile
 
@@ -40,7 +45,7 @@ class CombatMovement(
             return
         }
         if (!attack()) {
-            if (character.steps.destination == character.tile) {
+            if (character.steps.destination == character.tile || Overlap.isUnder(character.tile, character.size, target.tile, target.size)) {
                 stepOut()
             } else {
                 character.steps.clearDestination()
@@ -73,9 +78,10 @@ class CombatMovement(
 
     private fun attack(): Boolean {
         val attackRange = attackRange()
-        if (arrived(if (attackRange == 1) -1 else attackRange)) {
+        val melee = attackRange == 1 && character["weapon", Item.EMPTY].def["weapon_type", ""] != "salamander"
+        if (arrived(if (melee) -1 else attackRange)) {
             clearSteps()
-            character.events.emit(CombatReached(target))
+            character.emit(CombatReached(target))
             return true
         }
         return false
@@ -86,6 +92,7 @@ class CombatMovement(
         val spawn: Tile = character["respawn_tile"] ?: return false
         if (!character.tile.within(spawn, wanderRadius)) {
             character.walkTo(spawn)
+            character.stop("in_combat")
             return true
         }
         val attackRadius = character.def["attack_radius", 8]
@@ -102,7 +109,9 @@ class CombatMovement(
     override fun onCompletion() {
     }
 
-    override fun stop() {
-        character.events.emit(CombatStop(target))
+    override fun stop(replacement: Mode) {
+        if (replacement !is CombatMovement || replacement.target != target) {
+            character.emit(CombatStop(target))
+        }
     }
 }

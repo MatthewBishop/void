@@ -8,7 +8,7 @@ import world.gregs.voidps.engine.entity.item.Item
 import world.gregs.voidps.engine.inv.Inventory
 import world.gregs.voidps.engine.inv.clear
 import world.gregs.voidps.engine.inv.equipment
-import world.gregs.voidps.network.visual.update.player.EquipSlot
+import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
 import world.gregs.voidps.world.interact.entity.combat.hit.hit
 import world.gregs.voidps.world.interact.entity.player.combat.CombatFormulaTest
 
@@ -23,6 +23,7 @@ internal class GuthansSetEffectTest : CombatFormulaTest() {
         val target = createPlayer(Skill.Constitution to 990)
 
         player.hit(target, Item("guthans_warspear"), "melee", damage = 10)
+        tick()
 
         assertEquals(980, target.levels.get(Skill.Constitution))
         assertEquals(500, player.levels.get(Skill.Constitution))
@@ -36,7 +37,7 @@ internal class GuthansSetEffectTest : CombatFormulaTest() {
         val target = createPlayer(Skill.Constitution to 990)
 
         player.hit(target, Item("guthans_warspear"), "magic", damage = 10)
-        tick(2)
+        tick(3)
 
         assertEquals(980, target.levels.get(Skill.Constitution))
         assertEquals(500, player.levels.get(Skill.Constitution))

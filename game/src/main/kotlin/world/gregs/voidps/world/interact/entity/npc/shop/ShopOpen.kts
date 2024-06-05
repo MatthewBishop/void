@@ -2,29 +2,31 @@ package world.gregs.voidps.world.interact.entity.npc.shop
 
 import com.github.michaelbull.logging.InlineLogger
 import world.gregs.voidps.engine.client.ui.close
-import world.gregs.voidps.engine.client.ui.event.InterfaceClosed
-import world.gregs.voidps.engine.client.ui.event.InterfaceRefreshed
+import world.gregs.voidps.engine.client.ui.event.interfaceClose
+import world.gregs.voidps.engine.client.ui.event.interfaceRefresh
 import world.gregs.voidps.engine.client.ui.open
 import world.gregs.voidps.engine.data.definition.InventoryDefinitions
 import world.gregs.voidps.engine.entity.character.face
-import world.gregs.voidps.engine.entity.character.npc.NPCOption
+import world.gregs.voidps.engine.entity.character.npc.npcOperate
 import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.item.Item
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.event.onEvent
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.inv.Inventory
-import world.gregs.voidps.engine.inv.ItemChanged
+import world.gregs.voidps.engine.inv.itemChange
 import world.gregs.voidps.engine.inv.sendInventory
 
 val inventoryDefinitions: InventoryDefinitions by inject()
 val logger = InlineLogger()
 
-on<NPCOption>({ operate && def.contains("shop") && option == "Trade" }) { player: Player ->
-    target.face(player)
-    player.openShop(def["shop"])
+npcOperate("Trade") {
+    if (def.contains("shop")) {
+        target.face(player)
+        player.openShop(def["shop"])
+    }
 }
 
-on<InterfaceClosed>({ id == "shop" }) { player: Player ->
+interfaceClose("shop") { player ->
     player.close("item_info")
     player.close("shop_side")
     val shop = player.shop()
@@ -33,8 +35,8 @@ on<InterfaceClosed>({ id == "shop" }) { player: Player ->
     }
 }
 
-on<OpenShop> { player: Player ->
-    val definition = inventoryDefinitions.getOrNull(id) ?: return@on
+onEvent<Player, OpenShop> { player ->
+    val definition = inventoryDefinitions.getOrNull(id) ?: return@onEvent
     val currency: String = definition["currency", "coins"]
     player["shop_currency"] = currency
     player["item_info_currency"] = currency
@@ -56,7 +58,7 @@ on<OpenShop> { player: Player ->
     player.interfaces.sendText("shop", "title", definition["title", "Shop"])
 }
 
-on<InterfaceRefreshed>({ id == "shop_side" }) { player: Player ->
+interfaceRefresh("shop_side") { player ->
     player.interfaceOptions.send("shop_side", "inventory")
     player.interfaceOptions.unlockAll("shop_side", "inventory", 0 until 28)
 }
@@ -65,7 +67,7 @@ fun openShopInventory(player: Player, id: String): Inventory {
     return if (id.endsWith("general_store")) {
         GeneralStores.bind(player, id)
     } else {
-        val new = !player.inventories.containsKey(id)
+        val new = !player.inventories.contains(id)
         val inventory = player.inventories.inventory(id)
         if (new) {
             fillShop(inventory, id)
@@ -89,8 +91,10 @@ fun fillShop(inventory: Inventory, shopId: String) {
     }
 }
 
-on<ItemChanged>({ it.contains("shop") && inventory == it["shop", ""] }) { player: Player ->
-    player["amount_${index}"] = item.amount
+itemChange { player ->
+    if (player.contains("shop") && player["shop", ""] == inventory) {
+        player["amount_${index}"] = item.amount
+    }
 }
 
 fun sendAmounts(player: Player, inventory: Inventory) {

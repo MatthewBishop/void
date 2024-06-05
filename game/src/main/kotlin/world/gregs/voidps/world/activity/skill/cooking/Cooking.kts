@@ -1,9 +1,10 @@
 package world.gregs.voidps.world.activity.skill.cooking
 
 import net.pearx.kasechange.toSentenceCase
+import world.gregs.voidps.engine.GameLoop
 import world.gregs.voidps.engine.client.message
 import world.gregs.voidps.engine.client.ui.closeDialogue
-import world.gregs.voidps.engine.client.ui.interact.ItemOnObject
+import world.gregs.voidps.engine.client.ui.interact.itemOnObjectOperate
 import world.gregs.voidps.engine.data.definition.ItemDefinitions
 import world.gregs.voidps.engine.data.definition.data.Uncooked
 import world.gregs.voidps.engine.entity.character.face
@@ -19,14 +20,12 @@ import world.gregs.voidps.engine.entity.character.setAnimation
 import world.gregs.voidps.engine.entity.item.Item
 import world.gregs.voidps.engine.entity.obj.GameObject
 import world.gregs.voidps.engine.entity.obj.GameObjects
-import world.gregs.voidps.engine.event.on
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.inv.add
 import world.gregs.voidps.engine.inv.inventory
 import world.gregs.voidps.engine.inv.replace
 import world.gregs.voidps.engine.queue.weakQueue
-import world.gregs.voidps.engine.suspend.arriveDelay
-import world.gregs.voidps.network.visual.update.player.EquipSlot
+import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
 import world.gregs.voidps.world.interact.dialogue.type.makeAmount
 
 val definitions: ItemDefinitions by inject()
@@ -34,13 +33,11 @@ val objects: GameObjects by inject()
 
 val GameObject.cookingRange: Boolean get() = id.startsWith("cooking_range")
 
-val GameObject.heatSource: Boolean get() = id.startsWith("fire_") || cookingRange
-
-on<ItemOnObject>({ operate && target.heatSource && item.def.contains("cooking") }) { player: Player ->
-    arriveDelay()
-    val definition = if (player["sinew", false]) definitions.get("sinew") else if (item.id == "sinew") return@on else item.def
+itemOnObjectOperate(objects = setOf("fire_*", "cooking_range*"), def = "cooking") {
+    val start = GameLoop.tick
+    val definition = if (player["sinew", false]) definitions.get("sinew") else if (item.id == "sinew") return@itemOnObjectOperate else item.def
     player["sinew"] = false
-    val cooking: Uncooked = definition.getOrNull("cooking") ?: return@on
+    val cooking: Uncooked = definition.getOrNull("cooking") ?: return@itemOnObjectOperate
     var amount = player.inventory.count(item.id)
     if (amount != 1) {
         amount = makeAmount(
@@ -50,12 +47,13 @@ on<ItemOnObject>({ operate && target.heatSource && item.def.contains("cooking") 
             text = "How many would you like to ${cooking.type}?"
         ).second
     }
+    val offset = (4 - (GameLoop.tick - start)).coerceAtLeast(0)
     player.closeDialogue()
     player.softTimers.start("cooking")
-    player.cook(item, amount, target, cooking, true)
+    player.cook(item, amount, target, cooking, offset)
 }
 
-fun Player.cook(item: Item, count: Int, obj: GameObject, cooking: Uncooked, first: Boolean = false) {
+fun Player.cook(item: Item, count: Int, obj: GameObject, cooking: Uncooked, offset: Int? = null) {
     if (count <= 0 || objects[obj.tile, obj.id] == null) {
         softTimers.stop("cooking")
         return
@@ -79,7 +77,7 @@ fun Player.cook(item: Item, count: Int, obj: GameObject, cooking: Uncooked, firs
     }
     face(obj)
     setAnimation("cook_${if (obj.id.startsWith("fire_")) "fire" else "range"}")
-    weakQueue("cooking", if (first) 0 else 4) {
+    weakQueue("cooking", offset ?: 4) {
         val level = levels.get(Skill.Cooking)
         val chance = when {
             obj.id == "cooking_range_lumbridge_castle" -> cooking.cooksRangeChance

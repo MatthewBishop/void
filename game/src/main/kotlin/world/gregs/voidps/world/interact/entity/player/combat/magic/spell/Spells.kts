@@ -1,30 +1,28 @@
 package world.gregs.voidps.world.interact.entity.player.combat.magic.spell
 
-import world.gregs.voidps.engine.entity.character.Character
-import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.setGraphic
-import world.gregs.voidps.engine.event.Priority
-import world.gregs.voidps.engine.event.on
-import world.gregs.voidps.world.interact.entity.combat.CombatSwing
-import world.gregs.voidps.world.interact.entity.combat.hit.CombatHit
-import world.gregs.voidps.world.interact.entity.player.combat.melee.multiTargetHit
+import world.gregs.voidps.type.random
+import world.gregs.voidps.world.interact.entity.combat.hit.characterCombatHit
+import world.gregs.voidps.world.interact.entity.combat.hit.combatAttack
+import world.gregs.voidps.world.interact.entity.combat.hit.directHit
+import world.gregs.voidps.world.interact.entity.combat.inMultiCombat
+import world.gregs.voidps.world.interact.entity.player.combat.melee.multiTargets
+import kotlin.random.nextInt
 
-on<CombatHit>({ spell.isNotBlank() }) { character: Character ->
-    character.setGraphic("${spell}_hit")
-}
-
-/**
- * Clear one use spell
- */
-on<CombatSwing>({ it.contains("spell") }, Priority.LOWEST) { player: Player ->
-    player.clear("spell")
-}
-
-on<CombatSwing>({ (delay ?: -1) >= 0 && it.spell.isNotBlank() }, Priority.LOWEST) { character: Character ->
-    character.clear("spell")
-    if (character is Player && !character.contains("autocast")) {
-        character.queue.clearWeak()
+characterCombatHit { character ->
+    if (spell.isNotBlank()) {
+        character.setGraphic("${spell}_hit")
     }
 }
 
-multiTargetHit({ Spell.isMultiTarget(spell) }, { 9 })
+combatAttack(type = "magic") { source ->
+    if (!target.inMultiCombat) {
+        return@combatAttack
+    }
+    if (spell.endsWith("_burst") || spell.endsWith("_barrage")) {
+        val targets = multiTargets(target, 9)
+        for (target in targets) {
+            target.directHit(source, random.nextInt(0..damage), type, weapon, spell)
+        }
+    }
+}

@@ -8,27 +8,18 @@ import world.gregs.voidps.engine.entity.character.player.Players
 import world.gregs.voidps.engine.entity.character.setAnimation
 import world.gregs.voidps.engine.entity.character.setGraphic
 import world.gregs.voidps.engine.entity.character.size
-import world.gregs.voidps.engine.entity.item.Item
-import world.gregs.voidps.engine.event.on
 import world.gregs.voidps.engine.inject
-import world.gregs.voidps.world.interact.entity.combat.CombatSwing
 import world.gregs.voidps.world.interact.entity.combat.hit.hit
-import world.gregs.voidps.world.interact.entity.combat.weapon
-import world.gregs.voidps.world.interact.entity.player.combat.special.drainSpecialEnergy
 import world.gregs.voidps.world.interact.entity.player.combat.special.specialAttack
-
-fun isDragonHalberd(item: Item) = item.id == "dragon_halberd"
+import world.gregs.voidps.world.interact.entity.sound.playSound
 
 val players: Players by inject()
 val npcs: NPCs by inject()
 
-on<CombatSwing>({ !swung() && it.specialAttack && isDragonHalberd(it.weapon) }) { player: Player ->
-    if (!drainSpecialEnergy(player, 300)) {
-        delay = -1
-        return@on
-    }
-    player.setAnimation("sweep")
-    player.setGraphic("sweep")
+specialAttack("sweep") { player ->
+    player.setAnimation("${id}_special")
+    player.setGraphic("${id}_special")
+    player.playSound("${id}_special")
     val dir = target.tile.delta(player.tile).toDirection()
     val firstTile = target.tile.add(if (dir.isDiagonal()) dir.horizontal() else dir.rotate(2))
     val secondTile = target.tile.add(if (dir.isDiagonal()) dir.vertical() else dir.rotate(-2))
@@ -47,5 +38,4 @@ on<CombatSwing>({ !swung() && it.specialAttack && isDragonHalberd(it.weapon) }) 
         player.hit(target)
         player.clear("second_hit")
     }
-    delay = 7
 }

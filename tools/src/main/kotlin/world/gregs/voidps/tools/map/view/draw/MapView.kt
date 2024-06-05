@@ -2,6 +2,7 @@ package world.gregs.voidps.tools.map.view.draw
 
 import kotlinx.coroutines.*
 import world.gregs.voidps.bot.navigation.graph.NavigationGraph
+import world.gregs.voidps.engine.map.collision.Collisions
 import world.gregs.voidps.tools.map.view.draw.WorldMap.Companion.flipRegionY
 import world.gregs.voidps.tools.map.view.graph.AreaSet
 import world.gregs.voidps.tools.map.view.interact.MouseDrag
@@ -17,7 +18,7 @@ import java.awt.Graphics
 import javax.swing.JPanel
 import javax.swing.SwingUtilities
 
-class MapView(nav: NavigationGraph?, private val areaFile: String) : JPanel() {
+class MapView(nav: NavigationGraph?, collisions: Collisions?, private val areaFile: String) : JPanel() {
 
     private val options = OptionsPane(this)
     private val areaSet = AreaSet.load(Yaml(), areaFile)
@@ -29,7 +30,7 @@ class MapView(nav: NavigationGraph?, private val areaFile: String) : JPanel() {
     private val hover = MouseHover(highlight, area)
     private val map = WorldMap(this)
     private val resize = ResizeListener(map)
-    private val graph = GraphDrawer(this, nav, areaSet)
+    private val graph = GraphDrawer(this, nav, areaSet, collisions)
 
     //    private val click = MouseClick(this, nav, graph, area, areaSet)
     private val apc = AreaPointConnector(this, areaSet)
@@ -46,16 +47,16 @@ class MapView(nav: NavigationGraph?, private val areaFile: String) : JPanel() {
     /*
         View bounds
      */
-    val minX = debugBorder
-    val minY = debugBorder
+    val minX = DEBUG_BORDER
+    val minY = DEBUG_BORDER
     val maxX: Int
-        get() = width - debugBorder
+        get() = width - DEBUG_BORDER
     val maxY: Int
-        get() = height - debugBorder
+        get() = height - DEBUG_BORDER
     private val viewWidth: Int
-        get() = width - debugBorder * 2
+        get() = width - DEBUG_BORDER * 2
     private val viewHeight: Int
-        get() = height - debugBorder * 2
+        get() = height - DEBUG_BORDER * 2
 
     init {
         layout = FlowLayout(FlowLayout.LEFT)
@@ -231,7 +232,7 @@ class MapView(nav: NavigationGraph?, private val areaFile: String) : JPanel() {
 //        lc.draw(g)
         area.draw(g)
 
-        if (debugBorder > 0) {
+        if (DEBUG_BORDER > 0) {
             g.color = Color.RED
             g.drawRect(minX, minY, viewWidth, viewHeight)
             g.drawRect(getCentreX(), getCentreY(), 1, 1)
@@ -244,6 +245,6 @@ class MapView(nav: NavigationGraph?, private val areaFile: String) : JPanel() {
     }
 
     companion object {
-        private const val debugBorder = 0
+        private const val DEBUG_BORDER = 0
     }
 }

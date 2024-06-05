@@ -1,12 +1,6 @@
 crate:
   id: 1
   examine: "Big mysterious crate. You wonder what could be inside."
-altar:
-  id: 2640
-  examine: "Shrine to the glory of Saradomin."
-altar_2:
-  id: 36972
-  examine: "Shrine to the glory of Saradomin."
 door_opened:
   id: 1531
   examine: "The door is open."
@@ -213,7 +207,7 @@ potato:
     item: raw_potato
     delay: 30
     message: "You pick a potato."
-  examine: "Potato-licious!"  
+  examine: "Potato-licious!"
 wheat:
   &wheat
   id: 313
@@ -380,7 +374,7 @@ cabbage:
     item: cabbage
     delay: 45
     message: "You pick a cabbage."
-  examine: "Cabbage... yuck!"  
+  examine: "Cabbage... yuck!"
 small_fern:
   id: 1173
   examine: "A commonly found fern."
@@ -1711,7 +1705,7 @@ door_78_closed:
   id: 2628
   examine: "It's a door."
 guild_door_2_opened:
-  id: 2538
+  id: 2529
   examine: "A door."
 guild_door_2_closed:
   id: 2647
@@ -1806,14 +1800,17 @@ gate_63_closed:
 potters_wheel:
   id: 2642
   examine: "Used for fashioning clay items."
+pottery_oven_crafting_guild:
+  id: 2643
+  examine: "Bake your clay items in here."  
 flax:
   id: 2646
   pickable:
     item: flax
     delay: 5
     message: "You pick some flax."
-  examine: "A plant cultivated for fibres."  
-sinclair_family_fountain:
+  examine: "A plant cultivated for fibres."
+fountain_sinclair_family:
   id: 2654
   examine: "This fountain suits the garden."
 rock_rocks_tourist_trap_dark_1:
@@ -1842,7 +1839,7 @@ door_81_closed:
   examine: "The entrance to the Cooking Guild."
 hopper_controls:
   id: 2718
-  examine: "These control the flow of wheat from the hopper to the millstones."  
+  examine: "These control the flow of wheat from the hopper to the millstones."
 fire_orange:
   id: 2732
   examine: "Hot!"
@@ -2097,7 +2094,7 @@ onion:
     item: onion
     delay: 30
     message: "You pick an onion."
-  examine: "Makes you cry."  
+  examine: "Makes you cry."
 prison_door_4_opened:
   id: 5173
 prison_door_4_closed:
@@ -2376,6 +2373,12 @@ crate_36:
 crate_37:
   id: 4301
   examine: "An old crate for storage."
+pottery_oven_rellekka:
+  id: 4308
+  examine: "Bake your clay items in here."
+potters_wheel_2:
+  id: 4310
+  examine: "Used for fashioning clay items."  
 gate_88_opened:
   id: 4313
   examine: "A wooden gate."
@@ -3228,7 +3231,7 @@ yew_tree_farming_stump:
   examine: "You can uproot this tree stump with a spade."
 dairy_cow:
   id: 8689
-  examine: "Fit for milking."  
+  examine: "Fit for milking."
 door_falador_farm_opened:
   id: 8696
   examine: "The door is open."
@@ -3975,8 +3978,84 @@ fire_green:
 fire_blue:
   id: 11406
   examine: "Hot!"
+crashed_star_falling_object:
+  id: 38659
+  examine: "It's a crashed star."
+crashed_star_tier_9:
+  id: 38660
+  collect_for_next_layer: 15
+  mining:
+    level: 90
+    ores: [ stardust ]
+    gems: true
+  examine: "This is a size-9 star."
+crashed_star_tier_8:
+  id: 38661
+  collect_for_next_layer: 40
+  mining:
+    level: 80
+    ores: [ stardust ]
+    gems: true
+  examine: "This is a size-8 star."
+crashed_star_tier_7:
+  id: 38662
+  collect_for_next_layer: 40
+  mining:
+    level: 70
+    ores: [ stardust ]
+    gems: true
+  examine: "This is a size-7 star."
+crashed_star_tier_6:
+  id: 38663
+  collect_for_next_layer: 80
+  mining:
+    level: 60
+    ores: [ stardust ]
+    gems: true
+  examine: "This is a size-6 star."
+crashed_star_tier_5:
+  id: 38664
+  collect_for_next_layer: 175
+  mining:
+    level: 50
+    ores: [ stardust ]
+    gems: true
+  examine: "This is a size-5 star."
+crashed_star_tier_4:
+  id: 38665
+  collect_for_next_layer: 250
+  mining:
+    level: 40
+    ores: [ stardust ]
+    gems: true
+  examine: "This is a size-4 star."
+crashed_star_tier_3:
+  id: 38666
+  collect_for_next_layer: 450
+  mining:
+    level: 30
+    ores: [ stardust ]
+    gems: true
+  examine: "This is a size-3 star."
+crashed_star_tier_2:
+  id: 38667
+  collect_for_next_layer: 700
+  mining:
+    level: 20
+    ores: [ stardust ]
+    gems: true
+  examine: "This is a size-2 star."
+crashed_star_tier_1:
+  id: 38668
+  collect_for_next_layer: 1200
+  mining:
+    level: 10
+    ores: [ stardust ]
+    gems: true
+  examine: "This is a size-1 star."
 evil_tree:
   id: 11434
+  upgrade_time: 50
   examine: "This looks like a challenge anyone can deal with."
 evil_tree_stump:
   id: 11435
@@ -4402,7 +4481,7 @@ magic_door_2_opened:
 magic_door_2_closed:
   id: 12045
   examine: "A magic door."
-fairy_fountain:
+fountain_fairy:
   id: 12089
   examine: "A beautiful fairy fountain!"
 crate_97:
@@ -4796,13 +4875,13 @@ small_fern_2:
 fern_5:
   id: 13433
   examine: "A plant."
-small fountain:
+fountain_small:
   id: 13478
   examine: "Like a tiny private waterfall."
-large_fountain:
+fountain_large:
   id: 13479
   examine: "A sculpture of flowing water."
-ornamental_fountain:
+fountain_ornamental:
   id: 13480
   examine: "Two little fishes forever spew water into the pond."
 chair_53:
@@ -6125,6 +6204,9 @@ crate_184:
 crate_185:
   id: 20368
   examine: "A wooden crate."
+potters_wheel_3:
+  id: 20375
+  examine: "Used for fashioning clay items."  
 gate_150_opened:
   id: 20392
 gate_150_closed:
@@ -6519,7 +6601,7 @@ crate_208:
   examine: "A wooden crate."
 wheat_5:
   id: 22300
-  examine: "Baby bread."  
+  examine: "Baby bread."
 cabbage_2:
   <<: *cabbage
   id: 22301
@@ -8291,6 +8373,12 @@ gate_205_opened:
 gate_205_closed:
   id: 34780
   examine: "A wooden gate."
+potters_wheel_4:
+  id: 34801
+  examine: "Used for fashioning clay items."
+pottery_oven_east_ardougne:
+  id: 34802
+  examine: "Bake your clay items in here."  
 door_576_opened:
   id: 34808
   examine: "The door is open."
@@ -8369,7 +8457,7 @@ jail_door_8_closed:
 chair_132:
   id: 35451
   examine: "A well-made chair."
-carved_fountain:
+fountain_carved:
   id: 35469
   examine: "Conspicuous consumption of water."
 cell_door_14_opened:
@@ -8552,10 +8640,10 @@ flour_bin_2:
   examine: "When I've ground some flour, I'll be able to collect it here."
 flour_bin_3:
   id: 36880
-  examine: "When I've ground some flour, I'll be able to collect it here."  
+  examine: "When I've ground some flour, I'll be able to collect it here."
 hopper:
   id: 36881
-  examine: "Grain goes in here."  
+  examine: "Grain goes in here."
 hat_stand_4:
   id: 36906
   examine: "A stand for hats."
@@ -8696,7 +8784,7 @@ dead_tree_24:
   examine: "It's only useful for firewood now."
 lumbridge_flag:
   id: 37335
-  examine: "A flag on a pole."  
+  examine: "A flag on a pole."
 chair_137:
   id: 37337
   examine: "The ideal thing to sit on."
@@ -10026,7 +10114,7 @@ chair_183:
   examine: "A posh chair."
 prized_dairy_cow:
   id: 47721
-  examine: "Produces top-quality milk."  
+  examine: "Produces top-quality milk."
 fountain_24:
   id: 47747
   examine: "The water looks VERY cold!"
@@ -10501,7 +10589,7 @@ small_fern_3:
 fern_17:
   id: 52795
   examine: "A plant."
-ornamental_fountain_2:
+fountain_ornamental_2:
   id: 52800
   examine: "Two little fishes forever spew water into the pond."
 crate_365:
@@ -11070,3 +11158,681 @@ jalsavrah_tomb_door:
 dung:
   id: 6257
   examine: "Lovely... Fresh."
+bank_booth_classic:
+  id: 2213
+  examine: "The bank teller will serve you from here."
+bank_booth_tutorial_island:
+  id: 3045
+  examine: "The bank teller will serve you from here."
+bank_chest_castle_wars:
+  id: 4483
+  examine: "The bank teller will serve you from here."
+bank_booth_port_phasmatys:
+  id: 5276
+  examine: "The bank teller will serve you from here."
+bank_booth_keldagrim:
+  id: 6084
+  examine: "The bank teller will serve you from here."
+bank_booth_nardah:
+  id: 10517
+  examine: "The bank teller will serve you from here."
+bank_booth_mos_le_harmless:
+  id: 11338
+  examine: "The bank teller will serve you from here."
+bank_booth_varrock:
+  id: 11402
+  examine: "The bank teller will serve you from here."
+bank_booth_falador:
+  id: 11758
+  examine: "The bank teller will serve you from here."
+bank_booth_burgh_de_rott:
+  id: 12798
+  examine: "The bank teller will serve you from here."
+bank_booth_void_knights_outpost:
+  id: 14369
+  examine: "The bank teller will serve you from here."
+bank_booth_lunar_isle:
+  id: 16700
+  examine: "The bank teller will serve you from here."
+bank_booth_living_rock_cavern:
+  id: 18491
+  examine: "The bank teller will serve you from here."
+bank_booth_sophanem:
+  id: 20325
+  examine: "The bank teller will serve you from here."
+bank_chest_neitiznot:
+  id: 21301
+  examine: "An open bank chest."
+bank_booth_dorgesh_kaan:
+  id: 22819
+  examine: "Deposit your monies here."
+bank_booth_canifis:
+  id: 24914
+  examine: "The bank teller will serve you from here."
+bank_booth_seers_village:
+  id: 25808
+  examine: "The bank teller will serve you from here."
+bank_booth_edgeville:
+  id: 26972
+  examine: "For accessing your bank account."
+bank_booth_oo_glog:
+  id: 29085
+  examine: "The bank teller will serve you from here."
+bank_booth_ardougne:
+  id: 34752
+  examine: "The bank teller will serve you from here."
+bank_booth_al_kharid:
+  id: 35647
+  examine: "Open for business."
+bank_booth_lumbridge:
+  id: 36786
+  examine: "Used to access your bank account."
+bank_booth_lumbridge_instance:
+  id: 37474
+  examine: "For accessing your bank account."
+bank_chest_soul_wars:
+  id: 42192
+  examine: "I can store my items safely here."
+bank_booth_fishing_guild:
+  id: 49018
+  examine: "The bank teller will serve you from here."
+bank_booth_thieves_guild:
+  id: 52397
+  examine: "The bank teller will serve you from here."
+bank_booth_zanaris:
+  id: 52589
+  examine: "The bank teller will serve you from here."
+sink:
+  id: 873
+  examine: "Ideal for washing things in."
+sink_1:
+  id: 874
+  examine: "Ideal for washing things in."
+well:
+  id: 878
+  examine: "No this is not a mirage!"
+well_1:
+  id: 884
+  examine: "Best used with a bucket."
+well_stacked_rocks:
+  id: 2234
+  examine: "Rocks that have been stacked at regular intervals."
+well_2:
+  id: 3359
+  examine: "Well of the damned."
+well_3:
+  id: 3485
+  examine: "An ornately carved well that draws water from the river Salve."
+sink_2:
+  id: 4063
+  examine: "Ideal for washing things in."
+well_4:
+  id: 6097
+  examine: "A good source of water."
+sink_3:
+  id: 6151
+  examine: "Used for getting water."
+sink_4:
+  id: 8699
+  examine: "After working with livestock, why not wash your hands?"
+well_5:
+  id: 8747
+  examine: "A local water source."
+well_6:
+  id: 8927
+  examine: "Best used with a bucket."
+sink_5:
+  id: 9143
+  examine: "Used for getting water."
+sink_6:
+  id: 9684
+  examine: "Wash your hands!"
+sink_7:
+  id: 10175
+  examine: "'Please remember te wash yer hook'. Sound advice for the hygienic pirate."
+well_7:
+  id: 11793
+  examine: "Best used with a bucket."
+water_trough:
+  id: 12122
+  examine: "Filled with tepid water."
+well_8:
+  id: 12201
+  examine: "A well, it is not safe to climb down."
+sink_8:
+  id: 12279
+  examine: "Wash your hands!"
+well_9:
+  id: 12897
+  examine: "It smells stagnant."
+pump_and_drain:
+  id: 13559
+  examine: "Running water in your own home! Luxury!"
+pump_and_drain_2:
+  id: 13560
+  examine: "Running water in your own home! Luxury!"
+sink_9:
+  id: 13563
+  examine: "Running water in your own home! Luxury!"
+sink_10:
+  id: 13564
+  examine: "Running water in your own home! Luxury!"
+water_trough_2:
+  id: 14352
+  examine: "A trough of water."
+sink_11:
+  id: 14917
+  examine: "There must be a source of fresh water somewhere nearby."
+sink_13:
+  id: 16704
+  examine: "Wash your dirty dirty hands."
+sink_14:
+  id: 16705
+  examine: "Wash your hands!"
+sink_15:
+  id: 22715
+  examine: "A busy goblin has left the sink running."
+pump_and_drain_3:
+  id: 23920
+  examine: "A kitchen sink."
+well_10:
+  id: 24166
+  examine: "Best used with a bucket."
+sink_17:
+  id: 25729
+  examine: "Ideal for washing things in."
+sink_18:
+  id: 25929
+  examine: "Ideal for washing things in."
+well_11:
+  id: 26945
+  examine: "Best used with a bucket."
+sink_19:
+  id: 26966
+  examine: "This could use a clean."
+sink_kringk:
+  id: 29105
+  examine: "Kringk's sink."
+sink_20:
+  id: 33458
+  examine: "Ideal for washing things in."
+sink_21:
+  id: 34082
+  examine: "After working with livestock, why not wash your hands?"
+sink_22:
+  id: 34496
+  examine: "Running water - a nice feature."
+sink_23:
+  id: 34547
+  examine: "Running water - a nice feature."
+well_12:
+  id: 34576
+  examine: "Best used with a bucket."
+well_13:
+  id: 35671
+  examine: "A well with a cover to protect against sand."
+sink_24:
+  id: 35762
+  examine: "Running water - a nice feature."
+sink_25:
+  id: 36971
+  examine: "A source of water."
+sink_26:
+  id: 37154
+  examine: "Ideal for washing things in."
+sink_27:
+  id: 37155
+  examine: "Ideal for washing things in."
+sink_28:
+  id: 40063
+  examine: "Running water - a nice feature."
+well_14:
+  id: 43100
+  examine: "Best used with a bucket."
+well_15:
+  id: 43101
+  examine: "Best used with a bucket."
+well_16:
+  id: 43102
+  examine: "Best used with a bucket."
+well_17:
+  id: 43103
+  examine: "No this is not a mirage!"
+well_18:
+  id: 43104
+  examine: "Best used with a bucket."
+well_19:
+  id: 43105
+  examine: "Best used with a bucket."
+sink_29:
+  id: 45299
+  examine: "A source of water."
+well_20:
+  id: 47336
+  examine: "An ornately carved well."
+water_trough_3:
+  id: 49937
+  examine: "A handy source of water."
+water_trough_4:
+  id: 49938
+  examine: "A handy source of water."
+water_trough_5:
+  id: 49939
+  examine: "A handy source of water."
+water_trough_6:
+  id: 51059
+  examine: "A handy source of water."
+water_trough_7:
+  id: 51607
+  examine: "A handy source of water."
+water_trough_8:
+  id: 52152
+  examine: "A handy source of water."
+sink_30:
+  id: 52815
+  examine: "Running water in your own home! Luxury!"
+water_trough_9:
+  id: 54883
+  examine: "A handy source of water."
+water_trough_10:
+  id: 54949
+  examine: "A handy source of water."
+water_trough_11:
+  id: 55811
+  examine: "A handy source of water."
+water_trough_12:
+  id: 55841
+  examine: "A handy source of water."
+prayer_altar_chaos_varrock:
+  id: 61
+  examine: "Shrine to the glory of Zamorak."
+prayer_altar_normal:
+  id: 409
+  examine: "Shrine to the glory of Saradomin."
+prayer_altar_chaos_ourania:
+  id: 411
+  examine: "Shrine to the glory of Zamorak."
+prayer_altar_chaos_yanille_agility_dungeon:
+  id: 412
+  examine: "Shrine to the glory of Zamorak."
+prayer_altar_edgeville:
+  id: 2640
+  examine: "A shrine for the faithful to worship at."
+prayer_altar_nature:
+  id: 3521
+  examine: "A grotto transformed into an altar of nature."
+prayer_altar_well_of_voyage:
+  id: 4008
+  examine: "Shrine to the glory of Saradomin."
+prayer_altar_gorilla_statue:
+  id: 4859
+  examine: "It's a huge statue of some kind of gorilla."
+altar_dessert_treasure:
+  id: 6552
+  examine: "A mysterious ancient altar to some forgotten god..."
+prayer_altar_lletya:
+  id: 8749
+  examine: "A shrine to the glory of Seren."
+prayer_altar_entrana:
+  id: 10638
+  examine: "Shrine to the glory of Saradomin."
+prayer_altar_entrana_bag:
+  id: 10639
+  examine: "Shrine to the glory of Saradomin."
+prayer_altar_entrana_star:
+  id: 10640
+  examine: "Shrine to the glory of Saradomin."
+prayer_altar_oak_saradomin:
+  id: 13179
+  examine: "An oak altar with a symbol of Saradomin."
+prayer_altar_oak_zamorak:
+  id: 13180
+  examine: "An oak altar with a symbol of Zamorak."
+prayer_altar_oak_guthix:
+  id: 13181
+  examine: "An oak altar with a symbol of Guthix."
+prayer_altar_teak_saradomin:
+  id: 13182
+  examine: "A teak altar with a symbol of Saradomin."
+prayer_altar_teak_zamorak:
+  id: 13183
+  examine: "A teak altar with a symbol of Zamorak."
+prayer_altar_teak_guthix:
+  id: 13184
+  examine: "A teak altar with a symbol of Guthix."
+prayer_altar_cloth_saradomin:
+  id: 13185
+  examine: "A cloth-covered teak altar with a symbol of Saradomin."
+prayer_altar_cloth_zamorak:
+  id: 13186
+  examine: "A cloth-covered teak altar with a symbol of Zamorak."
+prayer_altar_cloth_guthix:
+  id: 13187
+  examine: "A cloth-covered teak altar with a symbol of Guthix."
+prayer_altar_mahogany_saradomin:
+  id: 13188
+  examine: "A mahogany altar with a symbol of Saradomin."
+prayer_altar_mahogany_zamorak:
+  id: 13189
+  examine: "A mahogany altar with a symbol of Zamorak."
+prayer_altar_mahogany_guthix:
+  id: 13190
+  examine: "A mahogany altar with a symbol of Guthix."
+prayer_altar_limestone_saradomin:
+  id: 13191
+  examine: "A limestone altar with a symbol of Saradomin."
+prayer_altar_limestone_zamorak:
+  id: 13192
+  examine: "A limestone altar with a symbol of Zamorak."
+prayer_altar_limestone_guthix:
+  id: 13193
+  examine: "A limestone altar with a symbol of Guthix."
+prayer_altar_marble_saradomin:
+  id: 13194
+  examine: "A marble altar with a symbol of Saradomin."
+prayer_altar_marble_zamorak:
+  id: 13195
+  examine: "A marble altar with a symbol of Zamorak."
+prayer_altar_marble_guthix:
+  id: 13196
+  examine: "A marble altar with a symbol of Guthix."
+prayer_altar_gilded_saradomin:
+  id: 13197
+  examine: "A gilded marble altar with a symbol of Saradomin."
+prayer_altar_gilded_zamorak:
+  id: 13198
+  examine: "A gilded marble altar with a symbol of Zamorak."
+prayer_altar_gilded_guthix:
+  id: 13199
+  examine: "A gilded marble altar with a symbol of Guthix."
+prayer_altar_witchaven:
+  id: 18254
+  examine: "An altar with a symbol of Saradomin."
+prayer_altar_camelot:
+  id: 19145
+  examine: "Shrine to the glory of Saradomin."
+prayer_altar_sophanem_large:
+  id: 20377
+  examine: "An altar."
+prayer_altar_sophanem:
+  id: 20378
+  examine: "An altar."
+prayer_altar_varrock_church:
+  id: 24343
+  examine: "A cloth-covered altar with a symbol of Saradomin."
+prayer_zamorak_altar_godwars:
+  id: 26286
+  examine: "An altar to Zamorak."
+prayer_saradomin_altar_godwars:
+  id: 26287
+  examine: "An altar to Saradomin."
+prayer_armadyl_altar_godwars:
+  id: 26288
+  examine: "The last remaining holy place of the aviantese."
+prayer_bandos_altar_godwars:
+  id: 26289
+  examine: "Altar to the goblin god."
+prayer_altar_goblin_temple:
+  id: 27306
+  examine: "An altar to the Big High War God."
+prayer_altar_goblin_temple_corner:
+  id: 27338
+  examine: "An altar to the Big High War God."
+prayer_altar_goblin_temple_base:
+  id: 27339
+  examine: "An altar to the Big High War God."
+prayer_altar_duel_arena:
+  id: 27661
+  examine: "Shrine to the glory of Saradomin."
+altar_of_guthix_druidic_ritual:
+  id: 28698
+  examine: "An ancient altar to the glory of Guthix."
+prayer_altar_paterdomus_temple:
+  id: 30726
+  examine: "A broken altar."
+prayer_altar_chaos_underground_pass:
+  id: 32079
+  examine: "Shrine to the glory of Zamorak."
+prayer_altar_ardougne:
+  id: 34616
+  examine: "A shrine to the glory of Saradomin."
+prayer_altar_lumbridge:
+  id: 36972
+  examine: "A shrine to the glory of Saradomin."
+prayer_altar_lumbridge_copy:
+  id: 37630
+  examine: "A shrine to Saradomin."
+prayer_altar_chaos_wilderness:
+  id: 37990
+  examine: "Shrine to the glory of Zamorak."
+prayer_altar_stealing_creation:
+  id: 39547
+  examine: "You can recharge your Prayer points here."
+prayer_altar_port_sarim_church:
+  id: 39842
+  examine: "A shrine to the glory of Saradomin."
+prayer_altar_oak_saradomin_offer:
+  id: 44926
+  examine: "An oak altar with a symbol of Saradomin."
+prayer_altar_oak_zamorak_offer:
+  id: 44927
+  examine: "An oak altar with a symbol of Zamorak."
+prayer_altar_oak_guthix_offer:
+  id: 44928
+  examine: "An oak altar with a symbol of Guthix."
+prayer_altar_teak_saradomin_offer:
+  id: 44929
+  examine: "A teak altar with a symbol of Saradomin."
+prayer_altar_teak_zamorak_offer:
+  id: 44930
+  examine: "A teak altar with a symbol of Zamorak."
+prayer_altar_teak_guthix_offer:
+  id: 44931
+  examine: "A teak altar with a symbol of Guthix."
+prayer_altar_cloth_saradomin_offer:
+  id: 44932
+  examine: "A cloth-covered teak altar with a symbol of Saradomin."
+prayer_altar_cloth_zamorak_offer:
+  id: 44933
+  examine: "A cloth-covered teak altar with a symbol of Zamorak."
+prayer_altar_cloth_guthix_offer:
+  id: 44934
+  examine: "A cloth-covered teak altar with a symbol of Guthix."
+prayer_altar_mahogany_saradomin_offer:
+  id: 44935
+  examine: "A mahogany altar with a symbol of Saradomin."
+prayer_altar_mahogany_zamorak_offer:
+  id: 44936
+  examine: "A mahogany altar with a symbol of Zamorak."
+prayer_altar_mahogany_guthix_offer:
+  id: 44937
+  examine: "A mahogany altar with a symbol of Guthix."
+prayer_altar_limestone_saradomin_offer:
+  id: 44938
+  examine: "A limestone altar with a symbol of Saradomin."
+prayer_altar_limestone_zamorak_offer:
+  id: 44939
+  examine: "A limestone altar with a symbol of Zamorak."
+prayer_altar_limestone_guthix_offer:
+  id: 44940
+  examine: "A limestone altar with a symbol of Guthix."
+prayer_altar_marble_saradomin_offer:
+  id: 44941
+  examine: "A marble altar with a symbol of Saradomin."
+prayer_altar_marble_zamorak_offer:
+  id: 44942
+  examine: "A marble altar with a symbol of Zamorak."
+prayer_altar_marble_guthix_offer:
+  id: 44943
+  examine: "A marble altar with a symbol of Guthix."
+prayer_altar_guilded_saradomin_offer:
+  id: 44944
+  examine: "A gilded marble altar with a symbol of Saradomin."
+prayer_altar_guilded_zamorak_offer:
+  id: 44945
+  examine: "A gilded marble altar with a symbol of Zamorak."
+prayer_altar_guilded_guthix_offer:
+  id: 44946
+  examine: "A gilded marble altar with a symbol of Guthix."
+prayer_altar_abandoned:
+  id: 51061
+  examine: "A shrine for the faithful to worship at."
+prayer_altar_frozen:
+  id: 51609
+  examine: "A shrine for the faithful to worship at."
+prayer_altar_furnished:
+  id: 52154
+  examine: "A shrine for the faithful to worship at."
+altar_love_story:
+  id: 52825
+  examine: "A gilded marble altar with a symbol of Zamorak."
+prayer_altar_frozen_construction:
+  id: 53368
+  examine: "A shrine for the faithful to worship at."
+prayer_altar_abandoned_construction:
+  id: 53376
+  examine: "A shrine for the faithful to worship at."
+prayer_altar_furnished_construction:
+  id: 53384
+  examine: "A shrine for the faithful to worship at."
+prayer_altar_occult_construction:
+  id: 53739
+  examine: "A shrine for the faithful to worship at."
+prayer_altar_zaros:
+  id: 55340
+  examine: "Shrine to the glory of Zaros."
+prayer_altar_warped_construction:
+  id: 55667
+  examine: "A shrine for the faithful to worship at."
+giant_mole_lair_escape_rope:
+  id: 12230
+nature_rift:
+  id: 7133
+  examine: "A tear in the dimensional weave of the Abyss."
+cosmic_rift:
+  id: 7132
+  examine: "A tear in the dimensional weave of the Abyss."
+blood_rift:
+  id: 7141
+  examine: "A tear in the dimensional weave of the Abyss."
+fire_rift:
+  id: 7129
+  examine: "A tear in the dimensional weave of the Abyss."
+earth_rift:
+  id: 7130
+  examine: "A tear in the dimensional weave of the Abyss."
+body_rift:
+  id: 7131
+  examine: "A tear in the dimensional weave of the Abyss."
+mind_rift:
+  id: 7140
+  examine: "A tear in the dimensional weave of the Abyss."
+air_rift:
+  id: 7139
+  examine: "A tear in the dimensional weave of the Abyss."
+soul_rift:
+  id: 7138
+  examine: "A tear in the dimensional weave of the Abyss."
+water_rift:
+  id: 7137
+  examine: "A tear in the dimensional weave of the Abyss."
+death_rift:
+  id: 7136
+  examine: "A tear in the dimensional weave of the Abyss."
+law_rift:
+  id: 7135
+  examine: "A tear in the dimensional weave of the Abyss."
+abyss_obstacle:
+  id: 7142
+abyss_obstacle_2:
+  id: 7143
+abyss_obstacle_3:
+  id: 7144
+abyss_obstacle_4:
+  id: 7145
+abyss_obstacle_5:
+  id: 7146
+abyss_obstacle_6:
+  id: 7147
+abyss_obstacle_7:
+  id: 7148
+abyss_obstacle_8:
+  id: 7153
+abyss_passage:
+  id: 7154
+  examine: "A tunnel through the Abyss."
+abyss_blockage:
+  id: 7156
+  examine: "This seems to be blocking the exit..."
+abyss_rock:
+  id: 7158
+  examine: "I could probably break this up with a pickaxe."
+abyss_rock_mined:
+  id: 7159
+  examine: "I could probably break this up with a pickaxe. Oh wait, I just did."
+broken_rock:
+  id: 7160
+  examine: "Pickaxe power!"
+abyss_tendrils:
+  id: 7161
+  examine: "They don't look that solid, an axe could help me chop them down."
+abyss_tendrils_chopped:
+  id: 7162
+  examine: "They don't look that solid, an axe could help me chop them down."
+chopped_tendrils:
+  id: 7163
+  examine: "I cannot tell a lie. I chopped them down."
+abyss_gap:
+  id: 7164
+  examine: "If I'm agile enough I might be able to squeeze through..."
+abyss_boil:
+  id: 7165
+  examine: "I could probably burn this away with a tinderbox."
+abyss_boil_burned:
+  id: 7166
+  examine: "I could probably burn this with fire."
+abyss_boil_burst:
+  id: 7167
+  examine: "Burnt open."
+abyss_eyes:
+  id: 7168
+  examine: "I could probably distract these with thievery."
+abyss_eyes_looking:
+  id: 7169
+  examine: "I could probably distract these with thievery."
+abyss_eyes_distracted:
+  id: 7170
+  examine: "I could probably distract these with thievery."
+chaos_altar_ladder_up:
+  id: 38221
+  examine: "I can climb this."
+chaos_altar_ladder_down:
+  id: 38222
+  examine: "I can climb down this."
+brimstails_cave_entrance:
+  id: 17209
+  examine: "A small door in a hillock."
+brimstails_cave_exit_left:
+  id: 17223
+  examine: "The way out!"
+brimstails_cave_exit_right:
+  id: 17222
+  examine: "The way out!"
+rune_essence_exit_portal:
+  id: 2492
+  examine: "A portal from this mystical place."
+ourania_cave_ladder_down:
+  id: 26849
+  examine: "Into the darkness..."
+ourania_cave_ladder_up:
+  id: 26850
+  examine: "Into the light!"
+ourania_crack_enter:
+  id: 26844
+  examine: "I might be able to squeeze through."
+ourania_crack_exit:
+  id: 26845
+  examine: "I might be able to squeeze through."
+ourania_altar:
+  id: 26847
+  examine: "An altar upon which to craft runes."

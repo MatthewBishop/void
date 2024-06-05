@@ -16,31 +16,31 @@ import world.gregs.voidps.engine.data.definition.GearDefinitions
 import world.gregs.voidps.engine.data.definition.ItemDefinitions
 import world.gregs.voidps.engine.data.definition.data.Catch
 import world.gregs.voidps.engine.data.definition.data.Spot
-import world.gregs.voidps.engine.entity.Registered
-import world.gregs.voidps.engine.entity.World
 import world.gregs.voidps.engine.entity.character.npc.NPC
 import world.gregs.voidps.engine.entity.character.npc.NPCs
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.character.player.skill.level.Level.has
 import world.gregs.voidps.engine.entity.distanceTo
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.entity.worldSpawn
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.inv.holdsItem
 import world.gregs.voidps.engine.inv.inventory
-import world.gregs.voidps.engine.timer.TimerStop
-import world.gregs.voidps.network.instruct.InteractNPC
+import world.gregs.voidps.engine.timer.timerStop
+import world.gregs.voidps.network.client.instruction.InteractNPC
 import world.gregs.voidps.world.interact.entity.death.weightedSample
 
 val areas: AreaDefinitions by inject()
 val tasks: TaskManager by inject()
 val gear: GearDefinitions by inject()
 
-onBot<TimerStop>({ timer == "fishing" }) { bot: Bot ->
-    bot.resume(timer)
+timerStop("fishing") { player ->
+    if (player.isBot) {
+        player.bot.resume(timer)
+    }
 }
 
-on<World, Registered> {
+worldSpawn {
     for (area in areas.getTagged("fish")) {
         val spaces: Int = area["spaces", 1]
         val type: String = area.getOrNull("type") ?: continue
@@ -51,15 +51,15 @@ on<World, Registered> {
             val task = Task(
                 name = "fish ${type.plural(2)} at ${area.name}".toLowerSpaceCase(),
                 block = {
-                    while (player.levels.getMax(Skill.Fishing) < set.levels.last + 1) {
-                        fish(area, option, bait, set)
+                    while (levels.getMax(Skill.Fishing) < set.levels.last + 1) {
+                        bot.fish(area, option, bait, set)
                     }
                 },
                 area = area.area,
                 spaces = spaces,
                 requirements = listOf(
-                    { player.levels.getMax(Skill.Fishing) in set.levels },
-                    { hasExactGear(set) || hasCoins(2000) }
+                    { levels.getMax(Skill.Fishing) in set.levels },
+                    { bot.hasExactGear(set) || bot.hasCoins(2000) }
                 )
             )
             tasks.register(task)
@@ -82,7 +82,7 @@ suspend fun Bot.fish(map: AreaDefinition, option: String, bait: String, set: Gea
             }
             continue
         }
-        player.instructions.emit(InteractNPC(spot.index, spot.def.options.indexOf(option) + 1))
+        player.instructions.send(InteractNPC(spot.index, spot.def.options.indexOf(option) + 1))
         await("fishing")
     }
 }

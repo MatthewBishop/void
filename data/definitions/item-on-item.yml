@@ -312,7 +312,7 @@ potato_with_butter:
   skill: cooking
   level: 39
   xp: 40.0
-  remove: [ baked_potato, bucket_of_milk ]
+  remove: [ baked_potato, pat_of_butter ]
   add: [ potato_with_butter ]
   ticks: 2
   message: "You add the butter to the potato."
@@ -3479,7 +3479,9 @@ snakeskin_boots:
   level: 45
   xp: 30.0
   requires: [ needle, thread ]
-  remove: [ snakeskin ]
+  remove:
+    - item: snakeskin
+      amount: 6
   add: [ snakeskin_boots ]
   ticks: 3
   animation: craft_leather
@@ -3489,7 +3491,9 @@ snakeskin_vambraces:
   level: 47
   xp: 35.0
   requires: [ needle, thread ]
-  remove: [ snakeskin ]
+  remove:
+    - item: snakeskin
+      amount: 8
   add: [ snakeskin_vambraces ]
   ticks: 3
   animation: craft_leather
@@ -3499,7 +3503,9 @@ snakeskin_bandana:
   level: 48
   xp: 45.0
   requires: [ needle, thread ]
-  remove: [ snakeskin ]
+  remove:
+    - item: snakeskin
+      amount: 5
   add: [ snakeskin_bandana ]
   ticks: 3
   animation: craft_leather
@@ -3509,7 +3515,9 @@ snakeskin_chaps:
   level: 51
   xp: 50.0
   requires: [ needle, thread ]
-  remove: [ snakeskin ]
+  remove:
+    - item: snakeskin
+      amount: 12
   add: [ snakeskin_chaps ]
   ticks: 3
   animation: craft_leather
@@ -3519,7 +3527,9 @@ snakeskin_body:
   level: 53
   xp: 55.0
   requires: [ needle, thread ]
-  remove: [ snakeskin ]
+  remove:
+    - item: snakeskin
+      amount: 15
   add: [ snakeskin_body ]
   ticks: 3
   animation: craft_leather
@@ -3539,7 +3549,9 @@ green_dragonhide_chaps:
   level: 60
   xp: 124.0
   requires: [ needle, thread ]
-  remove: [ green_dragon_leather ]
+  remove:
+    - item: green_dragon_leather
+      amount: 2
   add: [ green_dragonhide_chaps ]
   ticks: 3
   animation: craft_leather
@@ -3549,7 +3561,9 @@ green_dragonhide_body:
   level: 63
   xp: 186.0
   requires: [ needle, thread ]
-  remove: [ green_dragon_leather ]
+  remove:
+    - item: green_dragon_leather
+      amount: 3
   add: [ green_dragonhide_body ]
   ticks: 3
   animation: craft_leather
@@ -3569,7 +3583,9 @@ blue_dragonhide_chaps:
   level: 68
   xp: 140.0
   requires: [ needle, thread ]
-  remove: [ blue_dragon_leather ]
+  remove:
+    - item: blue_dragon_leather
+      amount: 2
   add: [ blue_dragonhide_chaps ]
   ticks: 3
   animation: craft_leather
@@ -3579,7 +3595,9 @@ blue_dragonhide_body:
   level: 71
   xp: 210.0
   requires: [ needle, thread ]
-  remove: [ blue_dragon_leather ]
+  remove:
+    - item: blue_dragon_leather
+      amount: 3
   add: [ blue_dragonhide_body ]
   ticks: 3
   animation: craft_leather
@@ -3599,7 +3617,9 @@ red_dragonhide_chaps:
   level: 75
   xp: 156.0
   requires: [ needle, thread ]
-  remove: [ red_dragon_leather ]
+  remove:
+    - item: red_dragon_leather
+      amount: 2
   add: [ red_dragonhide_chaps ]
   ticks: 3
   animation: craft_leather
@@ -3609,7 +3629,9 @@ red_dragonhide_body:
   level: 77
   xp: 234.0
   requires: [ needle, thread ]
-  remove: [ red_dragon_leather ]
+  remove:
+    - item: red_dragon_leather
+      amount: 3
   add: [ red_dragonhide_body ]
   ticks: 3
   animation: craft_leather
@@ -3629,7 +3651,9 @@ black_dragonhide_chaps:
   level: 82
   xp: 172.0
   requires: [ needle, thread ]
-  remove: [ black_dragon_leather ]
+  remove:
+    - item: black_dragon_leather
+      amount: 2
   add: [ black_dragonhide_chaps ]
   ticks: 3
   animation: craft_leather
@@ -3639,7 +3663,9 @@ black_dragonhide_body:
   level: 84
   xp: 234.0
   requires: [ needle, thread ]
-  remove: [ black_dragon_leather ]
+  remove:
+    - item: black_dragon_leather
+      amount: 3
   add: [ black_dragonhide_body ]
   ticks: 3
   animation: craft_leather
@@ -4211,3 +4237,2475 @@ string_onyx_amulet:
   remove: [ onyx_amulet_unstrung, ball_of_wool ]
   add: [ onyx_amulet ]
   message: "You put some string on your amulet."
+# Herblore unfinished potions
+guam_unf_potion:
+  skill: herblore
+  level: 3
+  xp: 0.0
+  ticks: 1
+  remove: [ clean_guam, vial_of_water ]
+  add: [ guam_potion_unf ]
+  animation: mixing_potion
+  message: "You put the Guam leaf into the vial of water."
+ardrigal_mixture_unf_potion:
+  skill: herblore
+  level: 3
+  xp: 0.0
+  ticks: 1
+  remove: [ clean_ardrigal, vial_of_water ]
+  add: [ ardrigal_mixture ]
+  animation: mixing_potion
+  message: "You put the Ardrigal leaf into the vial of water."
+snakeweed_unf_potion:
+  skill: herblore
+  level: 3
+  xp: 0.0
+  ticks: 1
+  remove: [ clean_snake_weed, vial_of_water ]
+  add: [ snakeweed_mixture ]
+  animation: mixing_potion
+  message: "You put the Snake weed leaf into the vial of water."
+tarromin_unf_potion:
+  skill: herblore
+  level: 12
+  xp: 0.0
+  ticks: 1
+  remove: [ clean_tarromin, vial_of_water ]
+  add: [ tarromin_potion_unf ]
+  animation: mixing_potion
+  message: "You put the Tarromin leaf into the vial of water."
+rogues_purse_unf_potion:
+  skill: herblore
+  level: 5
+  xp: 1.0
+  ticks: 1
+  remove: [ clean_rogues_purse, vial_of_water ]
+  add: [ rogues_purse_potion_unf ]
+  animation: mixing_potion
+  message: "You put the Rogues purse leaf into the vial of water."
+marrentill_unf_potion:
+  skill: herblore
+  level: 5
+  xp: 0.0
+  ticks: 1
+  remove: [ clean_marrentill, vial_of_water ]
+  add: [ marrentill_potion_unf ]
+  animation: mixing_potion
+  message: "You put the Marrentill leaf into the vial of water."
+harralander_unf_potion:
+  skill: herblore
+  level: 22
+  xp: 0.0
+  ticks: 1
+  remove: [ clean_harralander, vial_of_water ]
+  add: [ harralander_potion_unf ]
+  animation: mixing_potion
+  message: "You put the Harralander leaf into the vial of water."
+ranarr_unf_potion:
+  skill: herblore
+  level: 30
+  xp: 0.0
+  ticks: 1
+  remove: [ clean_ranarr, vial_of_water ]
+  add: [ ranarr_potion_unf ]
+  animation: mixing_potion
+  message: "You put the Ranarr leaf into the vial of water."
+toadflax_unf_potion:
+  skill: herblore
+  level: 34
+  xp: 0.0
+  ticks: 1
+  remove: [ clean_toadflax, vial_of_water ]
+  add: [ toadflax_potion_unf ]
+  animation: mixing_potion
+  message: "You put the Toadflax leaf into the vial of water."
+spirit_weed_unf_potion:
+  skill: herblore
+  level: 35
+  xp: 0.0
+  ticks: 1
+  remove: [ clean_spirit_weed, vial_of_water ]
+  add: [ spirit_weed_potion_unf ]
+  animation: mixing_potion
+  message: "You put the Spirit weed leaf into the vial of water."
+irit_unf_potion:
+  skill: herblore
+  level: 45
+  xp: 0.0
+  ticks: 1
+  remove: [ clean_irit, vial_of_water ]
+  add: [ irit_potion_unf ]
+  animation: mixing_potion
+  message: "You put the Irit leaf into the vial of water."
+wergali_unf_potion:
+  skill: herblore
+  level: 5
+  xp: 1.0
+  ticks: 1
+  remove: [ clean_wergali, vial_of_water ]
+  add: [ wergali_potion_unf ]
+  animation: mixing_potion
+  message: "You put the Wergali leaf into the vial of water."
+avantoe_unf_potion:
+  skill: herblore
+  level: 50
+  xp: 0.0
+  ticks: 1
+  remove: [ clean_avantoe, vial_of_water ]
+  add: [ avantoe_potion_unf ]
+  animation: mixing_potion
+  message: "You put the Avantoe leaf into the vial of water."
+kwuarm_unf_potion:
+  skill: herblore
+  level: 55
+  xp: 0.0
+  ticks: 1
+  remove: [ clean_kwuarm, vial_of_water ]
+  add: [ kwuarm_potion_unf ]
+  animation: mixing_potion
+  message: "You put the Kwuarm leaf into the vial of water."
+magic_essence_unf_potion:
+  skill: herblore
+  level: 57
+  xp: 1.0
+  ticks: 1
+  remove: [ star_flower, vial_of_water ]
+  add: [ magic_essence_unf ]
+  animation: mixing_potion
+  message: "You put the Star flower into the vial of water."
+snapdragon_unf_potion:
+  skill: herblore
+  level: 30
+  xp: 0.0
+  ticks: 1
+  remove: [ clean_snapdragon, vial_of_water ]
+  add: [ snapdragon_potion_unf ]
+  animation: mixing_potion
+  message: "You put the Snapdragon leaf into the vial of water."
+cadantine_unf_potion:
+  skill: herblore
+  level: 66
+  xp: 0.0
+  ticks: 1
+  remove: [ clean_cadantine, vial_of_water ]
+  add: [ cadantine_potion_unf ]
+  animation: mixing_potion
+  message: "You put the Cadantine leaf into the vial of water."
+lantadyme_unf_potion:
+  skill: herblore
+  level: 69
+  xp: 0.0
+  ticks: 1
+  remove: [ clean_lantadyme, vial_of_water ]
+  add: [ lantadyme_potion_unf ]
+  animation: mixing_potion
+  message: "You put the Lantadyme leaf into the vial of water."
+dwarf_weed_unf_potion:
+  skill: herblore
+  level: 72
+  xp: 0.0
+  ticks: 1
+  remove: [ clean_dwarf_weed, vial_of_water ]
+  add: [ dwarf_weed_potion_unf ]
+  animation: mixing_potion
+  message: "You put the Dwarf weed leaf into the vial of water."
+torstol_unf_potion:
+  skill: herblore
+  level: 78
+  xp: 0.0
+  ticks: 1
+  remove: [ clean_torstol, vial_of_water ]
+  add: [ torstol_potion_unf ]
+  animation: mixing_potion
+  message: "You put the Torstol leaf into the vial of water."
+guthix_balance_potion_unf:
+  skill: herblore
+  level: 22
+  xp: 25.0
+  ticks: 2
+  remove: [ restore_potion_3, garlic, silver_dust]
+  add: [ guthix_balance_unf_3 ]
+  animation: mixing_potion
+  message: "You mix the garlic into your potion."
+antipoison+_potion_unf:
+  skill: herblore
+  level: 68
+  xp: 1.0
+  ticks: 2
+  remove: [ coconut_milk, clean_toadflax]
+  add: [ antipoison+_unf ]
+  animation: mixing_potion
+  message: "You mix the toadflax leaf into your potion."
+antipoison++_potion_unf:
+  skill: herblore
+  level: 79
+  xp: 1.0
+  ticks: 2
+  remove: [ coconut_milk, clean_irit]
+  add: [ antipoison++_unf ]
+  animation: mixing_potion
+  message: "You mix the irit leaf into your potion."
+weaponpoison+_potion_unf:
+  skill: herblore
+  level: 73
+  xp: 1.0
+  ticks: 2
+  remove: [ coconut_milk, cactus_spine]
+  add: [ weapon_poison+_unf ]
+  animation: mixing_potion
+  message: "You mix the cactus spine into your potion."
+weaponpoison++_potion_unf:
+  skill: herblore
+  level: 73
+  xp: 1.0
+  ticks: 2
+  remove: [ coconut_milk, cave_nightshade]
+  add: [ weapon_poison++_unf ]
+  animation: mixing_potion
+  message: "You mix the cave nightshade into your potion."
+# Herblore finished potions
+attack_potion_finished:
+  skill: herblore
+  level: 3
+  xp: 1.0
+  ticks: 2
+  remove: [ guam_potion_unf, eye_of_newt ]
+  add: [ attack_potion_3 ]
+  animation: mixing_potion
+  message: "You mix the eye of newt into your potion."
+anti_poison_finished:
+  skill: herblore
+  level: 5
+  xp: 37.5
+  ticks: 2
+  remove: [ marrentill_potion_unf, unicorn_horn_dust]
+  add: [ antipoison_3 ]
+  animation: mixing_potion
+  message: "You mix the unicorn dust into your potion."
+strength_potion_finished:
+  skill: herblore
+  level: 12
+  xp: 50.0
+  ticks: 2
+  remove: [ tarromin_potion_unf, limpwurt_root]
+  add: [ strength_potion_3 ]
+  animation: mixing_potion
+  message: "You mix the limpwurt root into your potion."
+stat_restore_potion_finished:
+  skill: herblore
+  level: 12
+  xp: 50.0
+  ticks: 2
+  remove: [ harralander_potion_unf, red_spiders_eggs]
+  add: [ strength_potion_3 ]
+  animation: mixing_potion
+  message: "You mix the limpwurt root into your potion."
+guthix_balance_potion_finished:
+  skill: herblore
+  level: 22
+  xp: 25.0
+  ticks: 2
+  remove: [ guthix_balance_unf_3, silver_dust]
+  add: [ guthix_balance_3 ]
+  animation: mixing_potion
+  message: "You mix the silver dust into your potion."
+blamish_oil_finished:
+  skill: herblore
+  level: 25
+  xp: 80.0
+  ticks: 2
+  remove: [ harralander_potion_unf, blamish_snail_slime]
+  add: [ blamish_oil ]
+  animation: mixing_potion
+  message: "You mix the blamish snail slime into your potion."
+energy_potion_finished:
+  skill: herblore
+  level: 26
+  xp: 67.5
+  ticks: 2
+  remove: [ harralander_potion_unf, chocolate_dust]
+  add: [ energy_potion_3 ]
+  animation: mixing_potion
+  message: "You mix the chocolate dust into your potion."
+defence_potion_finished:
+  skill: herblore
+  level: 30
+  xp: 75.0
+  ticks: 2
+  remove: [ ranarr_potion_unf, white_berries]
+  add: [ defence_potion_3 ]
+  animation: mixing_potion
+  message: "You mix the white berries into your potion."
+super_fishing_explosive_finished:
+  skill: herblore
+  level: 31
+  xp: 55.0
+  ticks: 2
+  remove: [ guam_potion_unf, rubium]
+  add: [ super_fishing_explosive ]
+  animation: mixing_potion
+  message: "You mix the rubium into your potion."
+agility_potion_finished:
+  skill: herblore
+  level: 34
+  xp: 80.0
+  ticks: 2
+  remove: [ toadflax_potion_unf, toads_legs]
+  add: [ agility_potion_3 ]
+  animation: mixing_potion
+  message: "You mix the toads legs into your potion."
+combat_potion_finished_finished:
+  skill: herblore
+  level: 36
+  xp: 84.0
+  ticks: 2
+  remove: [ harralander_potion_unf, desert_goat_horn]
+  add: [ combat_potion_3 ]
+  animation: mixing_potion
+  message: "You mix the desert goat horn into your potion."
+prayer_potion_finished:
+  skill: herblore
+  level: 38
+  xp: 87.5
+  ticks: 2
+  remove: [ ranarr_potion_unf, snape_grass]
+  add: [ prayer_potion_3 ]
+  animation: mixing_potion
+  message: "You mix the snape grass into your potion."
+summoning_potion_finished:
+  skill: herblore
+  level: 40
+  xp: 92.0
+  ticks: 2
+  remove: [ spirit_weed_potion_unf, cockatrice_egg]
+  add: [ summoning_potion_3 ]
+  animation: mixing_potion
+  message: "You mix the cockatrice egg into your potion."
+crafting_potion_finished:
+  skill: herblore
+  level: 42
+  xp: 95.0
+  ticks: 2
+  remove: [ wergali_potion_unf, frog_spawn]
+  add: [ summoning_potion_3 ]
+  animation: mixing_potion
+  message: "You mix the frog spawn into your potion."
+super_attack_potion_finished:
+  skill: herblore
+  level: 45
+  xp: 100.0
+  ticks: 2
+  remove: [ irit_potion_unf, eye_of_newt]
+  add: [ super_attack_potion_3 ]
+  animation: mixing_potion
+  message: "You mix the eye of newt into your potion."
+vial_of_stench_finished:
+  skill: herblore
+  level: 46
+  xp: 0.0
+  ticks: 2
+  remove: [ irit_potion_unf, chopped_onion]
+  add: [ vial_of_stench ]
+  animation: mixing_potion
+  message: "You mix the chopped onion into your potion."
+super_antipoison_potion_finished:
+  skill: herblore
+  level: 48
+  xp: 106.3
+  ticks: 2
+  remove: [ irit_potion_unf, unicorn_horn_dust]
+  add: [ super_antipoison_3 ]
+  animation: mixing_potion
+  message: "You mix the unicorn horn dust into your potion."
+fishing_potion_finished:
+  skill: herblore
+  level: 50
+  xp: 112.5
+  ticks: 2
+  remove: [ avantoe_potion_unf, snape_grass]
+  add: [ fishing_potion_3 ]
+  animation: mixing_potion
+  message: "You mix the snape grass into your potion."
+super_energy_potion_finished:
+  skill: herblore
+  level: 52
+  xp: 117.5
+  ticks: 2
+  remove: [ avantoe_potion_unf, mort_myre_fungus]
+  add: [ super_energy_potion_3 ]
+  animation: mixing_potion
+  message: "You mix the mort myre fungus into your potion."
+hunter_potion_finished:
+  skill: herblore
+  level: 53
+  xp: 120.0
+  ticks: 2
+  remove: [ avantoe_potion_unf, kebbit_teeth_dust]
+  add: [ hunter_potion_3 ]
+  animation: mixing_potion
+  message: "You mix the kebbit teeth dust into your potion."
+super_strength_potion_finished:
+  skill: herblore
+  level: 55
+  xp: 125.0
+  ticks: 2
+  remove: [ kwuarm_potion_unf, limpwurt_root]
+  add: [ super_strength_potion_3 ]
+  animation: mixing_potion
+  message: "You mix the limpwurt root into your potion."
+magic_essence_finished:
+  skill: herblore
+  level: 57
+  xp: 130.0
+  ticks: 2
+  remove: [ magic_essence_unf, gorak_claw_powder]
+  add: [ magic_essence_3 ]
+  animation: mixing_potion
+  message: "You mix the gorak claw powder into your potion."
+fletching_potion_finished_finished:
+  skill: herblore
+  level: 58
+  xp: 132.0
+  ticks: 2
+  remove: [ wergali_potion_unf, wimpy_feather]
+  add: [ fletching_potion_3 ]
+  animation: mixing_potion
+  message: "You mix the wimpy feather into your potion."
+weapon_poison_finished:
+  skill: herblore
+  level: 60
+  xp: 137.5
+  ticks: 2
+  remove: [ kwuarm_potion_unf, dragon_scale_dust]
+  add: [ weapon_poison_3 ]
+  animation: mixing_potion
+  message: "You mix the dragon scale dust into your potion."
+super_restore_finished:
+  skill: herblore
+  level: 63
+  xp: 142.5
+  ticks: 2
+  remove: [ snapdragon_potion_unf, red_spiders_eggs]
+  add: [ super_restore_3 ]
+  animation: mixing_potion
+  message: "You mix the red spiderss eggs into your potion."
+sanfew_mixture_1_of_4_finished:
+  skill: herblore
+  level: 65
+  xp: 57.0
+  ticks: 2
+  remove: [ super_restore_4, unicorn_horn_dust]
+  add: [ mixture_step_1_4 ]
+  animation: mixing_potion
+  message: "You mix the unicorn horn dust into your potion."
+sanfew_serum_1_finished:
+  skill: herblore
+  level: 65
+  xp: 36.0
+  ticks: 2
+  remove: [ mixture_step_2_1, nail_beast_nails]
+  add: [ sanfew_serum_1 ]
+  animation: mixing_potion
+  message: "You mix the nail beast nails into your potion"
+sanfew_serum_2_finished:
+  skill: herblore
+  level: 65
+  xp: 48.0
+  ticks: 2
+  remove: [ mixture_step_2_2, nail_beast_nails]
+  add: [ sanfew_serum_2 ]
+  animation: mixing_potion
+  message: "You mix the nail beast nails into your potion"
+sanfew_serum_3_finished:
+  skill: herblore
+  level: 65
+  xp: 48.0
+  ticks: 2
+  remove: [ mixture_step_2_3, nail_beast_nails]
+  add: [ sanfew_serum_3 ]
+  animation: mixing_potion
+  message: "You mix the nail beast nails into your potion"
+super_defence_potion_finished:
+  skill: herblore
+  level: 66
+  xp: 150.0
+  ticks: 2
+  remove: [ cadantine_potion_unf, white_berries]
+  add: [ cw_super_defence_potion_3 ]
+  animation: mixing_potion
+  message: "You mix the white berries into your potion"
+antipoison+_potion_finished:
+  skill: herblore
+  level: 68
+  xp: 155.0
+  ticks: 2
+  remove: [ antipoison+_unf, yew_roots]
+  add: [ antipoison+_3 ]
+  animation: mixing_potion
+  message: "You mix the yew roots into your potion"
+anti_fire_potion_finished:
+  skill: herblore
+  level: 69
+  xp: 157.5
+  ticks: 2
+  remove: [lantadyme_potion_unf, dragon_scale_dust]
+  add: [anti_fire_potion_3]
+  animation: mixing_potion
+  message: "You mix the dragon scale dust into your potion."
+ranging_potion_finished:
+  skill: herblore
+  level: 72
+  xp: 162.5
+  ticks: 2
+  remove: [dwarf_weed_potion_unf, wine_of_zamorak]
+  add: [ranging_potion_3]
+  animation: mixing_potion
+  message: "You mix the wine of zamorak into your potion"
+weapon_poison+_finished:
+  skill: herblore
+  level: 73
+  xp: 137.5
+  ticks: 2
+  remove: [ weapon_poison+_unf, red_spiders_eggs]
+  add: [ weapon_poison+_3 ]
+  animation: mixing_potion
+  message: "You mix the wine of red spiders eggs into your potion"
+magic_potion_finished:
+  skill: herblore
+  level: 76
+  xp: 172.5
+  ticks: 2
+  remove: [lantadyme_potion_unf, potato_cactus]
+  add: [magic_potion_3]
+  animation: mixing_potion
+  message: "You mix the potato cactus into your potion"
+zamorak_brew_finished:
+  skill: herblore
+  level: 78
+  xp: 175.0
+  ticks: 2
+  remove: [torstol_potion_unf, jangerberries]
+  add: [zamorak_brew_3]
+  animation: mixing_potion
+  message: "You mix the janger berries into your potion"
+saradomin_brew_finished:
+  skill: herblore
+  level: 81
+  xp: 180.0
+  ticks: 2
+  remove: [toadflax_potion_unf, crushed_nest]
+  add: [saradomin_brew_3]
+  animation: mixing_potion
+  message: "You mix the crushed nest into your potion"
+weapon_poison++_finished:
+  skill: herblore
+  level: 82
+  xp: 190.0
+  ticks: 2
+  remove: [weapon_poison++_unf, poison_ivy_berries]
+  add: [saradomin_brew_3]
+  animation: mixing_potion
+  message: "You mix the poison ivy berries into your potion"
+recover_special_potion_finished:
+  skill: herblore
+  level: 84
+  xp: 200.0
+  ticks: 2
+  remove: [cw_super_energy_potion_3, papaya_fruit]
+  add: [recover_special_3]
+  animation: mixing_potion
+  message: "You mix the papaya fruit into your potion"
+super_anti_fire_finished:
+  skill: herblore
+  level: 85
+  xp: 200.0
+  ticks: 2
+  remove: [antifire_3, phoenix_feather]
+  add: [super_antifire_3]
+  animation: mixing_potion
+  message: "You mix the phoenix feather into your potion"
+extreme_attack_potion_finished:
+  skill: herblore
+  level: 88
+  xp: 220.0
+  ticks: 2
+  remove: [super_attack_3, clean_avantoe]
+  add: [extreme_attack_3]
+  animation: mixing_potion
+  message: "You mix the avantoe leaf into your potion"
+extreme_strength_potion_finished:
+  skill: herblore
+  level: 89
+  xp: 230.0
+  ticks: 2
+  remove: [super_strength_3, clean_dwarf_weed]
+  add: [extreme_strength_3]
+  animation: mixing_potion
+  message: "You mix the dwarf weed into your potion"
+extreme_defence_potion_finished:
+  skill: herblore
+  level: 90
+  xp: 240.0
+  ticks: 2
+  remove: [super_defence_3, clean_lantadyme]
+  add: [extreme_defence_3]
+  animation: mixing_potion
+  message: "You mix the lantadyme leaf into your potion"
+extreme_magic_potion_finished:
+  skill: herblore
+  level: 91
+  xp: 250.0
+  ticks: 2
+  remove: [super_magic_3, ground_mud_runes]
+  add: [extreme_magic_3]
+  animation: mixing_potion
+  message: "You mix the ground mud runes into your potion"
+extreme_ranging_potion_finished:
+  skill: herblore
+  level: 92
+  xp: 250.0
+  ticks: 2
+  remove: [super_ranging_3, grenwall_spikes]
+  add: [extreme_ranging_3]
+  animation: mixing_potion
+  message: "You mix the grenwall spikes into your potion"
+super_prayer_potion_finished:
+  skill: herblore
+  level: 94
+  xp: 270.0
+  ticks: 2
+  remove: [prayer_potion_3, wyvern_bonemeal]
+  add: [super_prayer_3]
+  animation: mixing_potion
+  message: "You mix the wyvern bonemeal into your potion"
+overload_potion_finished:
+  skill: herblore
+  level: 96
+  xp: 1000.0
+  ticks: 2
+  remove: [extreme_attack_3, extreme_strength_3, extreme_defence_3, extreme_magic_3, extreme_ranging_3, clean_torstol]
+  add: [overload_3]
+  animation: mixing_potion
+  message: "You combine all of your potions together to make an overload potion"
+# potion mixes
+agility_mix:
+  skill: herblore
+  level: 37
+  xp: 27.0
+  ticks: 2
+  remove: [agility_potion_2, caviar]
+  add: [agility_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your agility potion."
+antifire_mix:
+  skill: herblore
+  level: 75
+  xp: 53.0
+  ticks: 2
+  remove: [antifire_potion_2, caviar]
+  add: [antifire_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your antifire potion."
+antipoison_mix_r:
+  skill: herblore
+  level: 15
+  xp: 1.2
+  ticks: 2
+  remove: [antipoison_potion_2, roe]
+  add: [antipoison_mix_2]
+  animation: mixing_potion
+  message: "You mix the roe into your antipoison potion."
+antipoison_mix_c:
+  skill: herblore
+  level: 15
+  xp: 1.2
+  ticks: 2
+  remove: [antipoison_potion_2, caviar]
+  add: [antipoison_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your antipoison potion."
+antipoison_plus_mix:
+  skill: herblore
+  level: 74
+  xp: 52.0
+  ticks: 2
+  remove: [antipoison_plus_potion_2, caviar]
+  add: [antipoison_plus_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your antipoison+ potion."
+attack_mix_r:
+  skill: herblore
+  level: 4
+  xp: 8.0
+  ticks: 2
+  remove: [attack_potion_2, roe]
+  add: [attack_mix_2]
+  animation: mixing_potion
+  message: "You mix the roe into your attack potion."
+attack_mix_c:
+  skill: herblore
+  level: 4
+  xp: 8.0
+  ticks: 2
+  remove: [attack_potion_2", caviar]
+  add: [attack_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your attack potion."
+combat_mix:
+  skill: herblore
+  level: 40
+  xp: 28.0
+  ticks: 2
+  remove: [combat_potion_2, caviar]
+  add: [combat_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your combat potion."
+defence_mix:
+  skill: herblore
+  level: 11
+  xp: 25.0
+  ticks: 2
+  remove: [defence_potion_2, caviar]
+  add: [defence_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your defence potion."
+energy_mix:
+  skill: herblore
+  level: 29
+  xp: 23.0
+  ticks: 2
+  remove: [energy_potion_2, caviar]
+  add: [energy_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your energy potion."
+fishing_mix:
+  skill: herblore
+  level: 53
+  xp: 38.0
+  ticks: 2
+  remove: [fishing_potion_2, caviar]
+  add: [fishing_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your fishing potion."
+hunting_mix:
+  skill: herblore
+  level: 58
+  xp: 40.0
+  ticks: 2
+  remove: [hunting_potion_2, caviar]
+  add: [hunting_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your hunting potion."
+magic_mix_r:
+  skill: herblore
+  level: 7
+  xp: 8.0
+  ticks: 2
+  remove: [magic_potion_2, roe]
+  add: [magic_mix_2]
+  animation: mixing_potion
+  message: "You mix the roe into your magic potion."
+magic_mix_c:
+  skill: herblore
+  level: 7
+  xp: 8.0
+  ticks: 2
+  remove: [magic_potion_2, caviar]
+  add: [magic_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your magic potion."
+magic_essence_mix:
+  skill: herblore
+  level: 61
+  xp: 43.0
+  ticks: 2
+  remove: [magic_essence_potion, caviar]
+  add: [magic_essence_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your magic essence potion."
+ranging_mix_c:
+  skill: herblore
+  level: 5
+  xp: 8.0
+  ticks: 2
+  remove: [ranging_potion_2", caviar]
+  add: [ranging_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your ranging potion."
+ranging_mix_r:
+  skill: herblore
+  level: 5
+  xp: 8.0
+  ticks: 2
+  remove: [ranging_potion_2, roe]
+  add: [ranging_mix_2]
+  animation: mixing_potion
+  message: "You mix the roe into your ranging potion."
+relicyms_mix_r:
+  skill: herblore
+  level: 9
+  xp: 14.0
+  ticks: 2
+  remove: [relicyms_potion_2, roe]
+  add: [relicyms_mix_2]
+  animation: mixing_potion
+  message: "You mix the roe into your Relicym's potion."
+relicyms_mix_c:
+  skill: herblore
+  level: 9
+  xp: 14.0
+  ticks: 2
+  remove: [relicyms_potion_2, caviar]
+  add: [relicyms_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your Relicym's potion."
+restore_mix_r:
+  skill: herblore
+  level: 24
+  xp: 21.0
+  ticks: 2
+  remove: [restore_potion_2, roe]
+  add: [restore_mix_2]
+  animation: mixing_potion
+  message: "You mix the roe into your restore potion."
+restore_mix_c:
+  skill: herblore
+  level: 24
+  xp: 21.0
+  ticks: 2
+  remove: [restore_potion_2, caviar]
+  add: [restore_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your restore potion."
+strength_mix_r:
+  skill: herblore
+  level: 9
+  xp: 17.0
+  ticks: 2
+  remove: [strength_potion_2, roe]
+  add: [strength_mix_2]
+  animation: mixing_potion
+  message: "You mix the roe into your strength potion."
+strength_mix_c:
+  skill: herblore
+  level: 9
+  xp: 17.0
+  ticks: 2
+  remove: [strength_potion_2, caviar]
+  add: [strength_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your strength potion."
+prayer_mix:
+  skill: herblore
+  level: 42
+  xp: 29.0
+  ticks: 2
+  remove: [prayer_potion_2, caviar]
+  add: [prayer_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your prayer potion."
+super_antipoison_mix:
+  skill: herblore
+  level: 51
+  xp: 35.0
+  ticks: 2
+  remove: [super_antipoison_potion_2, caviar]
+  add: [super_antipoison_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your super antipoison potion."
+super_attack_mix:
+  skill: herblore
+  level: 47
+  xp: 33.0
+  ticks: 2
+  remove: [super_attack_potion_2, caviar]
+  add: [super_attack_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your super attack potion."
+super_defence_mix:
+  skill: herblore
+  level: 71
+  xp: 50.0
+  ticks: 2
+  remove: [super_defence_potion_2, caviar]
+  add: [super_defence_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your super defence potion."
+super_energy_mix:
+  skill: herblore
+  level: 56
+  xp: 39.0
+  ticks: 2
+  remove: [super_energy_potion_2, caviar]
+  add: [super_energy_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your super energy potion."
+super_magic_mix:
+  skill: herblore
+  level: 83
+  xp: 57.0
+  ticks: 2
+  remove: [super_magic_potion_2, caviar]
+  add: [super_magic_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your super magic potion."
+super_ranging_mix:
+  skill: herblore
+  level: 80
+  xp: 54.0
+  ticks: 2
+  remove: [super_ranging_potion_2, caviar]
+  add: [super_ranging_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your super ranging potion."
+super_restore_mix:
+  skill: herblore
+  level: 67
+  xp: 48.0
+  ticks: 2
+  remove: [super_restore_potion_2, caviar]
+  add: [super_restore_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your super restore potion."
+super_strength_mix:
+  skill: herblore
+  level: 59
+  xp: 42.0
+  ticks: 2
+  remove: [super_strength_potion_2, caviar]
+  add: [super_strength_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your super strength potion."
+zamorak_mix:
+  skill: herblore
+  level: 85
+  xp: 58.0
+  ticks: 2
+  remove: [zamorak_potion_2, caviar]
+  add: [zamorak_mix_2]
+  animation: mixing_potion
+  message: "You mix the caviar into your Zamorak potion."
+#juju potions
+erzilla_potion_unf:
+  skill: herblore
+  level: 54
+  xp: 1.0
+  ticks: 2
+  remove: [juju_vial_of_water, clean_erzille]
+  add: [erzille_potion_unf]
+  animation: mixing_potion
+  message: "You mix the erzille into your vial of water."
+argway_potion_unf:
+  skill: herblore
+  level: 56
+  xp: 1.0
+  ticks: 2
+  remove: [juju_vial_of_water, clean_argway]
+  add: [argway_potion_unf]
+  animation: mixing_potion
+  message: "You mix the argway into your vial of water."
+ugune_potion_unf:
+  skill: herblore
+  level: 55
+  xp: 1.0
+  ticks: 2
+  remove: [juju_vial_of_water, clean_ugune]
+  add: [ugune_potion_unf]
+  animation: mixing_potion
+  message: "You mix the ugune into your vial of water."
+shengo_potion_unf:
+  skill: herblore
+  level: 57
+  xp: 1.0
+  ticks: 2
+  remove: [juju_vial_of_water, clean_shengo]
+  add: [shengo_potion_unf]
+  animation: mixing_potion
+  message: "You mix the shengo into your vial of water."
+samaden_potion_unf:
+  skill: herblore
+  level: 58
+  xp: 1.0
+  ticks: 2
+  remove: [juju_vial_of_water, clean_samaden]
+  add: [samaden_potion_unf]
+  animation: mixing_potion
+  message: "You mix the samaden into your vial of water."
+juju_mining_potion_finished:
+  skill: herblore
+  level: 74
+  xp: 168.0
+  ticks: 2
+  remove: [samaden_potion_unf, draconic_vine]
+  add: [juju_mining_potion_3]
+  animation: mixing_potion
+  message: "You mix the draconic vine into your potion."
+juju_guthix_gift_potion_finished:
+  skill: herblore
+  level: 75
+  xp: 179.0
+  ticks: 2
+  remove: [samaden_potion_unf, guthix_vine]
+  add: [guthixs_gift_3]
+  animation: mixing_potion
+  message: "You mix the guthix vine into your potion."
+juju_zamorak_favour_potion_finished:
+  skill: herblore
+  level: 75
+  xp: 179.0
+  ticks: 2
+  remove: [samaden_potion_unf, zamorak_vine]
+  add: [guthixs_gift_3]
+  animation: mixing_potion
+  message: "You mix the zamorak vine into your potion."
+juju_saradomin_potion_finished:
+  skill: herblore
+  level: 75
+  xp: 179.0
+  ticks: 2
+  remove: [samaden_potion_unf, saradomin_vine]
+  add: [saradomins_blessing_3]
+  animation: mixing_potion
+  message: "You mix the saradomin vine into your potion."
+juju_woodcutting_potion_finished:
+  skill: herblore
+  level: 71
+  xp: 160.0
+  ticks: 2
+  remove: [samaden_potion_unf, oily_vine]
+  add: [juju_woodcutting_potion_3]
+  animation: mixing_potion
+  message: "You mix the oily vine into your potion."
+juju_fishing_potion_finished:
+  skill: herblore
+  level: 70
+  xp: 158.0
+  ticks: 2
+  remove: [shengo_potion_unf, aquatic_vine]
+  add: [juju_fishing_potion_3]
+  animation: mixing_potion
+  message: "You mix the aquatic vine into your potion."
+juju_cooking_potion_finished:
+  skill: herblore
+  level: 67
+  xp: 152.0
+  ticks: 2
+  remove: [shengo_potion_unf, plant_teeth]
+  add: [juju_cooking_potion_3]
+  animation: mixing_potion
+  message: "You mix the plant teeth into your potion."
+juju_farming_potion_finished:
+  skill: herblore
+  level: 64
+  xp: 146.0
+  ticks: 2
+  remove: [ugune_potion_unf, marble_vine]
+  add: [juju_farming_potion_3]
+  animation: mixing_potion
+  message: "You mix the ugune into your potion."
+juju_hunter_potion_finished:
+  skill: herblore
+  level: 54
+  xp: 123.0
+  ticks: 2
+  remove: [erzille_potion_unf, corrupt_vine]
+  add: [juju_hunter_potion_3]
+  animation: mixing_potion
+  message: "You mix the corrupt vine into your potion."
+juju_scentless_potion_finished:
+  skill: herblore
+  level: 54
+  xp: 123.0
+  ticks: 2
+  remove: [argway_potion_unf, shadow_vine]
+  add: [scentless_potion_3]
+  animation: mixing_potion
+  message: "You mix the erzille into your potion."
+#swamp tar
+guam_tar:
+  skill: herblore
+  level: 19
+  xp: 30.0
+  ticks: 3
+  requires: [ pestle_and_mortar ]
+  remove:
+    - item: clean_guam
+    - item: swamp_tar
+      amount: 15
+  add:
+    - item: guam_tar
+      amount: 15
+  animation: pestle_and_mortar
+  message: "You mix the guam leaf into the swamp tar."
+marrentill_tar:
+  skill: herblore
+  level: 31
+  xp: 42.5
+  ticks: 3
+  requires: [ pestle_and_mortar ]
+  remove:
+    - item: clean_marrentill
+    - item: swamp_tar
+      amount: 15
+  add:
+    - item: marrentill_tar
+      amount: 15
+  animation: pestle_and_mortar
+  message: "You mix the marrentill leaf into the swamp tar."
+tarromin_tar:
+  skill: herblore
+  level: 39
+  xp: 55.0
+  ticks: 3
+  requires: [ pestle_and_mortar ]
+  remove:
+    - item: clean_tarromin
+    - item: swamp_tar
+      amount: 15
+  add:
+    - item: tarromin_tar
+      amount: 15
+  animation: pestle_and_mortar
+  message: "You mix the tarromin leaf into the swamp tar."
+harralander_tar:
+  skill: herblore
+  level: 44
+  xp: 72.5
+  ticks: 3
+  requires: [ pestle_and_mortar ]
+  remove:
+    - item: clean_harralander
+    - item: swamp_tar
+      amount: 15
+  add:
+    - item: harralander_tar
+      amount: 15
+  animation: pestle_and_mortar
+  message: "You mix the harralander leaf into the swamp tar."
+#crushing items
+unicorn_dust:
+  skill: herblore
+  level: 1
+  xp: 1.0
+  ticks: 1
+  requires: [ pestle_and_mortar ]
+  remove: [ unicorn_horn ]
+  add: [ unicorn_horn_dust ]
+  animation: pestle_and_mortar
+  message: "You crush the unicorn horn."
+silver_dust:
+  skill: herblore
+  level: 1
+  xp: 1.0
+  ticks: 1
+  requires: [ pestle_and_mortar ]
+  remove: [ silver_bar ]
+  add: [ silver_dust ]
+  animation: pestle_and_mortar
+  message: "You crush the silver bar."
+kebbit_teeth_dust:
+  skill: herblore
+  level: 1
+  xp: 1.0
+  ticks: 1
+  requires: [ pestle_and_mortar ]
+  remove: [ kebbit_teeth ]
+  add: [ kebbit_teeth_dust ]
+  animation: pestle_and_mortar
+  message: "You crush the kebbit teeth."
+dragon_scale_dust:
+  skill: herblore
+  level: 1
+  xp: 1.0
+  ticks: 1
+  requires: [ pestle_and_mortar ]
+  remove: [ blue_dragon_scale ]
+  add: [ dragon_scale_dust ]
+  animation: pestle_and_mortar
+  message: "You crush the blue dragon scales."
+crushed_nest:
+  skill: herblore
+  level: 1
+  xp: 1.0
+  ticks: 1
+  requires: [ pestle_and_mortar ]
+  remove: [ birds_nest_empty ]
+  add: [ crushed_nest ]
+  animation: pestle_and_mortar
+  message: "You crush the birds nest."
+crushed_gem:
+  skill: herblore
+  level: 1
+  xp: 1.0
+  ticks: 1
+  requires: [ pestle_and_mortar ]
+  remove: [ uncut_opal ]
+  add: [ crushed_gem ]
+  animation: pestle_and_mortar
+  message: "You crush the uncut opal."
+#fletching bolt tipping
+opal_bronze_bolts:
+  skill: fletching
+  level: 11
+  xp: 16.0
+  remove:
+    - item: bronze_bolts
+      amount: 10
+    - item: opal_bolt_tips
+      amount: 10
+  add:
+    - item: opal_bolts
+      amount: 10
+  message: "You fletch 10 bolts."
+  question: "How many set of 10 would you like to tip?"
+  maximum: 10
+jade_blurite_bolts:
+  skill: fletching
+  level: 11
+  xp: 24.0
+  remove:
+    - item: blurite_bolts
+      amount: 10
+    - item: jade_bolt_tips
+      amount: 10
+  add:
+    - item: jade_bolts
+      amount: 10
+  message: "You fletch 10 bolts."
+  question: "How many set of 10 would you like to tip?"
+  maximum: 10
+pearl_iron_bolts:
+  skill: fletching
+  level: 39
+  xp: 32.0
+  ticks: 2
+  remove:
+    - item: iron_bolts
+      amount: 10
+    - item: pearl_bolt_tips
+      amount: 10
+  add:
+    - item: pearl_bolts
+      amount: 10
+  message: "You fletch 10 bolts."
+  question: "How many set of 10 would you like to tip?"
+  maximum: 10
+red_topaz_steel_bolts:
+  skill: fletching
+  level: 48
+  xp: 39.0
+  ticks: 2
+  remove:
+    - item: steel_bolts
+      amount: 10
+    - item: topaz_bolt_tips
+      amount: 10
+  add:
+    - item: topaz_bolts
+      amount: 10
+  message: "You fletch 10 bolts."
+  question: "How many set of 10 would you like to tip?"
+  maximum: 10
+sapphire_mithril_bolts:
+  skill: fletching
+  level: 56
+  xp: 47.0
+  ticks: 0
+  remove:
+    - item: mithril_bolts
+      amount: 10
+    - item: sapphire_bolt_tips
+      amount: 10
+  add:
+    - item: sapphire_bolts
+      amount: 10
+  message: "You fletch 10 bolts."
+  question: "How many set of 10 would you like to tip?"
+  maximum: 10
+emerald_mithril_bolts:
+  skill: fletching
+  level: 58
+  xp: 55.0
+  ticks: 2
+  remove:
+    - item: mithril_bolts
+      amount: 10
+    - item: emerald_bolt_tips
+      amount: 10
+  add:
+    - item: emerald_bolts
+      amount: 10
+  message: "You fletch 10 bolts."
+  question: "How many set of 10 would you like to tip?"
+  maximum: 10
+ruby_adamant_bolts:
+  skill: fletching
+  level: 63
+  xp: 63.0
+  ticks: 2
+  remove:
+    - item: adamant_bolts
+      amount: 10
+    - item: ruby_bolt_tips
+      amount: 10
+  add:
+    - item: ruby_bolts
+      amount: 10
+  message: "You fletch 10 bolts."
+  question: "How many set of 10 would you like to tip?"
+  maximum: 10
+diamond_adamant_bolts:
+  skill: fletching
+  level: 65
+  xp: 70.0
+  ticks: 2
+  remove:
+    - item: adamant_bolts
+      amount: 10
+    - item: diamond_bolt_tips
+      amount: 10
+  add:
+    - item: diamond_bolts
+      amount: 10
+  message: "You fletch 10 bolts."
+  question: "How many set of 10 would you like to tip?"
+  maximum: 10
+dragonstone_runite_bolts:
+  skill: fletching
+  level: 71
+  xp: 82.0
+  ticks: 2
+  remove:
+    - item: runite_bolts
+      amount: 10
+    - item: dragon_bolt_tips
+      amount: 10
+  add:
+    - item: dragon_bolts
+      amount: 10
+  message: "You fletch 10 bolts."
+  question: "How many set of 10 would you like to tip?"
+  maximum: 10
+kebbit_bolts:
+  skill: fletching
+  level: 32
+  xp: 5.8
+  ticks: 3
+  requires: [ chisel ]
+  remove:
+    - item: kebbit_spike
+      amount: 1
+  add:
+    - item: kebbit_bolts
+      amount: 12
+  message: "You fletch 10 bolts."
+  question: "How many set of 10 would you like to tip?"
+  maximum: 10
+long_kebbit_bolts:
+  skill: fletching
+  level: 42
+  xp: 7.9
+  ticks: 3
+  requires: [ chisel ]
+  remove:
+    - item: long_kebbit_spike
+      amount: 1
+  add:
+    - item: long_kebbit_bolts
+      amount: 12
+  message: "You fletch 10 bolts."
+  question: "How many set of 10 would you like to tip?"
+  maximum: 10
+mithril_grapple_bolt_unf:
+  skill: fletching
+  level: 59
+  xp: 11.0
+  ticks: 2
+  remove:
+    - item: mithril_grapple_tip
+    - item: mithril_bolts
+  add:
+    - item: mithril_grapple_unf
+  message: "You fletch an unfinished mithril grapple."
+  question: "How many set of 10 would you like to tip?"
+  maximum: 10
+mithril_grapple_bolt_finished:
+  skill: fletching
+  level: 59
+  xp: 0.0
+  ticks: 1
+  remove:
+    - item: mithril_grapple_unf
+    - item: rope
+  add:
+    - item: mithril_grapple
+  message: "You fletch a mithril grapple."
+  question: "How many set of 10 would you like to tip?"
+  maximum: 10
+# tipping headless arrows
+bronze_arrows:
+  skill: fletching
+  level: 1
+  xp: 19.5
+  ticks: 2
+  remove:
+    - item: headless_arrow
+      amount: 15
+    - item: bronze_arrowtips
+      amount: 15
+  add:
+    - item: bronze_arrow
+      amount: 15
+  message: "You attach arrows heads to 15 arrow shafts."
+  question: "How many set of 15 would you like to make?"
+  maximum: 10
+iron_arrows:
+  skill: fletching
+  level: 15
+  xp: 37.5
+  ticks: 2
+  remove:
+    - item: headless_arrow
+      amount: 15
+    - item: iron_arrowtips
+      amount: 15
+  add:
+    - item: iron_arrow
+      amount: 15
+  message: "You attach arrows heads to 15 arrow shafts."
+  question: "How many set of 15 would you like to make?"
+  maximum: 10
+steel_arrows:
+  skill: fletching
+  level: 30
+  xp: 75.0
+  ticks: 2
+  remove:
+    - item: headless_arrow
+      amount: 15
+    - item: steel_arrowtips
+      amount: 15
+  add:
+    - item: steel_arrow
+      amount: 15
+  message: "You attach arrows heads to 15 arrow shafts."
+  question: "How many set of 15 would you like to make?"
+  maximum: 10
+mithril_arrows:
+  skill: fletching
+  level: 45
+  xp: 112.5
+  ticks: 2
+  remove:
+    - item: headless_arrow
+      amount: 15
+    - item: mithril_arrowtips
+      amount: 15
+  add:
+    - item: mithril_arrow
+      amount: 15
+  message: "You attach arrows heads to 15 arrow shafts."
+  question: "How many set of 15 would you like to make?"
+  maximum: 10
+adamant_arrows:
+  skill: fletching
+  level: 60
+  xp: 150
+  ticks: 2
+  remove:
+    - item: headless_arrow
+      amount: 15
+    - item: adamant_arrowtips
+      amount: 15
+  add:
+    - item: adamant_arrow
+      amount: 15
+  message: "You attach arrows heads to 15 arrow shafts."
+  question: "How many set of 15 would you like to make?"
+  maximum: 10
+rune_arrows:
+  skill: fletching
+  level: 75
+  xp: 187.5
+  ticks: 2
+  remove:
+    - item: headless_arrow
+      amount: 15
+    - item: rune_arrowtips
+      amount: 15
+  add:
+    - item: rune_arrow
+      amount: 15
+  message: "You attach arrows heads to 15 arrow shafts."
+  question: "How many set of 15 would you like to make?"
+  maximum: 10
+dragon_arrows:
+  skill: fletching
+  level: 90
+  xp: 225.0
+  ticks: 2
+  remove:
+    - item: headless_arrow
+      amount: 15
+    - item: dragon_arrowtips
+      amount: 15
+  add:
+    - item: dragon_arrow
+      amount: 15
+  message: "You attach arrows heads to 15 arrow shafts."
+  question: "How many set of 15 would you like to make?"
+  maximum: 10
+#fletch tipping special arrows
+ogre_arrow:
+  skill: fletching
+  level: 5
+  xp: 6.0
+  ticks: 2
+  remove:
+    - item: flighted_ogre_arrow
+      amount: 6
+    - item: wolfbone_arrowtips
+      amount: 6
+  add:
+    - item: ogre_arrow
+      amount: 6
+  message: "You attach arrows heads to 6 arrow shafts."
+  question: "How many set of 6 would you like to make?"
+  maximum: 10
+bronze_ogre_arrow:
+  skill: fletching
+  level: 7
+  xp: 8.4
+  ticks: 2
+  remove:
+    - item: flighted_ogre_arrow
+      amount: 6
+    - item: bronze_nails
+      amount: 6
+  add:
+    - item: bronze_brutal
+      amount: 6
+  message: "You attach the nails to 6 arrow shafts."
+  question: "How many set of 6 would you like to make?"
+  maximum: 10
+iron_ogre_arrow:
+  skill: fletching
+  level: 18
+  xp: 15.6
+  ticks: 2
+  remove:
+    - item: flighted_ogre_arrow
+      amount: 6
+    - item: iron_nails
+      amount: 6
+  add:
+    - item: iron_brutal
+      amount: 6
+  message: "You attach the nails to 6 arrow shafts."
+  question: "How many set of 6 would you like to make?"
+  maximum: 10
+steel_ogre_arrow:
+  skill: fletching
+  level: 33
+  xp: 30.6
+  ticks: 2
+  remove:
+    - item: flighted_ogre_arrow
+      amount: 6
+    - item: steel_nails
+      amount: 6
+  add:
+    - item: steel_brutal
+      amount: 6
+  message: "You attach the nails to 6 arrow shafts."
+  question: "How many set of 6 would you like to make?"
+  maximum: 10
+black_ogre_arrow:
+  skill: fletching
+  level: 38
+  xp: 39.0
+  ticks: 2
+  remove:
+    - item: flighted_ogre_arrow
+      amount: 6
+    - item: black_nails
+      amount: 6
+  add:
+    - item: black_brutal
+      amount: 6
+  message: "You attach the nails to 6 arrow shafts."
+  question: "How many set of 6 would you like to make?"
+  maximum: 10
+mithril_ogre_arrow:
+  skill: fletching
+  level: 49
+  xp: 45.0
+  ticks: 2
+  remove:
+    - item: flighted_ogre_arrow
+      amount: 6
+    - item: mithril_nails
+      amount: 6
+  add:
+    - item: mithril_brutal
+      amount: 6
+  message: "You attach the nails to 6 arrow shafts."
+  question: "How many set of 6 would you like to make?"
+  maximum: 10
+adamant_ogre_arrow:
+  skill: fletching
+  level: 62
+  xp: 61.2
+  ticks: 2
+  remove:
+    - item: flighted_ogre_arrow
+      amount: 6
+    - item: adamant_nails
+      amount: 6
+  add:
+    - item: adamant_brutal
+      amount: 6
+  message: "You attach the nails to 6 arrow shafts."
+  question: "How many set of 6 would you like to make?"
+  maximum: 10
+rune_ogre_arrow:
+  skill: fletching
+  level: 77
+  xp: 75.0
+  ticks: 2
+  remove:
+    - item: flighted_ogre_arrow
+      amount: 6
+    - item: rune_nails
+      amount: 6
+  add:
+    - item: rune_brutal
+      amount: 6
+  message: "You attach the nails to 6 arrow shafts."
+  question: "How many set of 6 would you like to make?"
+  maximum: 10
+broad_arrows:
+  skill: fletching
+  level: 52
+  xp: 150.0
+  ticks: 2
+  remove:
+    - item: headless_arrow
+      amount: 15
+    - item: broad_arrow_heads
+      amount: 15
+  add:
+    - item: broad_arrow
+      amount: 15
+  message: "You attach arrows heads to 15 arrow shafts."
+  question: "How many set of 15 would you like to make?"
+  maximum: 10
+unstrung_ogre_comp_bow:
+  skill: fletching
+  level: 30
+  xp: 45.0
+  ticks: 3
+  requires: [ knife ]
+  remove:
+    - item: achey_tree_logs
+    - item: wolf_bones
+  add:
+    - item: unstrung_comp_bow
+  message: "You carefully cut the wood and add the bones."
+  question: "What would you like to fletch?"
+  animation: fletching_bow_log
+# fletching finished bows
+shortbow_finished:
+  skill: fletching
+  level: 5
+  xp: 5.0
+  ticks: 2
+  remove:
+    - item: bowstring
+    - item: shortbow_u
+  add:
+    - item: shortbow
+  message: "You add a string to the bow."
+  animation: fletching_string_normal_shortbow
+longbow_finished:
+  skill: fletching
+  level: 10
+  xp: 10.0
+  ticks: 2
+  remove:
+    - item: bowstring
+    - item: longbow_u
+  add:
+    - item: longbow
+  message: "You add a string to the bow."
+  animation: fletching_string_normal_longbow
+oak_shortbow_finished:
+  skill: fletching
+  level: 20
+  xp: 16.5
+  ticks: 2
+  remove:
+    - item: bowstring
+    - item: oak_shortbow_u
+  add:
+    - item: oak_shortbow
+  message: "You add a string to the bow."
+  animation: fletching_string_oak_shortbow
+oak_longbow_finished:
+  skill: fletching
+  level: 25
+  xp: 25.0
+  ticks: 2
+  remove:
+    - item: bowstring
+    - item: oak_longbow_u
+  add:
+    - item: oak_longbow
+  message: "You add a string to the bow."
+  animation: fletching_string_oak_longbow
+ogre_comp_finished:
+  skill: fletching
+  level: 30
+  xp: 45.0
+  ticks: 2
+  remove:
+    - item: bowstring
+    - item: unstrung_comp_bow
+  add:
+    - item: comp_ogre_bow
+  message: "You add a string to the bow."
+willow_shortbow_finished:
+  skill: fletching
+  level: 35
+  xp: 33.2
+  ticks: 2
+  remove:
+    - item: bowstring
+    - item: willow_shortbow_u
+  add:
+    - item: willow_shortbow
+  message: "You add a string to the bow."
+  animation: fletching_string_willow_shortbow
+willow_longbow_finished:
+  skill: fletching
+  level: 40
+  xp: 41.5
+  ticks: 2
+  remove:
+    - item: bowstring
+    - item: willow_longbow_u
+  add:
+    - item: willow_longbow
+  message: "You add a string to the bow."
+  animation: fletching_string_willow_longbow
+maple_shortbow_finished:
+  skill: fletching
+  level: 50
+  xp: 50.0
+  ticks: 2
+  remove:
+    - item: bowstring
+    - item: maple_shortbow_u
+  add:
+    - item: maple_shortbow
+  message: "You add a string to the bow."
+  animation: fletching_string_maple_shortbow
+maple_longbow_finished:
+  skill: fletching
+  level: 55
+  xp: 58.2
+  ticks: 2
+  remove:
+    - item: bowstring
+    - item: maple_longbow_u
+  add:
+    - item: maple_longbow
+  message: "You add a string to the bow."
+  animation: fletching_string_maple_longbow
+yew_shortbow_finished:
+  skill: fletching
+  level: 65
+  xp: 67.4
+  ticks: 2
+  remove:
+    - item: bowstring
+    - item: yew_shortbow_u
+  add:
+    - item: yew_shortbow
+  message: "You add a string to the bow."
+  animation: fletching_string_yew_shortbow
+yew_longbow_finished:
+  skill: fletching
+  level: 70
+  xp: 75.0
+  ticks: 2
+  remove:
+    - item: bowstring
+    - item: yew_longbow_u
+  add:
+    - item: yew_longbow
+  message: "You add a string to the bow."
+  animation: fletching_string_yew_longbow
+magic_shortbow_finished:
+  skill: fletching
+  level: 80
+  xp: 83.2
+  ticks: 2
+  remove:
+    - item: bowstring
+    - item: magic_shortbow_u
+  add:
+    - item: magic_shortbow
+  message: "You add a string to the bow."
+  animation: fletching_string_magic_shortbow
+magic_longbow_finished:
+  skill: fletching
+  level: 85
+  xp: 91.5
+  ticks: 2
+  remove:
+    - item: bowstring
+    - item: magic_longbow_u
+  add:
+    - item: magic_longbow
+  message: "You add a string to the bow."
+  animation: fletching_string_magic_longbow
+#fletching crossbow unfinished
+bronze_crossbow_unfinished:
+  skill: fletching
+  level: 9
+  xp: 12.0
+  ticks: 2
+  remove:
+    - item: wooden_stock
+    - item: bronze_limbs
+  add:
+    - item: bronze_crossbow_u
+  message: "You add a limbs to the stock."
+blurite_crossbow_unfinished:
+  skill: fletching
+  level: 24
+  xp: 32.0
+  ticks: 2
+  remove:
+    - item: oak_stock
+    - item: blurite_limbs
+  add:
+    - item: blurite_crossbow_u
+  message: "You add a limbs to the stock."
+iron_crossbow_unfinished:
+  skill: fletching
+  level: 24
+  xp: 32.0
+  ticks: 2
+  remove:
+    - item: willow_stock
+    - item: iron_limbs
+  add:
+    - item: iron_crossbow_u
+  message: "You add a limbs to the stock."
+steel_crossbow_unfinished:
+  skill: fletching
+  level: 46
+  xp: 54.0
+  ticks: 2
+  remove:
+    - item: teak_stock
+    - item: steel_limbs
+  add:
+    - item: steel_crossbow_u
+  message: "You add a limbs to the stock."
+mithril_crossbow_unfinished:
+  skill: fletching
+  level: 54
+  xp: 64.0
+  ticks: 2
+  remove:
+    - item: maple_stock
+    - item: mithril_limbs
+  add:
+    - item: mithril_crossbow_u
+  message: "You add a limbs to the stock."
+adamant_crossbow_unfinished:
+  skill: fletching
+  level: 61
+  xp: 82.0
+  ticks: 2
+  remove:
+    - item: mahogany_stock
+    - item: adamant_limbs
+  add:
+    - item: adamant_crossbow_u
+  message: "You add a limbs to the stock."
+rune_crossbow_unfinished:
+  skill: fletching
+  level: 69
+  xp: 100.0
+  ticks: 2
+  remove:
+    - item: yew_stock
+    - item: rune_limbs
+  add:
+    - item: rune_crossbow_u
+  message: "You add a limbs to the stock."
+#fletching crossbow finished
+bronze_crossbow_finished:
+  skill: fletching
+  level: 9
+  xp: 6.0
+  ticks: 2
+  remove:
+    - item: bronze_crossbow_u
+    - item: crossbow_string
+  add:
+    - item: bronze_crossbow
+  message: "You add a string to the stock."
+  animation: fletching_string_bronze_crossbow
+blurite_crossbow_finished:
+  skill: fletching
+  level: 24
+  xp: 16.0
+  ticks: 2
+  remove:
+    - item: blurite_crossbow_u
+    - item: crossbow_string
+  add:
+    - item: blurite_crossbow
+  message: "You add a string to the stock."
+  animation: fletching_string_blurite_crossbow
+iron_crossbow_finished:
+  skill: fletching
+  level: 39
+  xp: 22.0
+  ticks: 2
+  remove:
+    - item: iron_crossbow_u
+    - item: crossbow_string
+  add:
+    - item: iron_crossbow
+  message: "You add a string to the stock."
+  animation: fletching_string_iron_crossbow
+steel_crossbow_finished:
+  skill: fletching
+  level: 46
+  xp: 27.0
+  ticks: 2
+  remove:
+    - item: steel_crossbow_u
+    - item: crossbow_string
+  add:
+    - item: steel_crossbow
+  message: "You add a string to the stock."
+  animation: fletching_string_steel_crossbow
+mithril_crossbow_finished:
+  skill: fletching
+  level: 54
+  xp: 32.0
+  ticks: 2
+  remove:
+    - item: mithril_crossbow_u
+    - item: crossbow_string
+  add:
+    - item: mithril_crossbow
+  message: "You add a string to the stock."
+  animation: fletching_string_mithril_crossbow
+adamant_crossbow_finished:
+  skill: fletching
+  level: 61
+  xp: 41.0
+  ticks: 2
+  remove:
+    - item: adamant_crossbow_u
+    - item: crossbow_string
+  add:
+    - item: adamant_crossbow
+  message: "You add a string to the stock."
+  animation: fletching_string_adamant_crossbow
+rune_crossbow_finished:
+  skill: fletching
+  level: 69
+  xp: 41.0
+  ticks: 2
+  remove:
+    - item: rune_crossbow_u
+    - item: crossbow_string
+  add:
+    - item: rune_crossbow
+  message: "You add a string to the stock."
+  animation: fletching_string_rune_crossbow
+# light source making
+white_lantern_make:
+  skill: firemaking
+  level: 1
+  xp: 0.0
+  ticks: 1
+  remove:
+    - item: white_candle
+    - item: candle_lantern_empty
+  add:
+    - item: candle_lantern_white
+  message: "You add the candle to the empty lantern frame."
+black_lantern_make:
+  skill: firemaking
+  level: 1
+  xp: 0.0
+  ticks: 1
+  remove:
+    - item: black_candle
+    - item: candle_lantern_empty
+  add:
+    - item: candle_lantern_black
+  message: "You add the candle to the empty lantern frame."
+default_bullseye_lantern_make:
+  skill: crafting
+  level: 49
+  xp: 0.0
+  ticks: 1
+  remove:
+    - item: bullseye_lantern_frame
+    - item: lantern_lens
+  add:
+    - item: bullseye_lantern_empty
+  message: "You add the lens to the bullseye lantern frame."
+emerald_bullseye_lantern_make:
+  skill: crafting
+  level: 1
+  xp: 0.0
+  ticks: 1
+  remove:
+    - item: bullseye_lantern_frame
+    - item: emerald_lens
+  add:
+    - item: emerald_lantern
+  message: "You add the lens to the bullseye lantern frame."
+sapphire_bullseye_lantern_make:
+  skill: crafting
+  level: 1
+  xp: 0.0
+  ticks: 1
+  remove:
+    - item: bullseye_lantern_frame
+    - item: sapphire
+  add:
+    - item: sapphire_lantern_empty
+  message: "You add the lens to the bullseye lantern frame."
+default_bullseye_lantern_oiled_make:
+  skill: crafting
+  level: 1
+  xp: 0.0
+  ticks: 2
+  remove:
+    - item: swamp_tar
+    - item: bullseye_lantern_empty
+  add:
+    - item: bullseye_lantern_oil
+  message: "You add the swamp tar to the empty lantern."
+oil_lamp_fill:
+  skill: firemaking
+  level: 12
+  xp: 0.0
+  ticks: 2
+  remove:
+    - item: swamp_tar
+    - item: oil_lamp_empty
+  add:
+    - item: oil_lamp_oil
+  message: "You add the swamp tar to the empty lantern."
+oil_lantern_fill:
+  skill: firemaking
+  level: 26
+  xp: 0.0
+  ticks: 2
+  remove:
+    - item: swamp_tar
+    - item: oil_lantern_empty
+  add:
+    - item: oil_lantern_oil
+  message: "You add the swamp tar to the empty lantern."
+# Vegetable Sacks
+potatoes_1:
+  remove:
+    - item: empty_sack
+    - item: raw_potato
+  add:
+    - item: potatoes_1
+  message: "You put a potato in the vegetable sack."
+potatoes_2:
+  remove:
+    - item: potatoes_1
+    - item: raw_potato
+  add:
+    - item: potatoes_2
+  message: "You put a potato in the vegetable sack."
+potatoes_3:
+  remove:
+    - item: potatoes_2
+    - item: raw_potato
+  add:
+    - item: potatoes_3
+  message: "You put a potato in the vegetable sack."
+potatoes_4:
+  remove:
+    - item: potatoes_3
+    - item: raw_potato
+  add:
+    - item: potatoes_4
+  message: "You put a potato in the vegetable sack."
+potatoes_5:
+  remove:
+    - item: potatoes_4
+    - item: raw_potato
+  add:
+    - item: potatoes_5
+  message: "You put a potato in the vegetable sack."
+potatoes_6:
+  remove:
+    - item: potatoes_5
+    - item: raw_potato
+  add:
+    - item: potatoes_6
+  message: "You put a potato in the vegetable sack."
+potatoes_7:
+  remove:
+    - item: potatoes_6
+    - item: raw_potato
+  add:
+    - item: potatoes_7
+  message: "You put a potato in the vegetable sack."
+potatoes_8:
+  remove:
+    - item: potatoes_7
+    - item: raw_potato
+  add:
+    - item: potatoes_8
+  message: "You put a potato in the vegetable sack."
+potatoes_9:
+  remove:
+    - item: potatoes_8
+    - item: raw_potato
+  add:
+    - item: potatoes_9
+  message: "You put a potato in the vegetable sack."
+potatoes_10:
+  remove:
+    - item: potatoes_9
+    - item: raw_potato
+  add:
+    - item: potatoes_10
+  message: "You put a potato in the vegetable sack."
+onions_1:
+  remove:
+    - item: empty_sack
+    - item: onion
+  add:
+    - item: onions_1
+  message: "You put an onion in the vegetable sack."
+onions_2:
+  remove:
+    - item: onions_1
+    - item: onion
+  add:
+    - item: onions_2
+  message: "You put an onion in the vegetable sack."
+onions_3:
+  remove:
+    - item: onions_2
+    - item: onion
+  add:
+    - item: onions_3
+  message: "You put an onion in the vegetable sack."
+onions_4:
+  remove:
+    - item: onions_3
+    - item: onion
+  add:
+    - item: onions_4
+  message: "You put an onion in the vegetable sack."
+onions_5:
+  remove:
+    - item: onions_4
+    - item: onion
+  add:
+    - item: onions_5
+  message: "You put an onion in the vegetable sack."
+onions_6:
+  remove:
+    - item: onions_5
+    - item: onion
+  add:
+    - item: onions_6
+  message: "You put an onion in the vegetable sack."
+onions_7:
+  remove:
+    - item: onions_6
+    - item: onion
+  add:
+    - item: onions_7
+  message: "You put an onion in the vegetable sack."
+onions_8:
+  remove:
+    - item: onions_7
+    - item: onion
+  add:
+    - item: onions_8
+  message: "You put an onion in the vegetable sack."
+onions_9:
+  remove:
+    - item: onions_8
+    - item: onion
+  add:
+    - item: onions_9
+  message: "You put an onion in the vegetable sack."
+onions_10:
+  remove:
+    - item: onions_9
+    - item: onion
+  add:
+    - item: onions_10
+  message: "You put an onion in the vegetable sack."
+cabbages_1:
+  remove:
+    - item: empty_sack
+    - item: cabbage
+  add:
+    - item: cabbages_1
+  message: "You put a cabbage in the vegetable sack."
+cabbages_2:
+  remove:
+    - item: cabbages_1
+    - item: cabbage
+  add:
+    - item: cabbages_2
+  message: "You put a cabbage in the vegetable sack."
+cabbages_3:
+  remove:
+    - item: cabbages_2
+    - item: cabbage
+  add:
+    - item: cabbages_3
+  message: "You put a cabbage in the vegetable sack."
+cabbages_4:
+  remove:
+    - item: cabbages_3
+    - item: cabbage
+  add:
+    - item: cabbages_4
+  message: "You put a cabbage in the vegetable sack."
+cabbages_5:
+  remove:
+    - item: cabbages_4
+    - item: cabbage
+  add:
+    - item: cabbages_5
+  message: "You put a cabbage in the vegetable sack."
+cabbages_6:
+  remove:
+    - item: cabbages_5
+    - item: cabbage
+  add:
+    - item: cabbages_6
+  message: "You put a cabbage in the vegetable sack."
+cabbages_7:
+  remove:
+    - item: cabbages_6
+    - item: cabbage
+  add:
+    - item: cabbages_7
+  message: "You put a cabbage in the vegetable sack."
+cabbages_8:
+  remove:
+    - item: cabbages_7
+    - item: cabbage
+  add:
+    - item: cabbages_8
+  message: "You put a cabbage in the vegetable sack."
+cabbages_9:
+  remove:
+    - item: cabbages_8
+    - item: cabbage
+  add:
+    - item: cabbages_9
+  message: "You put a cabbage in the vegetable sack."
+cabbages_10:
+  remove:
+    - item: cabbages_9
+    - item: cabbage
+  add:
+    - item: cabbages_10
+  message: "You put a cabbage in the vegetable sack."
+# Fruit Baskets
+strawberries_1:
+  remove:
+    - item: basket
+    - item: strawberry
+  add:
+    - item: strawberries_1
+  message: "You put a strawberry in the fruit basket."
+strawberries_2:
+  remove:
+    - item: strawberries_1
+    - item: strawberry
+  add:
+    - item: strawberries_2
+  message: "You put a strawberry in the fruit basket."
+strawberries_3:
+  remove:
+    - item: strawberries_2
+    - item: strawberry
+  add:
+    - item: strawberries_3
+  message: "You put a strawberry in the fruit basket."
+strawberries_4:
+  remove:
+    - item: strawberries_3
+    - item: strawberry
+  add:
+    - item: strawberries_4
+  message: "You put a strawberry in the fruit basket."
+strawberries_5:
+  remove:
+    - item: strawberries_4
+    - item: strawberry
+  add:
+    - item: strawberries_5
+  message: "You put a strawberry in the fruit basket."
+oranges_1:
+  remove:
+    - item: basket
+    - item: orange
+  add:
+    - item: oranges_1
+  message: "You put an orange in the fruit basket."
+oranges_2:
+  remove:
+    - item: oranges_1
+    - item: orange
+  add:
+    - item: oranges_2
+  message: "You put an orange in the fruit basket."
+oranges_3:
+  remove:
+    - item: oranges_2
+    - item: orange
+  add:
+    - item: oranges_3
+  message: "You put an orange in the fruit basket."
+oranges_4:
+  remove:
+    - item: oranges_3
+    - item: orange
+  add:
+    - item: oranges_4
+  message: "You put an orange in the fruit basket."
+oranges_5:
+  remove:
+    - item: oranges_4
+    - item: orange
+  add:
+    - item: oranges_5
+  message: "You put an orange in the fruit basket."
+bananas_1:
+  remove:
+    - item: basket
+    - item: banana
+  add:
+    - item: bananas_1
+  message: "You put a banana in the fruit basket."
+bananas_2:
+  remove:
+    - item: bananas_1
+    - item: banana
+  add:
+    - item: bananas_2
+  message: "You put a banana in the fruit basket."
+bananas_3:
+  remove:
+    - item: bananas_2
+    - item: banana
+  add:
+    - item: bananas_3
+  message: "You put a banana in the fruit basket."
+bananas_4:
+  remove:
+    - item: bananas_3
+    - item: banana
+  add:
+    - item: bananas_4
+  message: "You put a banana in the fruit basket."
+bananas_5:
+  remove:
+    - item: bananas_4
+    - item: banana
+  add:
+    - item: bananas_5
+  message: "You put a banana in the fruit basket."
+apples_1:
+  remove:
+    - item: basket
+    - item: cooking_apple
+  add:
+    - item: apples_1
+  message: "You put an apple in the fruit basket."
+apples_2:
+  remove:
+    - item: apples_1
+    - item: cooking_apple
+  add:
+    - item: apples_2
+  message: "You put an apple in the fruit basket."
+apples_3:
+  remove:
+    - item: apples_2
+    - item: cooking_apple
+  add:
+    - item: apples_3
+  message: "You put an apple in the fruit basket."
+apples_4:
+  remove:
+    - item: apples_3
+    - item: cooking_apple
+  add:
+    - item: apples_4
+  message: "You put an apple in the fruit basket."
+apples_5:
+  remove:
+    - item: apples_4
+    - item: cooking_apple
+  add:
+    - item: apples_5
+  message: "You put an apple in the fruit basket."
+tomatoes_1:
+  remove:
+    - item: basket
+    - item: tomato
+  add:
+    - item: tomatoes_1
+  message: "You put a tomato in the fruit basket."
+tomatoes_2:
+  remove:
+    - item: tomatoes_1
+    - item: tomato
+  add:
+    - item: tomatoes_2
+  message: "You put a tomato in the fruit basket."
+tomatoes_3:
+  remove:
+    - item: tomatoes_2
+    - item: tomato
+  add:
+    - item: tomatoes_3
+  message: "You put a tomato in the fruit basket."
+tomatoes_4:
+  remove:
+    - item: tomatoes_3
+    - item: tomato
+  add:
+    - item: tomatoes_4
+  message: "You put a tomato in the fruit basket."
+tomatoes_5:
+  remove:
+    - item: tomatoes_4
+    - item: tomato
+  add:
+    - item: tomatoes_5
+  message: "You put a tomato in the fruit basket."

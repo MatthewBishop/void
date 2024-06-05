@@ -6,7 +6,7 @@ import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.player.equip.equipped
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.item.Item
-import world.gregs.voidps.network.visual.update.player.EquipSlot
+import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
 
 object BarrowsArmour {
 
@@ -25,11 +25,12 @@ object BarrowsArmour {
         else -> damage
     }
 
-    fun isSlot(index: Int) =
-        index == EquipSlot.Hat.index ||
-                index == EquipSlot.Chest.index ||
-                index == EquipSlot.Legs.index ||
-                index == EquipSlot.Weapon.index
+    val slots = setOf(
+        EquipSlot.Hat.index,
+        EquipSlot.Chest.index,
+        EquipSlot.Legs.index,
+        EquipSlot.Weapon.index
+    )
 
     fun hasSet(player: Player, weapon: String, helm: String, top: String, legs: String) =
         notBroken(player.equipped(EquipSlot.Weapon).id, weapon) &&

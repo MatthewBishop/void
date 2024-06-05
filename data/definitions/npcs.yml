@@ -59,6 +59,10 @@ banker_2:
   interact_distance: 2
   race: human
   examine: "She can look after my money."
+bob_barter_herbs:
+  id: 6524
+  race: human
+  examine: "He's probably seen better days."
 duck_swim:
   &duck_swim
   id: 46
@@ -196,6 +200,12 @@ cook_lumbridge:
   race: human
   wander_radius: 4
   examine: "Lumbridge Castle's head cook."
+star_sprite:
+  id: 8091
+  examine: "A shiny, happy star sprite."
+shooting_star_shadow:
+  id: 8092
+  examine: "The shadow of a shooting star"
 doric:
   id: 284
   race: dwarf
@@ -283,7 +293,7 @@ fishing_spot_lure_bait_lumbridge:
         - fishing_rod
       bait:
         fishing_bait:
-          - pike
+          - raw_pike
   examine: "It looks like there might be fish swimming in the water."
 frog_frogland:
   &frog_frogland
@@ -314,6 +324,11 @@ cow_brown:
 frog_8_frogland:
   <<: *frog_frogland
   id: 403
+father_urhney:
+  id: 458
+  wander_radius: 4
+  race: human
+  examine: "Very holy."
 giant_surprise_exam:
   id: 487
   examine: "I guess he wants to be more than just the muscle."
@@ -409,6 +424,11 @@ squire_asrol:
   race: human
   wander_radius: 4
   examine: "Indentured servant of a Knight."
+jeffery:
+  id: 637
+  wander_radius: 4
+  race: human
+  examine: "The man with the armour."
 reldo:
   id: 647
   wander_radius: 4
@@ -421,6 +441,14 @@ duke_horacio:
   race: human
   wander_radius: 3
   examine: "Duke Horacio of Lumbridge."
+tanner:
+  id: 804
+  race: human
+  examine: "Manufacturer of fine leathers."
+master_crafter:
+  id: 805
+  race: human
+  examine: "He's in charge of the Crafting Guild."
 delrith:
   id: 879
   max_hit_melee: 90
@@ -595,6 +623,10 @@ banker_canifis:
   interact_distance: 2
   race: human
   examine: "He can look after my money."
+dororan:
+  id: 1168
+  race: dwarf
+  examine: "A dwarf in anguish."  
 yrsa:
   id: 1301
   race: human
@@ -674,6 +706,19 @@ quiz_master:
   interact_distance: 4
   race: human
   examine: "Apparently a master of quizzes!"
+dororan_after_cutscene:
+  id: 2646
+dororan_after_cutscene2:
+  id: 2647
+  examine: "A dwarf on top of the world."
+dororan_after_quest:
+  &dororan_after_quest
+  id: 2648
+  race: dwarf
+  examine: "A dwarf on top of the world."
+dororan_after_quest2:
+  <<: *dororan_after_quest
+  id: 2651
 reldo_normal:
   id: 2661
   race: human
@@ -696,6 +741,15 @@ duckling:
   swim: true
   wander_radius: 6
   examine: "Mini quackers."
+master_crafter_2:
+  id: 2732
+  race: human
+  examine: "He works in the Crafting Guild."
+master_crafter_3:
+  id: 2733
+  wander_radius: 4
+  race: human
+  examine: "He wanders around the Crafting Guild pretending to be working."
 thorgel:
   id: 2788
 thorgel_normal:
@@ -709,6 +763,58 @@ ellis:
   id: 2824
   race: human
   examine: "Manufacturer of fine leathers."
+dororan_cutscene:
+  id: 2863
+  examine: "A dwarf in suspense."  
+gudrun:
+  &gudrun
+  id: 2864
+  wander_radius: 4
+  race: human
+  examine: "The chieftain's daughter."
+gudrun2:
+  <<: *gudrun
+  id: 2865
+gudrun_after_cutscene:
+  <<: *gudrun
+  id: 2866
+gudrun_after_cutscene2:
+  <<: *gudrun
+  id: 2867  
+gudrun_after_quest:
+  <<: *gudrun
+  id: 2869
+gudrun_after_quest2:
+  <<: *gudrun
+  id: 2870
+gudrun_cutscene:
+  <<: *gudrun
+  id: 2871
+kjell:
+  &kjell
+  id: 2872
+  race: human
+  examine: "A barbarian guard."
+kjell_sword:
+  <<: *kjell
+  id: 2873
+kjell_guitar:
+  <<: *kjell
+  id: 2874
+kjell_cutscene:
+  id: 2875
+  examine: "A barbarian guard."
+chieftain_gunthor:
+  &chieftain_gunthor
+  id: 2876
+  race: human
+  examine: "A heavily built barbarian with an air of power and authority."
+chieftain_gunthor_icon:
+  <<: *chieftain_gunthor
+  id: 2877
+chieftain_gunthort_no_icon:
+  <<: *chieftain_gunthor
+  id: 2878
 rat_ratcatchers:
   id: 2974
   wander_radius: 4
@@ -731,6 +837,28 @@ rat_ratcatchers_7:
   id: 2980
   wander_radius: 4
   examine: "A popular dwarven delicacy."
+chieftain_gunthor_cutscene:
+  id: 3089
+  examine: "A heavily built barbarian with an air of power and authority."
+haakon_the_champion:
+  id: 3090
+  hitpoints: 360
+  att: 22
+  str: 22
+  def: 25
+  mage: 240
+  attack_bonus: 8
+  max_hit_melee: 42
+  immune_poison: true
+  wander_radius: 4
+  respawn_delay: 75
+  weapon_style: 2h
+  style: crush
+  race: human
+  examine: "A mighty warrior, Haakon is powerfully concerned for his tribe."
+haakon_the_champion_cutscene:
+  id: 3091
+  examine: "A mighty warrior, Haakon is powerfully concerned for his tribe."
 prison_pete:
   id: 3118
   examine: "He wants to escape!"
@@ -767,6 +895,11 @@ frog_9_frogland:
 cow_zanaris:
   <<: *cow
   id: 3309
+jeffery3:
+  id: 3323
+  wander_radius: 4
+  race: human
+  examine: "The man with the armour."
 tarquin:
   id: 3328
   examine: "A dandy canoe man."
@@ -1055,6 +1188,7 @@ surok_magis:
 iffie:
   id: 5914
   race: human
+  faces: false
   examine: An old woman busily knitting.
 ash_cleaner:
   id: 5916
@@ -1109,6 +1243,11 @@ fishing_spot_crayfish_lumbridge:
         none:
           - raw_crayfish
   examine: "It looks like there might be fish swimming in the water."
+jeffery2:
+  id: 6298
+  wander_radius: 4
+  race: human
+  examine: "The man with the armour."
 pikkupstix:
   id: 6970
   race: human
@@ -1483,10 +1622,13 @@ dark_wizard_water:
   max_hit_magic: 60
   respawn_delay: 50
   hunt_mode: cowardly
+  wander_radius: 4
+  race: human
   examine: "He works evil magic."
 dark_wizard_water_2:
   <<: *dark_wizard_water
   id: 8872
+  drop_table: dark_wizard_water
 dark_wizard_earth:
   &dark_wizard_earth
   <<: *dark_wizard_water
@@ -1496,6 +1638,7 @@ dark_wizard_earth:
   def: 14
   mage: 22
   hitpoints: 240
+  drop_table: dark_wizard_earth
   examine: "A practicer of dark arts."
 dark_wizard_earth_2:
   <<: *dark_wizard_earth
@@ -1687,3 +1830,223 @@ al_the_camel:
   large_head: true
   wander_radius: 4
   examine: "A camel who has the soul of a poet."
+giant_mole:
+  id: 3340
+  hitpoints: 2000
+  att: 200
+  str: 200
+  def: 200
+  max_hit_melee: 210
+  style: crush
+  race: giant_mole
+  respawn_delay: 16
+  wander_radius: 8
+  examine: "Holy Mole-y!"
+baby_mole:
+  id: 3341
+  wander_radius: 6
+  examine: "I will call him, Mini Mole."
+dark_mage:
+  id: 2262
+  faces: false
+  race: human
+  examine: "An initiate of Zamorak."
+mage_of_zamorak_wilderness:
+  id: 2257
+  faces: false
+  race: human
+  wander_radius: 4
+  examine: "A disciple of Zamorak."
+mage_of_zamorak_varrock:
+  id: 2260
+  faces: false
+  race: human
+  wander_radius: 5
+  examine: "A disciple of Zamorak."
+abyssal_leech:
+  id: 2263
+  hitpoints: 100
+  att: 95
+  str: 5
+  def: 25
+  attack_bonus: 100
+  wander_radius: 6
+  attack_radius: 6
+  max_hit_melee: 20
+  hunt_mode: aggressive
+  style: slash
+  height: 15
+  respawn_delay: 5
+  examine: "A blood-drinking denizen of the Abyss."
+abyssal_guardian:
+  id: 2264
+  hitpoints: 500
+  att: 30
+  str: 90
+  def: 30
+  attack_bonus: 15
+  wander_radius: 8
+  attack_radius: 4
+  max_hit_melee: 110
+  hunt_mode: aggressive
+  style: stab
+  height: 30
+  respawn_delay: 5
+  examine: "It seems to have eyes in the back of its head..."
+abyssal_walker:
+  id: 2265
+  hitpoints: 950
+  att: 5
+  str: 100
+  def: 95
+  attack_bonus: 5
+  wander_radius: 6
+  attack_radius: 2
+  max_hit_melee: 130
+  hunt_mode: aggressive
+  style: crush
+  height: 50
+  attack_speed: 5
+  respawn_delay: 5
+  examine: "Apparently walks the Abyss."
+wizard_distentor:
+  id: 462
+  examine: "Head of the Magic Guild."
+wizard_cromperty:
+  id: 844
+  examine: "The hat is a dead give away."
+brimstail:
+  id: 171
+  old_model: true
+  examine: "Small but wise, he is."
+mage_of_zamorak_ourania:
+  id: 6370
+  wander_radius: 4
+  examine: "A representative of the Z.M.I."
+eniola:
+  id: 6362
+  examine: "A roving banker."
+zamorak_warrior_kite:
+  &zamorak_warrior
+  id: 6363
+  hitpoints: 450
+  att: 85
+  str: 70
+  def: 90
+  style: slash
+  max_hit_melee: 80
+  wander_radius: 5
+  attack_radius: 11
+  respawn_delay: 50
+  hunt_mode: aggressive
+  weapon_style: sword
+  drop_table: zamorak_warrior
+  race: human
+  examine: "A warrior of Zamorak."
+zamorak_warrior_square:
+  <<: *zamorak_warrior
+  id: 6364
+  style: crush
+zamorak_mage_fancy: &zamorak_mage
+  id: 6367
+  hitpoints: 500
+  att: 75
+  str: 80
+  def: 80
+  mage: 85
+  spell: fire_bolt
+  max_hit_magic: 90
+  respawn_delay: 50
+  hunt_mode: aggressive
+  attack_range: 3
+  attack_radius: 10
+  wander_radius: 5
+  race: human
+  drop_table: zamorak_mage
+  examine: "A mage of Zamorak."
+zamorak_mage:
+  <<: *zamorak_mage
+  id: 6368
+zamorak_ranger: &zamorak_ranger
+  id: 6365
+  hitpoints: 500
+  att: 75
+  str: 80
+  def: 80
+  range: 80
+  max_hit_range: 90
+  respawn_delay: 50
+  hunt_mode: aggressive
+  attack_range: 5
+  attack_radius: 10
+  wander_radius: 5
+  race: human
+  style: accurate
+  weapon_style: bow
+  ammo: mithril_arrow
+  drop_table: zamorak_ranger
+  height: 40
+  examine: "A ranger of Zamorak."
+zamorak_ranger_coat:
+  <<: *zamorak_ranger
+  id: 6366
+cave_lizard:
+  id: 6369
+  hitpoints: 200
+  att: 38
+  str: 36
+  def: 35
+  race: gecko
+  style: crush
+  height: 15
+  hunt_range: 2
+  attack_range: 1
+  attack_radius: 11
+  wander_radius: 5
+  max_hit_melee: 50
+  hunt_mode: aggressive
+  drop_table: empty
+  respawn_delay: 50
+  examine: "A cave dweller."
+zamorak_crafter_start:
+  &zamorak_crafter
+  id: 6371
+  solid: false
+  hitpoints: 250
+  att: 15
+  str: 15
+  def: 12
+  mage: 20
+  race: human
+  style: crush
+  height: 40
+  hunt_range: 2
+  attack_range: 1
+  attack_radius: 11
+  wander_radius: 5
+  max_hit_melee: 20
+  drop_table: zamorak_crafter
+  respawn_delay: 50
+  examine: "A Z.M.I. runecrafter."
+zamorak_crafter_end:
+  <<: *zamorak_crafter
+  id: 6372
+monk_of_zamorak_ourania:
+  id: 189
+  hitpoints: 100
+  att: 8
+  str: 8
+  def: 12
+  mage: 25
+  race: human
+  style: crush
+  height: 40
+  hunt_range: 2
+  attack_range: 1
+  attack_radius: 11
+  wander_radius: 5
+  max_hit_melee: 50
+  hunt_mode: aggressive
+  drop_table: monk_of_zamorak
+  respawn_delay: 50
+  examine: "An evil human cleric."

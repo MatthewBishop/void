@@ -22,8 +22,8 @@ internal class CookingTest : WorldTest() {
         player.itemOnObject(fire, 0, "")
         tick()
         player.interfaceOption("skill_creation_amount", "increment")
-        player.dialogueOption("dialogue_skill_creation", "choice1")
-        tick(5) // First is instant + 4 ticks for the second
+        player.dialogueOption(id = "dialogue_skill_creation", component = "choice1")
+        tick(8)
 
         assertEquals(1, player.inventory.count("raw_shrimps"))
         assertEquals(2, player.inventory.count("shrimps"))
@@ -38,7 +38,7 @@ internal class CookingTest : WorldTest() {
 
         player.itemOnItem(0, 1)
         tick()
-        player.dialogueOption("dialogue_skill_creation", "choice1")
+        player.dialogueOption(id = "dialogue_skill_creation", component = "choice1")
         tick(2)
 
         assertFalse(player.inventory.contains("pot_of_flour"))

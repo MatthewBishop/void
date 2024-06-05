@@ -3,23 +3,21 @@ package world.gregs.voidps.world.map.falador
 import org.rsmod.game.pathfinder.LineValidator
 import world.gregs.voidps.engine.client.ui.dialogue.talkWith
 import world.gregs.voidps.engine.entity.character.mode.move.hasLineOfSight
-import world.gregs.voidps.engine.entity.character.npc.NPCOption
 import world.gregs.voidps.engine.entity.character.npc.NPCs
-import world.gregs.voidps.engine.entity.character.player.Player
+import world.gregs.voidps.engine.entity.character.npc.npcOperate
 import world.gregs.voidps.engine.entity.item.floor.FloorItems
-import world.gregs.voidps.engine.entity.obj.ObjectOption
+import world.gregs.voidps.engine.entity.obj.objectOperate
 import world.gregs.voidps.engine.entity.obj.replace
-import world.gregs.voidps.engine.event.on
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.inv.add
 import world.gregs.voidps.engine.inv.holdsItem
 import world.gregs.voidps.engine.inv.inventory
 import world.gregs.voidps.engine.timer.toTicks
 import world.gregs.voidps.world.activity.quest.quest
-import world.gregs.voidps.world.interact.dialogue.Angry
-import world.gregs.voidps.world.interact.dialogue.Talking
+import world.gregs.voidps.world.interact.dialogue.Frustrated
+import world.gregs.voidps.world.interact.dialogue.Neutral
 import world.gregs.voidps.world.interact.dialogue.Uncertain
-import world.gregs.voidps.world.interact.dialogue.Unsure
+import world.gregs.voidps.world.interact.dialogue.Quiz
 import world.gregs.voidps.world.interact.dialogue.type.choice
 import world.gregs.voidps.world.interact.dialogue.type.npc
 import world.gregs.voidps.world.interact.dialogue.type.player
@@ -31,24 +29,24 @@ val floorItems: FloorItems by inject()
 val npcs: NPCs by inject()
 val lineValidator: LineValidator by inject()
 
-on<ObjectOption>({ operate && target.id == "cupboard_the_knights_sword_closed" && option == "Open" }) { player: Player ->
+objectOperate("Open", "cupboard_the_knights_sword_closed") {
     player.playSound("cupboard_open")
     target.replace("cupboard_the_knights_sword_opened", ticks = TimeUnit.MINUTES.toTicks(3))
 }
 
-on<ObjectOption>({ operate && target.id == "cupboard_the_knights_sword_opened" && option == "Shut" }) { player: Player ->
+objectOperate("Shut", "cupboard_the_knights_sword_opened") {
     player.playSound("cupboard_close")
     target.replace("cupboard_the_knights_sword_closed")
 }
 
-on<ObjectOption>({ operate && target.id == "cupboard_the_knights_sword_opened" && option == "Search" }) { player: Player ->
+objectOperate("Search", "cupboard_the_knights_sword_opened") {
     when (player.quest("the_knights_sword")) {
         "cupboard", "blurite_sword" -> {
             val sirVyvin = npcs[player.tile.regionLevel].firstOrNull { it.id == "sir_vyvin" }
             if (sirVyvin != null && lineValidator.hasLineOfSight(sirVyvin, player)) {
                 player.talkWith(sirVyvin)
-                npc<Angry>("HEY! Just WHAT do you THINK you are DOING??? STAY OUT of MY cupboard!")
-                return@on
+                npc<Frustrated>("HEY! Just WHAT do you THINK you are DOING??? STAY OUT of MY cupboard!")
+                return@objectOperate
             }
             if (player.holdsItem("portrait")) {
                 statement("There is just a load of junk in here.")
@@ -56,7 +54,7 @@ on<ObjectOption>({ operate && target.id == "cupboard_the_knights_sword_opened" &
                 statement("You find a small portrait in here which you take.")
                 if (player.inventory.isFull()) {
                     floorItems.add(player.tile, "portrait", disappearTicks = 300, owner = player)
-                    return@on
+                    return@objectOperate
                 }
                 player.inventory.add("portrait")
             }
@@ -65,25 +63,25 @@ on<ObjectOption>({ operate && target.id == "cupboard_the_knights_sword_opened" &
     }
 }
 
-on<NPCOption>({ operate && target.id == "sir_vyvin" && option == "Talk-to" }) { player: Player ->
-    player<Talking>("Hello.")
-    npc<Talking>("Greetings traveller.")
+npcOperate("Talk-to", "sir_vyvin") {
+    player<Neutral>("Hello.")
+    npc<Neutral>("Greetings traveller.")
     choice {
-        option<Unsure>("Do you have anything to trade?") {
-            npc<Talking>("No, I'm sorry.")
+        option<Quiz>("Do you have anything to trade?") {
+            npc<Neutral>("No, I'm sorry.")
         }
-        option<Unsure>("Why are there so many knights in this city?") {
-            npc<Talking>("We are the White Knights of Falador. We are the most powerful order of knights in the land. We are helping the king Vallance rule the kingdom as he is getting old and tired.")
+        option<Quiz>("Why are there so many knights in this city?") {
+            npc<Neutral>("We are the White Knights of Falador. We are the most powerful order of knights in the land. We are helping the king Vallance rule the kingdom as he is getting old and tired.")
         }
         option("Can I just distract you for a minute?") {
-            player<Talking>("Can I just talk to you very slowly for a few minutes, while I distract you, so that my friend over there can do something while you're busy being distracted by me?")
+            player<Neutral>("Can I just talk to you very slowly for a few minutes, while I distract you, so that my friend over there can do something while you're busy being distracted by me?")
             npc<Uncertain>("... ...what?")
             npc<Uncertain>("I'm... not sure what you're asking me... you want to join the White Knights?")
-            player<Talking>("Nope. I'm just trying to distract you.")
+            player<Neutral>("Nope. I'm just trying to distract you.")
             npc<Uncertain>("... ...you are very odd.")
-            player<Talking>("So can I distract you some more?")
+            player<Neutral>("So can I distract you some more?")
             npc<Uncertain>("... ...I don't think I want to talk to you anymore.")
-            player<Talking>("Ok. My work here is done. 'Bye!")
+            player<Neutral>("Ok. My work here is done. 'Bye!")
         }
     }
 }

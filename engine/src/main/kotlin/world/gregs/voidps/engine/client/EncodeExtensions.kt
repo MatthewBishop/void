@@ -2,11 +2,14 @@ package world.gregs.voidps.engine.client
 
 import net.pearx.kasechange.toSnakeCase
 import world.gregs.voidps.engine.client.ui.chat.Colours
+import world.gregs.voidps.engine.data.definition.ClientScriptDefinitions
 import world.gregs.voidps.engine.entity.character.Character
 import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.player.chat.ChatType
-import world.gregs.voidps.network.encode.*
+import world.gregs.voidps.engine.get
+import world.gregs.voidps.network.login.protocol.encode.*
 import world.gregs.voidps.type.Tile
+import java.util.*
 
 /**
  * Helper functions to simplify common client calls
@@ -28,9 +31,18 @@ fun Character.message(
     if (this !is Player) {
         return
     }
+    getOrPut("messages") { FixedSizeQueue<String>(100) }.add(text)
     client?.message(Colours.replaceCustomTags(text), type.id, tile, name, name?.toSnakeCase())
 }
 
+private class FixedSizeQueue<E>(private val capacity: Int) : LinkedList<E>() {
+    override fun add(element: E): Boolean {
+        if (size >= capacity) {
+            removeFirst()
+        }
+        return super.add(element)
+    }
+}
 
 /**
  * Sends a list of items to display on an interface item group component
@@ -104,9 +116,12 @@ fun Player.sendRunEnergy(energy: Int) = client?.sendRunEnergy(energy) ?: Unit
  * @param params Additional parameters to run the script with (strings & integers only)
  */
 fun Player.sendScript(
-    id: Int,
+    id: String,
     vararg params: Any?
-) = sendScript(id, params.toList())
+) {
+    val definition = get<ClientScriptDefinitions>().get(id)
+    sendScript(definition.id, params.toList())
+}
 
 fun Player.sendScript(
     id: Int,

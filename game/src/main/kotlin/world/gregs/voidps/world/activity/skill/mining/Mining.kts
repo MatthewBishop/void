@@ -23,27 +23,27 @@ import world.gregs.voidps.engine.entity.character.setAnimation
 import world.gregs.voidps.engine.entity.item.Item
 import world.gregs.voidps.engine.entity.obj.GameObject
 import world.gregs.voidps.engine.entity.obj.GameObjects
-import world.gregs.voidps.engine.entity.obj.ObjectOption
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.entity.obj.objectApproach
+import world.gregs.voidps.engine.entity.obj.objectOperate
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.inv.add
-import world.gregs.voidps.engine.inv.holdsItem
 import world.gregs.voidps.engine.inv.inventory
 import world.gregs.voidps.engine.queue.softQueue
-import world.gregs.voidps.engine.suspend.arriveDelay
+import world.gregs.voidps.engine.suspend.approachRange
 import world.gregs.voidps.engine.suspend.pause
-import world.gregs.voidps.network.visual.update.player.EquipSlot
+import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
 import world.gregs.voidps.type.random
+import world.gregs.voidps.world.activity.bank.bank
+import world.gregs.voidps.world.activity.dnd.shootingstar.ShootingStarHandler
 
 val objects: GameObjects by inject()
 val itemDefinitions: ItemDefinitions by inject()
 
-on<ObjectOption>({ operate && option == "Mine" }) { player: Player ->
+objectOperate("Mine") {
     if (target.id.startsWith("depleted")) {
         player.message("There is currently no ore available in this rock.")
-        return@on
+        return@objectOperate
     }
-    arriveDelay()
     player.softTimers.start("mining")
     var first = true
     while (true) {
@@ -61,7 +61,7 @@ on<ObjectOption>({ operate && option == "Mine" }) { player: Player ->
             break
         }
 
-        val pickaxe = getBestPickaxe(player)
+        val pickaxe = Pickaxe.best(player)
         if (!hasRequirements(player, pickaxe, true) || pickaxe == null) {
             break
         }
@@ -71,11 +71,11 @@ on<ObjectOption>({ operate && option == "Mine" }) { player: Player ->
             player.message("You swing your pickaxe at the rock.", ChatType.Filter)
             first = false
         }
-        val remaining = player.remaining("skill_delay")
+        val remaining = player.remaining("action_delay")
         if (remaining < 0) {
             player.face(target)
             player.setAnimation("${pickaxe.id}_swing_low")
-            player.start("skill_delay", delay)
+            player.start("action_delay", delay)
             pause(delay)
         } else if (remaining > 0) {
             pause(delay)
@@ -96,14 +96,14 @@ on<ObjectOption>({ operate && option == "Mine" }) { player: Player ->
             val ore = itemDefinitions.get(item)["mining", Ore.EMPTY]
             if (success(player.levels.get(Skill.Mining), ore.chance)) {
                 player.experience.add(Skill.Mining, ore.xp)
-
+                ShootingStarHandler.extraOreHandler(player, item, ore.xp)
                 if (!addOre(player, item) || deplete(rock, target)) {
                     player.clearAnimation()
                     break
                 }
             }
         }
-        player.stop("skill_delay")
+        player.stop("action_delay")
     }
     player.softTimers.stop("mining")
 }
@@ -114,23 +114,6 @@ val gems = setOf(
     "uncut_ruby",
     "uncut_diamond"
 )
-
-val pickaxes = listOf(
-    Item("dragon_pickaxe"),
-    Item("volatile_clay_pickaxe"),
-    Item("sacred_clay_pickaxe"),
-    Item("inferno_adze"),
-    Item("rune_pickaxe"),
-    Item("adamant_pickaxe"),
-    Item("mithril_pickaxe"),
-    Item("steel_pickaxe"),
-    Item("iron_pickaxe"),
-    Item("bronze_pickaxe")
-)
-
-fun getBestPickaxe(player: Player): Item? {
-    return pickaxes.firstOrNull { pickaxe -> hasRequirements(player, pickaxe, false) && player.holdsItem(pickaxe.id) }
-}
 
 fun hasRequirements(player: Player, pickaxe: Item?, message: Boolean = false): Boolean {
     if (pickaxe == null) {
@@ -144,9 +127,16 @@ fun hasRequirements(player: Player, pickaxe: Item?, message: Boolean = false): B
 }
 
 fun addOre(player: Player, ore: String): Boolean {
+    if (ore == "stardust") {
+        ShootingStarHandler.addStarDustCollected()
+        val totalStarDust = player.inventory.count(ore) + player.bank.count(ore)
+        if (totalStarDust >= 200) {
+            player.message("You have the maximum amount of stardust but was still rewarded experience.")
+            return true
+        }
+    }
     val added = player.inventory.add(ore)
-    if (added) {
-        player.message("You manage to mine some ${ore.toLowerSpaceCase()}.")
+    if (added) { player.message("You manage to mine some ${ore.toLowerSpaceCase()}.")
     } else {
         player.inventoryFull()
     }
@@ -154,6 +144,10 @@ fun addOre(player: Player, ore: String): Boolean {
 }
 
 fun deplete(rock: Rock, obj: GameObject): Boolean {
+    if (obj.id.startsWith("crashed_star_tier_")) {
+        ShootingStarHandler.handleMinedStarDust(obj)
+        return false
+    }
     if (rock.life >= 0) {
         objects.replace(obj, "depleted${obj.id.dropWhile { it != '_' }}", ticks = rock.life)
         return true
@@ -161,13 +155,15 @@ fun deplete(rock: Rock, obj: GameObject): Boolean {
     return false
 }
 
-on<ObjectOption>({ approach && option == "Prospect" }) { player: Player ->
+objectApproach("Prospect") {
+    player.approachRange(1)
+    pause()
     if (target.id.startsWith("depleted")) {
         player.message("There is currently no ore available in this rock.")
-        return@on
+        return@objectApproach
     }
     if (player.queue.contains("prospect")) {
-        return@on
+        return@objectApproach
     }
     player.message("You examine the rock for ores...")
     player.start("movement_delay", 4)

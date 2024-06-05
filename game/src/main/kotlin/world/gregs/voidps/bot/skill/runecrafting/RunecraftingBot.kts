@@ -1,9 +1,6 @@
 package world.gregs.voidps.bot.skill.runecrafting
 
-import world.gregs.voidps.bot.Bot
-import world.gregs.voidps.bot.Task
-import world.gregs.voidps.bot.TaskManager
-import world.gregs.voidps.bot.getObjects
+import world.gregs.voidps.bot.*
 import world.gregs.voidps.bot.navigation.await
 import world.gregs.voidps.bot.navigation.awaitInteract
 import world.gregs.voidps.bot.navigation.goToArea
@@ -12,18 +9,16 @@ import world.gregs.voidps.bot.skill.combat.setupGear
 import world.gregs.voidps.engine.client.ui.chat.toIntRange
 import world.gregs.voidps.engine.data.definition.AreaDefinition
 import world.gregs.voidps.engine.data.definition.AreaDefinitions
-import world.gregs.voidps.engine.entity.Registered
-import world.gregs.voidps.engine.entity.World
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.obj.GameObject
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.entity.worldSpawn
 import world.gregs.voidps.engine.inject
-import world.gregs.voidps.network.instruct.InteractObject
+import world.gregs.voidps.network.client.instruction.InteractObject
 
 val areas: AreaDefinitions by inject()
 val tasks: TaskManager by inject()
 
-on<World, Registered> {
+worldSpawn {
     for (area in areas.getTagged("altar")) {
         val type: String = area["type"]
         val spaces: Int = area["spaces", 1]
@@ -31,15 +26,15 @@ on<World, Registered> {
         val task = Task(
             name = "craft $type runes at ${area.name}",
             block = {
-                while (player.levels.getMax(Skill.Runecrafting) < range.last + 1) {
-                    craftRunes(area)
+                while (levels.getMax(Skill.Runecrafting) < range.last + 1) {
+                    bot.craftRunes(area)
                 }
             },
             area = area.area,
             spaces = spaces,
             requirements = listOf(
-                { player.levels.getMax(Skill.Runecrafting) in range },
-                { hasExactGear(Skill.Runecrafting) }
+                { levels.getMax(Skill.Runecrafting) in range },
+                { bot.hasExactGear(Skill.Runecrafting) }
             )
         )
         tasks.register(task)
@@ -52,7 +47,7 @@ suspend fun Bot.craftRunes(map: AreaDefinition) {
     await("tick")
     val altar = getObjects { isAltar(map, it) }
         .first()
-    player.instructions.emit(InteractObject(altar.def.id, altar.tile.x, altar.tile.y, 1))
+    player.instructions.send(InteractObject(altar.def.id, altar.tile.x, altar.tile.y, 1))
     awaitInteract()
 }
 

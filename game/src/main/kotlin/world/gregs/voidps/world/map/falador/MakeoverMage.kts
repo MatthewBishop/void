@@ -1,34 +1,34 @@
 package world.gregs.voidps.world.map.falador
 
-import world.gregs.voidps.engine.client.ui.InterfaceOption
 import world.gregs.voidps.engine.client.ui.closeMenu
 import world.gregs.voidps.engine.client.ui.dialogue.talkWith
-import world.gregs.voidps.engine.client.ui.event.InterfaceClosed
-import world.gregs.voidps.engine.client.ui.event.InterfaceOpened
+import world.gregs.voidps.engine.client.ui.event.interfaceClose
+import world.gregs.voidps.engine.client.ui.event.interfaceOpen
+import world.gregs.voidps.engine.client.ui.interfaceOption
 import world.gregs.voidps.engine.data.definition.EnumDefinitions
-import world.gregs.voidps.engine.entity.Registered
 import world.gregs.voidps.engine.entity.character.CharacterContext
 import world.gregs.voidps.engine.entity.character.forceChat
-import world.gregs.voidps.engine.entity.character.npc.NPC
-import world.gregs.voidps.engine.entity.character.npc.NPCOption
 import world.gregs.voidps.engine.entity.character.npc.NPCs
+import world.gregs.voidps.engine.entity.character.npc.npcOperate
 import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.player.chat.notEnough
 import world.gregs.voidps.engine.entity.character.player.flagAppearance
 import world.gregs.voidps.engine.entity.character.player.male
 import world.gregs.voidps.engine.entity.character.setAnimation
 import world.gregs.voidps.engine.entity.character.setGraphic
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.entity.npcSpawn
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.inv.holdsItem
 import world.gregs.voidps.engine.inv.inventory
 import world.gregs.voidps.engine.inv.transact.TransactionError
+import world.gregs.voidps.engine.inv.transact.operation.AddItem.add
+import world.gregs.voidps.engine.inv.transact.operation.RemoveItem.remove
 import world.gregs.voidps.engine.queue.softQueue
-import world.gregs.voidps.engine.timer.TimerStart
-import world.gregs.voidps.engine.timer.TimerTick
+import world.gregs.voidps.engine.timer.npcTimerStart
+import world.gregs.voidps.engine.timer.npcTimerTick
 import world.gregs.voidps.engine.timer.toTicks
-import world.gregs.voidps.network.visual.update.player.BodyColour
-import world.gregs.voidps.network.visual.update.player.BodyPart
+import world.gregs.voidps.network.login.protocol.visual.update.player.BodyColour
+import world.gregs.voidps.network.login.protocol.visual.update.player.BodyPart
 import world.gregs.voidps.type.random
 import world.gregs.voidps.world.interact.dialogue.*
 import world.gregs.voidps.world.interact.dialogue.type.*
@@ -38,9 +38,9 @@ import java.util.concurrent.TimeUnit
 val enums: EnumDefinitions by inject()
 val npcs: NPCs by inject()
 
-on<NPCOption>({ operate && target.id.startsWith("makeover_mage") && option == "Talk-to" }) { player: Player ->
-    npc<Happy>("Hello there! I am known as the Makeover Mage! I have spent many years researching magicks that can change your physical appearance.")
-    npc<Happy>("I call it a 'makeover'. Would you like me to perform my magicks on you?")
+npcOperate("Talk-to", "makeover_mage*") {
+    npc<Pleased>("Hello there! I am known as the Makeover Mage! I have spent many years researching magicks that can change your physical appearance.")
+    npc<Pleased>("I call it a 'makeover'. Would you like me to perform my magicks on you?")
     choice {
         more()
         start()
@@ -50,13 +50,13 @@ on<NPCOption>({ operate && target.id.startsWith("makeover_mage") && option == "T
     }
 }
 
-suspend fun PlayerChoice.more(): Unit = option<Unsure>("Tell me more about this 'makeover'.") {
-    npc<Cheerful>("Why, of course! Basically, and I will explain this so that you understand it correctly,")
-    npc<Cheerful>("I use my secret magical technique to melt your body down into a puddle of its elements.")
-    npc<Cheerful>("When I have broken down all components of your body, I then rebuild it into the form I am thinking of.")
+suspend fun PlayerChoice.more(): Unit = option<Quiz>("Tell me more about this 'makeover'.") {
+    npc<Happy>("Why, of course! Basically, and I will explain this so that you understand it correctly,")
+    npc<Happy>("I use my secret magical technique to melt your body down into a puddle of its elements.")
+    npc<Happy>("When I have broken down all components of your body, I then rebuild it into the form I am thinking of.")
     npc<Uncertain>("Or, you know, something vaguely close enough, anyway.")
-    player<Unsure>("Uh... that doesn't sound particularly safe to me.")
-    npc<Cheerful>("It's as safe as houses! Why, I have only had thirty-six major accidents this month!")
+    player<Quiz>("Uh... that doesn't sound particularly safe to me.")
+    npc<Happy>("It's as safe as houses! Why, I have only had thirty-six major accidents this month!")
     whatDoYouSay()
 }
 
@@ -69,16 +69,16 @@ suspend fun CharacterContext.whatDoYouSay() {
 }
 
 suspend fun PlayerChoice.start(): Unit = option<Talk>("Sure, do it.") {
-    npc<Cheerful>("You, of course, agree that if by some accident you are turned into a frog you have no rights for compensation or refund.")
+    npc<Happy>("You, of course, agree that if by some accident you are turned into a frog you have no rights for compensation or refund.")
     openDressingRoom("skin_colour")
 }
 
 suspend fun PlayerChoice.exit(): Unit = option("No, thanks.") {
-    player<Angry>("No, thanks. I'm happy as I am.")
+    player<Frustrated>("No, thanks. I'm happy as I am.")
     npc<Sad>("Ehhh..suit yourself.")
 }
 
-suspend fun PlayerChoice.amulet(): Unit = option<Happy>("Cool amulet! Can I have one?") {
+suspend fun PlayerChoice.amulet(): Unit = option<Pleased>("Cool amulet! Can I have one?") {
     val cost = 100
     npc<Talk>("No problem, but please remember that the amulet I will sell you is only a copy of my own. It contains no magical powers and, as such, will only cost you $cost coins.")
     if (!player.holdsItem("coins", cost)) {
@@ -86,7 +86,7 @@ suspend fun PlayerChoice.amulet(): Unit = option<Happy>("Cool amulet! Can I have
         return@option
     }
     choice {
-        option<Cheerful>("Sure, here you go.") {
+        option<Happy>("Sure, here you go.") {
             player.inventory.transaction {
                 remove("coins", cost)
                 add("yin_yang_amulet")
@@ -95,7 +95,7 @@ suspend fun PlayerChoice.amulet(): Unit = option<Happy>("Cool amulet! Can I have
                 TransactionError.None -> item("yin_yang_amulet", 300, "You receive an amulet in exchange for $cost coins")
                 is TransactionError.Deficient -> player.notEnough("coins")
                 is TransactionError.Full -> {
-                    npc<Unsure>("Um...you don't seem to have room to take the amulet. Maybe you should buy it some other time.")
+                    npc<Quiz>("Um...you don't seem to have room to take the amulet. Maybe you should buy it some other time.")
                     player<Talk>("Oh yeah, that's true.")
                 }
                 else -> {}
@@ -109,7 +109,7 @@ suspend fun PlayerChoice.amulet(): Unit = option<Happy>("Cool amulet! Can I have
 }
 
 suspend fun CharacterContext.explain() {
-    npc<Happy>("I can alter your physical form if you wish. Would you like me to perform my magicks on you?")
+    npc<Pleased>("I can alter your physical form if you wish. Would you like me to perform my magicks on you?")
     choice {
         more()
         start()
@@ -117,40 +117,40 @@ suspend fun CharacterContext.explain() {
     }
 }
 
-suspend fun PlayerChoice.colour(): Unit = option<Happy>("Can you make me a different colour?") {
-    npc<Cheerful>("Why, of course! I have a wide array of colours for you to choose from.")
+suspend fun PlayerChoice.colour(): Unit = option<Pleased>("Can you make me a different colour?") {
+    npc<Happy>("Why, of course! I have a wide array of colours for you to choose from.")
     whatDoYouSay()
 }
 
-on<NPCOption>({ operate && target.id.startsWith("makeover_mage") && option == "Makeover" }) { player: Player ->
+npcOperate("Makeover", "makeover_mage*") {
     openDressingRoom("skin_colour")
 }
 
-on<InterfaceClosed>({ id == "skin_colour" }) { player: Player ->
+interfaceClose("skin_colour") { player ->
     player.softTimers.stop("dressing_room")
 }
 
-on<InterfaceOpened>({ id == "skin_colour" }) { player: Player ->
+interfaceOpen("skin_colour") { player ->
     player["makeover_female"] = !player.male
     player["makeover_colour_skin"] = player.body.getColour(BodyColour.Skin)
     player.interfaces.sendText(id, "confirm", "CONFIRM")
 }
 
-on<InterfaceOption>({ id == "skin_colour" && component == "female" }) { player: Player ->
+interfaceOption(component = "female", id = "skin_colour") {
     player["makeover_female"] = true
     player.sendVariable("makeover_colour_skin")
 }
 
-on<InterfaceOption>({ id == "skin_colour" && component == "male" }) { player: Player ->
+interfaceOption(component = "male", id = "skin_colour") {
     player["makeover_female"] = false
     player.sendVariable("makeover_colour_skin")
 }
 
-on<InterfaceOption>({ id == "skin_colour" && component.startsWith("colour_") }) { player: Player ->
+interfaceOption(component = "colour_*", id = "skin_colour") {
     player["makeover_colour_skin"] = enums.get("character_skin").getInt(component.removePrefix("colour_").toInt())
 }
 
-on<InterfaceOption>({ id == "skin_colour" && component == "confirm" }) { player: Player ->
+interfaceOption(component = "confirm", id = "skin_colour") {
     val male = !player["makeover_female", false]
     val changed = player.body.getColour(BodyColour.Skin) != player["makeover_colour_skin", 0] || player.body.male != male
     player.body.setColour(BodyColour.Skin, player["makeover_colour_skin", 0])
@@ -162,30 +162,30 @@ on<InterfaceOption>({ id == "skin_colour" && component == "confirm" }) { player:
     val mage = npcs[player.tile.regionLevel].first { it.id.startsWith("makeover_mage") }
     player.talkWith(mage)
     if (!changed) {
-        npc<Unsure>("That is no different from what you already have. I guess I shouldn't charge you if I'm not changing anything.")
-        return@on
+        npc<Quiz>("That is no different from what you already have. I guess I shouldn't charge you if I'm not changing anything.")
+        return@interfaceOption
     }
     when (random.nextInt(0, 4)) {
         0 -> {
-            npc<Cheerful>("Two arms, two legs, one head; it seems that spell finally worked okay.")
+            npc<Happy>("Two arms, two legs, one head; it seems that spell finally worked okay.")
         }
         1 -> {
             npc<Amazed>("Whew! That was lucky.")
             player<Talk>("What was?")
-            npc<Cheerful>("Nothing! It's all fine! You seem alive anyway.")
+            npc<Happy>("Nothing! It's all fine! You seem alive anyway.")
         }
         2 -> {
-            npc<Unsure>("Hmm, you didn't feel any unexpected growths on your head just then, did you?")
-            player<Unsure>("Er, no?")
-            npc<Cheerful>("Good, good! I was worried for a second there.")
+            npc<Quiz>("Hmm, you didn't feel any unexpected growths on your head just then, did you?")
+            player<Quiz>("Er, no?")
+            npc<Happy>("Good, good! I was worried for a second there.")
         }
         3 -> {
             npc<Amazed>("Woah!")
-            player<Unsure>("What?")
+            player<Quiz>("What?")
             npc<Amazed>("You still look human!")
         }
     }
-    player<Unsure>("Uh, thanks, I guess.")
+    player<Quiz>("Uh, thanks, I guess.")
 }
 
 fun swapSex(player: Player, male: Boolean) {
@@ -207,15 +207,15 @@ fun swapLook(player: Player, male: Boolean, bodyPart: BodyPart, name: String) {
     player.body.setLook(bodyPart, new.getInt(key))
 }
 
-on<Registered>({ it.id.startsWith("makeover_mage") }) { npc: NPC ->
+npcSpawn("makeover_mage*") { npc ->
     npc.softTimers.start("makeover")
 }
 
-on<TimerStart>({ timer == "makeover" }) { _: NPC ->
+npcTimerStart("makeover") {
     interval = TimeUnit.SECONDS.toTicks(250)
 }
 
-on<TimerTick>({ timer == "makeover" }) { npc: NPC ->
+npcTimerTick("makeover") { npc ->
     val current: String = npc["transform_id", "makeover_mage_male"]
     val toFemale = current == "makeover_mage_male"
     npc.transform = if (toFemale) "makeover_mage_female" else "makeover_mage_male"

@@ -1,3 +1,69 @@
+gunnars_ground:
+  id: 5730
+  persist: true
+  format: map
+  default: unstarted
+  values:
+    unstarted: 0
+    started: 1
+    love_poem: 2
+    jeffery_ring: 3
+    engrave: 4
+    engraved_ring: 5
+    show_gudrun: 6
+    meet_chieftain: 7
+    tell_gudrun: 8
+    tell_dororan: 9
+    write_poem: 10
+    more_poem: 11
+    one_more_poem: 12
+    poem_done: 13
+    poem: 14
+    recital: 15
+    gunnars_ground: 16
+    completed: 100
+kjell:
+  id: 5819
+  persist: true
+  format: list
+  default: sword
+  values: [ sword, guitar ]
+dororan:
+  id: 5820
+  persist: true
+  format: list
+  default: shown
+  values: [ shown, hidden ]
+gudrun:
+  id: 6664
+  persist: true
+  format: list
+  default: shown
+  values: [ shown, hidden ]
+dororan_after_quest:
+  id: 6665
+  persist: true
+  format: list
+  default: hidden
+  values: [ hidden, shown ]
+gudrun_after_quest:
+  id: 6666
+  persist: true
+  format: list
+  default: hidden
+  values: [ hidden, shown ]
+dororan_after_cutscene:
+  id: 8242
+  persist: true
+  format: list
+  default: hidden
+  values: [ hidden, shown ]
+gudrun_after_cutscene:
+  id: 8243
+  persist: true
+  format: list
+  default: hidden
+  values: [ hidden, shown ]
 demon_slayer:
   id: 2561
   persist: true
@@ -509,3 +575,77 @@ death_altar_ruins:
 blood_altar_ruins:
   id: 619
   format: boolean
+minigame_type:
+  id: 4540
+  format: map
+  default: none
+  values:
+    none: 0
+    barbarian_assault: 1
+    stealing_creation: 2
+    fist_of_guthix: 3
+abyss_obstacles:
+  id: 625
+  format: int
+enter_abyss_knows_mages:
+  id: 13728
+  format: boolean
+  persist: true
+  transmit: false
+enter_abyss_where_runes:
+  id: 13731
+  format: boolean
+  persist: true
+  transmit: false
+enter_abyss_offer:
+  id: 13732
+  format: boolean
+  persist: true
+  transmit: false
+enter_abyss_has_orb:
+  id: 13733
+  format: boolean
+  persist: true
+  transmit: false
+enter_abyss_taken_orb:
+  id: 13734
+  format: boolean
+  persist: true
+  transmit: false
+last_npc_teleport_to_rune_essence_mine:
+  id: 2313
+  format: map
+  persist: true
+  transmit: false
+  default: aubury
+  values:
+    aubury: 1
+    brimstail: 2
+    wizard_cromperty: 3
+    wizard_distentor: 4
+    sedridor: 6
+scrying_orb_sedridor:
+  id: 2314
+  format: boolean
+  persist: true
+  transmit: false
+scrying_orb_aubury:
+  id: 2315
+  format: boolean
+  persist: true
+  transmit: false
+scrying_orb_wizard_cromperty:
+  id: 2316
+  format: boolean
+  persist: true
+  transmit: false
+scrying_orb_brimstail:
+  id: 2317
+  format: boolean
+  persist: true
+  transmit: false
+scrying_orb_wizard_distentor:
+  id: 2318
+  format: boolean
+  persist: true
+  transmit: false

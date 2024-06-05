@@ -1,24 +1,22 @@
 package world.gregs.voidps.world.map.al_kharid
 
 import world.gregs.voidps.engine.client.message
-import world.gregs.voidps.engine.client.ui.interact.ItemOnObject
+import world.gregs.voidps.engine.client.ui.interact.itemOnObjectOperate
 import world.gregs.voidps.engine.client.ui.open
 import world.gregs.voidps.engine.entity.character.CharacterContext
 import world.gregs.voidps.engine.entity.character.npc.NPC
 import world.gregs.voidps.engine.entity.character.npc.NPCOption
-import world.gregs.voidps.engine.entity.character.player.Player
+import world.gregs.voidps.engine.entity.character.npc.npcOperate
 import world.gregs.voidps.engine.entity.character.player.equip.equipped
 import world.gregs.voidps.engine.entity.character.setAnimation
 import world.gregs.voidps.engine.entity.obj.GameObjects
-import world.gregs.voidps.engine.entity.obj.ObjectOption
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.entity.obj.objectOperate
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.inv.inventory
 import world.gregs.voidps.engine.inv.replace
-import world.gregs.voidps.engine.suspend.arriveDelay
 import world.gregs.voidps.engine.suspend.delay
 import world.gregs.voidps.engine.timer.toTicks
-import world.gregs.voidps.network.visual.update.player.EquipSlot
+import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
 import world.gregs.voidps.type.Direction
 import world.gregs.voidps.type.random
 import world.gregs.voidps.world.interact.dialogue.*
@@ -29,29 +27,29 @@ import java.util.concurrent.TimeUnit
 
 val objects: GameObjects by inject()
 
-on<NPCOption>({ operate && target.id.endsWith("camel") && option == "Talk-to" && player.equipped(EquipSlot.Amulet).id != "camulet" }) { player: Player ->
-    insult()
-    player.message(when (random.nextInt(3)) {
-        0 -> "The camel turns its head and glares at you."
-        1 -> "The camel spits at you, and you jump back hurriedly.."
-        else -> "The camel tries to stamp on your foot, but you pull it back quickly."
-    })
-}
-
-on<NPCOption>({ operate && target.id == "al_the_camel" && option == "Talk-to" && player.equipped(EquipSlot.Amulet).id == "camulet" }) { player: Player ->
-    choice("What would you like to do?") {
-        option("Ask the camel about its dung.") {
-            dung()
-        }
-        option("Say something unpleasant.") {
-            insult()
-            if (player["al_the_camel", false]) {
-                listenTo()
-            } else {
-                talkingToMe()
+npcOperate("Talk-to", "*camel") {
+    if (player.equipped(EquipSlot.Amulet).id == "camulet") {
+        choice("What would you like to do?") {
+            option("Ask the camel about its dung.") {
+                dung()
             }
+            option("Say something unpleasant.") {
+                insult()
+                if (player["al_the_camel", false]) {
+                    listenTo()
+                } else {
+                    talkingToMe()
+                }
+            }
+            option("Neither - I'm a polite person.")
         }
-        option("Neither - I'm a polite person.")
+    } else {
+        insult()
+        player.message(when (random.nextInt(3)) {
+            0 -> "The camel turns its head and glares at you."
+            1 -> "The camel spits at you, and you jump back hurriedly.."
+            else -> "The camel tries to stamp on your foot, but you pull it back quickly."
+        })
     }
 }
 
@@ -84,11 +82,11 @@ suspend fun CharacterContext.poems() {
 
 suspend fun CharacterContext.justToSay() {
     npc<Upset>("I wrote this poem when I went to the oasis to nibble at a tree, then discovered I'd left nothing for Elly to nibble. I was distraught.")
-    npc<Talking>("This Is Just To Say")
-    npc<Talking>("I have nibbled the cacti that were by the oasis,")
-    npc<Talking>("and which you were probably saving for lunch.")
-    npc<Talking>("Forgive me, they were delicious, so crunchy and so cold.")
-    npc<Talking>("I wonder if she's forgiven me for eating her snack.")
+    npc<Neutral>("This Is Just To Say")
+    npc<Neutral>("I have nibbled the cacti that were by the oasis,")
+    npc<Neutral>("and which you were probably saving for lunch.")
+    npc<Neutral>("Forgive me, they were delicious, so crunchy and so cold.")
+    npc<Neutral>("I wonder if she's forgiven me for eating her snack.")
     whatDoesSheThink()
 }
 
@@ -119,7 +117,7 @@ suspend fun CharacterContext.desertsDay(interrupt: Boolean) {
 }
 
 suspend fun CharacterContext.whatDoesSheThink() {
-    player<Unsure>("What does she think of your poems?")
+    player<Quiz>("What does she think of your poems?")
     npc<Talk>("She's never heard them.")
     player<Talk>("Why not?")
     npc<Sad>("I suspect she loves another - Ollie, another camel who roams with her to the north.")
@@ -136,9 +134,9 @@ suspend fun CharacterContext.whatDoesSheThink() {
 }
 
 suspend fun NPCOption.dung() {
-    player<Happy>("I'm sorry to bother you, but could you spare me a little dung?")
+    player<Pleased>("I'm sorry to bother you, but could you spare me a little dung?")
     npc<Talk>("Are you serious?")
-    player<Talking>("Oh yes. If you'd be so kind...")
+    player<Neutral>("Oh yes. If you'd be so kind...")
     npc<Talk>("Well, just you close your eyes first. I'm not doing it while you're watching me!")
     player.open("fade_out")
     player.interfaces.sendText("fade_out", "text", "<red>You close your eyes...")
@@ -152,9 +150,9 @@ suspend fun NPCOption.dung() {
 }
 
 suspend fun NPCOption.listenTo() {
-    npc<Talking>("Oh, it's you again. Have you come back to listen to my poems?")
+    npc<Neutral>("Oh, it's you again. Have you come back to listen to my poems?")
     choice {
-        option<Happy>("I'd love to!") {
+        option<Pleased>("I'd love to!") {
             idLoveTo()
         }
         option<Talk>("No, thank you.") {
@@ -168,27 +166,25 @@ suspend fun NPCOption.talkingToMe() {
     player<Talk>("No, er, nothing important.")
     npc<Sad>("Never mind, it is unimportant when I have such important matters weighing on my soul.")
     player<Talk>("How important can a camel's problems be?")
-    npc<Talking>("Well, you see, there is a camel called Elly. A beautiful, wondrous camel, with hide like spun gold and teeth that shine like an oasis.")
+    npc<Neutral>("Well, you see, there is a camel called Elly. A beautiful, wondrous camel, with hide like spun gold and teeth that shine like an oasis.")
     player<Uncertain>("...I see.")
     npc<Talk>("I've written many poems describing her beauty. Would you like to hear one?")
-    player<Talking>("It's all right, I'm...")
+    player<Neutral>("It's all right, I'm...")
     desertsDay(interrupt = true)
 }
 
-on<ObjectOption>({ operate && target.id == "dung" && option == "Pick-up" }) { player: Player ->
-    arriveDelay()
+objectOperate("Pick-up", "dung") {
     if (!player.inventory.contains("bucket")) {
         player<Talk>("I'm not picking that up. I'll need a container...")
-        return@on
+        return@objectOperate
     }
     scoopPoop()
 }
 
-on<ItemOnObject>({ operate && target.id == "dung" }) { _: Player ->
-    arriveDelay()
+itemOnObjectOperate(obj = "dung") {
     if (item.id != "bucket") {
-        player<Unsure>("Surely there's something better I could use to pick up the dung.")
-        return@on
+        player<Quiz>("Surely there's something better I could use to pick up the dung.")
+        return@itemOnObjectOperate
     }
     scoopPoop()
 }

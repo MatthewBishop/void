@@ -20,6 +20,7 @@ import world.gregs.voidps.engine.get
 import world.gregs.yaml.Yaml
 import java.io.File
 
+@Suppress("UNCHECKED_CAST")
 object SkillDataConverter {
     @Suppress("USELESS_CAST")
     @JvmStatic
@@ -50,7 +51,7 @@ object SkillDataConverter {
         for ((name, map) in data) {
             val map = map.toMutableMap()
             if (map.containsKey("skill")) {
-                map.replace("skill", Skill.values()[map["skill"] as Int])
+                map.replace("skill", Skill.entries[map["skill"] as Int])
                 if (map["skill"] != Skill.Crafting) {
                     continue
                 }
@@ -66,7 +67,7 @@ object SkillDataConverter {
                 map.replace("animation", string)
                 if (string.isEmpty()) {
                     newAnimations.getOrPut(map["animation"] as Int) { mutableListOf() }.add(name)
-                } else if(string.toIntOrNull() != null) {
+                } else if (string.toIntOrNull() != null) {
                     newAnimations.getOrPut(string.toInt()) { mutableListOf() }.add(name)
                 }
             }
@@ -75,7 +76,7 @@ object SkillDataConverter {
                 map.replace("sound", string)
                 if (string.isEmpty()) {
                     newSounds.getOrPut(map["sound"] as Int) { mutableListOf() }.add(name)
-                } else if(string.toIntOrNull() != null) {
+                } else if (string.toIntOrNull() != null) {
                     newSounds.getOrPut(string.toInt()) { mutableListOf() }.add(name)
                 }
             }

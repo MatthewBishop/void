@@ -4,6 +4,9 @@ import world.gregs.voidps.engine.entity.character.Character
 import world.gregs.voidps.engine.entity.character.mode.interact.Interaction
 import world.gregs.voidps.engine.entity.item.Item
 import world.gregs.voidps.engine.entity.item.floor.FloorItem
+import world.gregs.voidps.engine.event.EventDispatcher
+import world.gregs.voidps.engine.event.Events
+import world.gregs.voidps.engine.suspend.arriveDelay
 
 data class ItemOnFloorItem(
     override val character: Character,
@@ -15,4 +18,30 @@ data class ItemOnFloorItem(
     val inventory: String
 ) : Interaction() {
     override fun copy(approach: Boolean) = copy().apply { this.approach = approach }
+
+    override val size = 5
+
+    override fun parameter(dispatcher: EventDispatcher, index: Int) = when (index) {
+        0 -> if (approach) "item_approach_floor_item" else "item_operate_floor_item"
+        1 -> item.id
+        2 -> floorItem.id
+        3 -> id
+        4 -> component
+        else -> null
+    }
+}
+
+fun itemOnFloorItemOperate(item: String = "*", floorItem: String = "*", id: String = "*", component: String = "*", arrive: Boolean = true, handler: suspend ItemOnFloorItem.() -> Unit) {
+    Events.handle<ItemOnFloorItem>("item_approach_floor_item", item, floorItem, id, component) {
+        if (arrive) {
+            arriveDelay()
+        }
+        handler.invoke(this)
+    }
+}
+
+fun itemOnFloorItemApproach(item: String = "*", floorItem: String = "*", id: String = "*", component: String = "*", handler: suspend ItemOnFloorItem.() -> Unit) {
+    Events.handle<ItemOnFloorItem>("item_approach_floor_item", item, floorItem, id, component) {
+        handler.invoke(this)
+    }
 }

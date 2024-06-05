@@ -2,65 +2,63 @@ package world.gregs.voidps.world.activity.skill
 
 import net.pearx.kasechange.toSentenceCase
 import world.gregs.voidps.engine.client.message
+import world.gregs.voidps.engine.client.ui.chat.plural
 import world.gregs.voidps.engine.client.ui.closeDialogue
 import world.gregs.voidps.engine.client.ui.closeInterfaces
-import world.gregs.voidps.engine.client.ui.event.InterfaceClosed
-import world.gregs.voidps.engine.client.ui.event.InterfaceOpened
-import world.gregs.voidps.engine.client.ui.interact.ItemOnItem
+import world.gregs.voidps.engine.client.ui.event.interfaceClose
+import world.gregs.voidps.engine.client.ui.event.interfaceOpen
+import world.gregs.voidps.engine.client.ui.interact.itemOnItem
 import world.gregs.voidps.engine.data.config.ItemOnItemDefinition
 import world.gregs.voidps.engine.data.definition.ItemOnItemDefinitions
 import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.player.chat.ChatType
-import world.gregs.voidps.engine.entity.character.player.chat.inventoryFull
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.character.player.skill.exp.exp
 import world.gregs.voidps.engine.entity.character.player.skill.level.Level
 import world.gregs.voidps.engine.entity.character.player.skill.level.Level.has
 import world.gregs.voidps.engine.entity.character.setAnimation
 import world.gregs.voidps.engine.entity.character.setGraphic
-import world.gregs.voidps.engine.event.on
 import world.gregs.voidps.engine.inject
-import world.gregs.voidps.engine.inv.add
+import world.gregs.voidps.engine.inv.Inventory
 import world.gregs.voidps.engine.inv.inventory
-import world.gregs.voidps.engine.inv.remove
+import world.gregs.voidps.engine.inv.transact.Transaction
+import world.gregs.voidps.engine.inv.transact.TransactionError
+import world.gregs.voidps.engine.inv.transact.operation.AddItem.add
+import world.gregs.voidps.engine.inv.transact.operation.RemoveItem.remove
 import world.gregs.voidps.engine.queue.weakQueue
 import world.gregs.voidps.world.interact.dialogue.type.makeAmount
-import world.gregs.voidps.world.interact.entity.combat.underAttack
+import world.gregs.voidps.world.interact.entity.combat.inCombat
 import world.gregs.voidps.world.interact.entity.sound.playSound
 
 val itemOnItemDefs: ItemOnItemDefinitions by inject()
 
-on<ItemOnItem>({ itemOnItemDefs.contains(fromItem, toItem) }) { player: Player ->
-    val overlaps = itemOnItemDefs.get(fromItem, toItem)
+itemOnItem { player ->
+    val overlaps = itemOnItemDefs.getOrNull(fromItem, toItem) ?: return@itemOnItem
     if (overlaps.isEmpty()) {
-        return@on
+        return@itemOnItem
     }
     player.closeInterfaces()
     player.weakQueue("item_on_item") {
         val maximum = getMaximum(overlaps, player)
-        val (def, amount) = if (makeImmediately(player, overlaps, maximum)) {
+        val (def, amount) = if (makeImmediately(player, overlaps, maximum, player.inventory)) {
             player.closeDialogue()
             overlaps.first() to 1
         } else {
-            val type = overlaps.first().type
+            val definition = overlaps.first()
+            val type = definition.type
             val (selection, amount) = makeAmount(
                 overlaps.map { it.add.first().id }.distinct().toList(),
                 type = type.toSentenceCase(),
                 maximum = maximum,
-                text = "How many would you like to $type?"
+                text = definition.question
             )
             overlaps.first { it.add.first().id == selection } to amount
         }
-        val skill = def.skill
-        if (amount <= 0) {
-            hasItems(player, def)
-            return@weakQueue
-        }
-        itemOnItem(player, skill, def, amount, 0)
+        useItemOnItem(player, def.skill, def, amount, 0)
     }
 }
 
-fun itemOnItem(
+fun useItemOnItem(
     player: Player,
     skill: Skill?,
     def: ItemOnItemDefinition,
@@ -75,33 +73,27 @@ fun itemOnItem(
         return
     }
 
-    if (player.inventory.spaces - def.remove.size - (if (def.one.isEmpty()) 0 else 1) + def.add.size < 0) {
-        player.inventoryFull()
+    val transaction = player.inventory.transaction
+    transaction.start()
+    val message = transaction.removeItems(def, success = true)
+    if (!transaction.revert()) {
+        player.message(message)
         return
     }
-
-    if (!hasItems(player, def)) {
+    if (transaction.failed) {
+        player.message(message)
         return
     }
-    player.weakQueue("item_on_item_start", 1) {
-        if (def.animation.isNotEmpty()) {
-            player.setAnimation(def.animation)
-        }
-        if (def.graphic.isNotEmpty()) {
-            player.setGraphic(def.graphic)
-        }
-        if (def.sound.isNotEmpty()) {
-            player.playSound(def.sound)
-        }
-        if (count == 0 && def.delay > 0) {
-            player.weakQueue("item_on_item_first", def.delay) {
-                replaceItems(def, player, skill, amount, count)
-            }
-        } else if (count != 0 || def.delay != -1) {
-            player.weakQueue("item_on_item_delay", def.ticks) {
-                replaceItems(def, player, skill, amount, count)
-            }
-        }
+    if (def.animation.isNotEmpty()) {
+        player.setAnimation(def.animation)
+    }
+    if (def.graphic.isNotEmpty()) {
+        player.setGraphic(def.graphic)
+    }
+    if (def.sound.isNotEmpty()) {
+        player.playSound(def.sound)
+    }
+    player.weakQueue("item_on_item_delay", if (count == 0) def.delay else def.ticks) {
         replaceItems(def, player, skill, amount, count)
     }
 }
@@ -113,53 +105,44 @@ fun replaceItems(
     amount: Int,
     count: Int
 ) {
-    if (def.remove.any { !player.inventory.contains(it.id, it.amount) }) {
+    val success = skill == null || Level.success(player.levels.get(skill), def.chance)
+    val transaction = player.inventory.transaction
+    val message = transaction.removeItems(def, success)
+    if (!transaction.commit()) {
+        player.message(message)
         return
     }
-    if (def.one.isNotEmpty() && def.one.none { player.inventory.contains(it.id, it.amount) }) {
-        return
-    }
-    for (remove in def.remove) {
-        player.inventory.remove(remove.id, remove.amount)
-    }
-    for (remove in def.one) {
-        if (player.inventory.remove(remove.id, remove.amount)) {
-            break
-        }
-    }
-    val success = Level.success(if (skill == null) 1 else player.levels.get(skill), def.chance)
-    if (skill == null || success) {
+    if (success) {
         if (def.message.isNotEmpty()) {
             player.message(def.message, ChatType.Filter)
         }
         if (skill != null) {
             player.exp(skill, def.xp)
         }
-        for (add in def.add) {
-            player.inventory.add(add.id, add.amount)
-        }
-        player.events.emit(ItemUsedOnItem(def))
+        player.emit(ItemUsedOnItem(def))
     } else {
         if (def.failure.isNotEmpty()) {
             player.message(def.failure, ChatType.Filter)
         }
-        for (add in def.fail) {
-            player.inventory.add(add.id, add.amount)
-        }
     }
-    itemOnItem(player, skill, def, amount, count + 1)
+    useItemOnItem(player, skill, def, amount, count + 1)
 }
 
-on<InterfaceClosed>({ id == "dialogue_skill_creation" }) { player: Player ->
+interfaceClose("dialogue_skill_creation") { player ->
     player.clear("selecting_amount")
 }
 
-on<InterfaceOpened>({ id == "dialogue_skill_creation" }) { player: Player ->
+interfaceOpen("dialogue_skill_creation") { player ->
     player["selecting_amount"] = true
 }
 
-fun makeImmediately(player: Player, overlaps: List<ItemOnItemDefinition>, maximum: Int): Boolean {
-    return (overlaps.size == 1 && maximum == 1) || player["selecting_amount", false] || player.underAttack
+fun makeImmediately(player: Player, overlaps: List<ItemOnItemDefinition>, maximum: Int, inventory: Inventory): Boolean {
+    if (overlaps.size != 1) {
+        return false
+    }
+    val definition = overlaps.first()
+    val stackable = definition.maximum == -1 && definition.remove.all { inventory.stackable(it.id) } && definition.one.all { inventory.stackable(it.id) }
+    return stackable || maximum == 1 || player["selecting_amount", false] || player.inCombat
 }
 
 fun getMaximum(overlaps: List<ItemOnItemDefinition>, player: Player): Int {
@@ -173,26 +156,43 @@ fun getMaximum(overlaps: List<ItemOnItemDefinition>, player: Player): Int {
         if (min > max) {
             max = min
         }
+        if (overlap.maximum in 1..<max) {
+            max = overlap.maximum
+        }
     }
     return max
 }
 
-fun hasItems(player: Player, def: ItemOnItemDefinition): Boolean {
+fun Transaction.removeItems(def: ItemOnItemDefinition, success: Boolean): String {
     for (item in def.requires) {
-        if (!player.inventory.contains(item.id, item.amount)) {
-            player.message("You need a ${item.def.name.lowercase()} to ${def.type} this.")
-            return false
+        if (!inventory.contains(item.id, item.amount)) {
+            error = TransactionError.Deficient(item.amount)
+            return "You need a ${item.def.name.lowercase()} to ${def.type} this."
         }
     }
     for (item in def.remove) {
-        if (!player.inventory.contains(item.id, item.amount)) {
-            player.message("You don't have enough ${item.def.name.lowercase()} to ${def.type} this.")
-            return false
+        remove(item.id, item.amount)
+        if (failed) {
+            return "You don't have enough ${item.def.name.lowercase().plural(item.amount)} to ${def.type} this."
         }
     }
-    if (def.one.isNotEmpty() && def.one.none { item -> player.inventory.contains(item.id, item.amount) }) {
-        player.message("You don't have enough ${def.one.first().def.name.lowercase()} to ${def.type} this.")
-        return false
+    var removedOne = def.one.isEmpty()
+    for (item in def.one) {
+        if (inventory.contains(item.id, item.amount)) {
+            remove(item.id, item.amount)
+            removedOne = true
+        }
     }
-    return true
+    if (!removedOne || failed) {
+        val first = def.one.first()
+        return "You don't have enough ${first.def.name.lowercase().plural(first.amount)} to ${def.type} this."
+    }
+
+    for (add in if (success) def.add else def.fail) {
+        add(add.id, add.amount)
+        if (failed) {
+            return "You don't have enough inventory space to ${def.type} this."
+        }
+    }
+    return ""
 }

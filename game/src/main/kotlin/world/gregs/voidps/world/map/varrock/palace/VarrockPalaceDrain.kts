@@ -2,58 +2,55 @@ package world.gregs.voidps.world.map.varrock.palace
 
 import com.github.michaelbull.logging.InlineLogger
 import world.gregs.voidps.engine.client.message
-import world.gregs.voidps.engine.client.ui.interact.ItemOnObject
-import world.gregs.voidps.engine.entity.Registered
-import world.gregs.voidps.engine.entity.character.player.Player
+import world.gregs.voidps.engine.client.ui.interact.itemOnObjectOperate
 import world.gregs.voidps.engine.entity.character.setAnimation
 import world.gregs.voidps.engine.entity.character.setGraphic
-import world.gregs.voidps.engine.entity.obj.ObjectOption
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.entity.obj.objectOperate
+import world.gregs.voidps.engine.entity.playerSpawn
 import world.gregs.voidps.engine.inv.add
 import world.gregs.voidps.engine.inv.inventory
 import world.gregs.voidps.engine.inv.replace
 import world.gregs.voidps.engine.queue.weakQueue
-import world.gregs.voidps.engine.suspend.arriveDelay
 import world.gregs.voidps.world.activity.bank.ownsItem
 import world.gregs.voidps.world.activity.quest.quest
-import world.gregs.voidps.world.interact.dialogue.Cheerful
-import world.gregs.voidps.world.interact.dialogue.Suspicious
-import world.gregs.voidps.world.interact.dialogue.Talking
+import world.gregs.voidps.world.interact.dialogue.Happy
+import world.gregs.voidps.world.interact.dialogue.Neutral
+import world.gregs.voidps.world.interact.dialogue.Shifty
 import world.gregs.voidps.world.interact.dialogue.type.item
 import world.gregs.voidps.world.interact.dialogue.type.player
 import world.gregs.voidps.world.interact.entity.sound.playSound
 
 val logger = InlineLogger()
 
-on<ObjectOption>({ operate && target.id == "varrock_palace_drain" && option == "Search" }) { player: Player ->
-    arriveDelay()
+objectOperate("Search", "varrock_palace_drain") {
     player.setAnimation("climb_down")
     if (player["demon_slayer_drain_dislodged", false] || player.ownsItem("silverlight_key_sir_prysin")) {
         player.message("Nothing interesting seems to have been dropped down here today.")
     } else if (player.quest("demon_slayer") == "unstarted") {
-        player<Suspicious>("This is the drainpipe running from the kitchen sink to the sewer. I can see a key just inside the drain.")
+        player<Shifty>("This is the drainpipe running from the kitchen sink to the sewer. I can see a key just inside the drain.")
     } else {
-        player<Talking>("That must be the key Sir Prysin dropped.")
-        player<Suspicious>("I don't seem to be able to reach it. I wonder if I can dislodge it somehow. That way it may go down into the sewers.")
+        player<Neutral>("That must be the key Sir Prysin dropped.")
+        player<Shifty>("I don't seem to be able to reach it. I wonder if I can dislodge it somehow. That way it may go down into the sewers.")
     }
 }
 
-on<Registered>({ it["demon_slayer_drain_dislodged", false] }) { player: Player ->
-    player.sendVariable("demon_slayer_drain_dislodged")
+playerSpawn { player ->
+    if (player["demon_slayer_drain_dislodged", false]) {
+        player.sendVariable("demon_slayer_drain_dislodged")
+    }
 }
 
-on<ItemOnObject>({ operate && target.id == "varrock_palace_drain" && item.id.endsWith("of_water") }) { player: Player ->
-    arriveDelay()
+itemOnObjectOperate("*of_water", "varrock_palace_drain") {
     val replacement = when {
         item.id.startsWith("bucket_of") -> "bucket"
         item.id.startsWith("jug_of") -> "jug"
         item.id.startsWith("pot_of") -> "empty_pot"
         item.id.startsWith("bowl_of") -> "bowl"
-        else -> return@on
+        else -> return@itemOnObjectOperate
     }
     if (!player.inventory.replace(itemSlot, item.id, replacement)) {
         logger.warn { "Issue emptying ${item.id} -> $replacement" }
-        return@on
+        return@itemOnObjectOperate
     }
     player["demon_slayer_drain_dislodged"] = true
     player.message("You pour the liquid down the drain.")
@@ -63,15 +60,14 @@ on<ItemOnObject>({ operate && target.id == "varrock_palace_drain" && item.id.end
     player.playSound("demon_slayer_key_fall")
     player.weakQueue("demon_slayer_dislodge_key") {
         if (player.quest("demon_slayer") == "key_hunt") {
-            player<Cheerful>("OK, I think I've washed the key down into the sewer. I'd better go down and get it!")
+            player<Happy>("OK, I think I've washed the key down into the sewer. I'd better go down and get it!")
         } else {
-            player<Suspicious>("I think that dislodged something from the drain. It's probably gone down to the sewers below.")
+            player<Shifty>("I think that dislodged something from the drain. It's probably gone down to the sewers below.")
         }
     }
 }
 
-on<ObjectOption>({ operate && def.stringId == "demon_slayer_rusty_key" && option == "Take" }) { player: Player ->
-    arriveDelay()
+objectOperate("Take", "demon_slayer_rusty_key") {
     if (player.inventory.add("silverlight_key_sir_prysin")) {
         player["demon_slayer_drain_dislodged"] = false
         item("silverlight_key_sir_prysin", 400, "You pick up an old rusty key.")

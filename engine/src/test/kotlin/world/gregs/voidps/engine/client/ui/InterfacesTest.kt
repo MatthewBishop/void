@@ -12,8 +12,8 @@ import world.gregs.voidps.engine.client.ui.Interfaces.Companion.ROOT_ID
 import world.gregs.voidps.engine.client.ui.Interfaces.Companion.ROOT_INDEX
 import world.gregs.voidps.engine.client.ui.event.InterfaceClosed
 import world.gregs.voidps.engine.client.ui.event.InterfaceOpened
-import world.gregs.voidps.network.encode.closeInterface
-import world.gregs.voidps.network.encode.openInterface
+import world.gregs.voidps.network.login.protocol.encode.closeInterface
+import world.gregs.voidps.network.login.protocol.encode.openInterface
 
 internal class InterfacesTest : InterfaceTest() {
 
@@ -57,7 +57,7 @@ internal class InterfacesTest : InterfaceTest() {
     @ParameterizedTest
     @ValueSource(booleans = [false, true])
     fun `Invalid interface`(resizable: Boolean) {
-        gameframe.resizable = resizable
+        interfaces.resizable = resizable
         val name = "zero"
         every { definitions.get(name) } returns InterfaceDefinition()
         assertFalse(interfaces.open(name))

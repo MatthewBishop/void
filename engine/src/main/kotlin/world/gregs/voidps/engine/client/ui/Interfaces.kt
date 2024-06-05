@@ -12,21 +12,30 @@ import world.gregs.voidps.engine.data.definition.InterfaceDefinitions
 import world.gregs.voidps.engine.entity.character.Character
 import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.item.Item
-import world.gregs.voidps.engine.event.Events
+import world.gregs.voidps.engine.event.EventDispatcher
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.network.client.Client
-import world.gregs.voidps.network.encode.*
+import world.gregs.voidps.network.login.protocol.encode.*
 
 /**
  * API for the interacting and tracking of client interfaces
  */
 class Interfaces(
-    private val events: Events,
+    private val events: EventDispatcher,
     internal var client: Client? = null,
     internal val definitions: InterfaceDefinitions,
-    private val gameFrame: GameFrame,
     private val openInterfaces: MutableSet<String> = ObjectOpenHashSet()
 ) {
+    var displayMode = 0
+
+    var resizable: Boolean
+        get() = displayMode >= RESIZABLE_SCREEN
+        set(value) {
+            displayMode = if (value) RESIZABLE_SCREEN else FIXED_SCREEN
+        }
+
+    val gameFrame: String
+        get() = if (resizable) GAME_FRAME_RESIZE_NAME else GAME_FRAME_NAME
 
     fun open(id: String): Boolean {
         if (!hasOpenOrRootParent(id)) {
@@ -58,6 +67,7 @@ class Interfaces(
         if (openInterfaces.remove(id)) {
             sendClose(id)
             events.emit(InterfaceClosed(id))
+            (events as? Player)?.queue?.clearWeak()
             return true
         }
         return false
@@ -103,6 +113,7 @@ class Interfaces(
                 it.remove()
                 sendClose(id)
                 events.emit(InterfaceClosed(id))
+                (events as? Player)?.queue?.clearWeak()
                 children.add(id)
             }
         }
@@ -112,11 +123,11 @@ class Interfaces(
     }
 
     private fun getParent(id: String): String {
-        return definitions.get(id)[if (gameFrame.resizable) "parent_resize" else "parent_fixed", ""]
+        return definitions.get(id)[if (resizable) "parent_resize" else "parent_fixed", ""]
     }
 
     private fun getIndex(id: String): Int {
-        return definitions.get(id)[if (gameFrame.resizable) "index_resize" else "index_fixed", -1]
+        return definitions.get(id)[if (resizable) "index_resize" else "index_fixed", -1]
     }
 
     private fun getType(id: String): String {
@@ -196,7 +207,25 @@ class Interfaces(
         return true
     }
 
+    fun setDisplayMode(displayMode: Int = 0): Boolean {
+        val current = gameFrame
+        if (contains(current)) {
+            this.displayMode = displayMode
+            remove(current)
+            open(gameFrame)
+            refresh()
+            return true
+        }
+        return false
+    }
+
     companion object {
+        const val FIXED_SCREEN = 1
+        const val RESIZABLE_SCREEN = 2
+        const val FULL_SCREEN = 3
+
+        const val GAME_FRAME_NAME = "toplevel"
+        const val GAME_FRAME_RESIZE_NAME = "toplevel_full"
         const val ROOT_ID = "root"
         const val ROOT_INDEX = 0
     }

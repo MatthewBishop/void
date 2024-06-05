@@ -9,8 +9,8 @@ import world.gregs.voidps.engine.data.definition.ItemDefinitions
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.engine.inv.equipment
 import world.gregs.voidps.engine.inv.inventory
-import world.gregs.voidps.network.instruct.EnterInt
-import world.gregs.voidps.network.instruct.InteractInterface
+import world.gregs.voidps.network.client.instruction.EnterInt
+import world.gregs.voidps.network.client.instruction.InteractInterface
 import world.gregs.voidps.world.activity.bank.bank
 
 private fun getItemId(id: String): Int? = get<ItemDefinitions>().getOrNull(id)?.id
@@ -47,7 +47,7 @@ suspend fun Bot.depositAll(item: String, slot: Int = player.inventory.indexOf(it
     if (slot == -1) {
         return
     }
-    player.instructions.emit(InteractInterface(interfaceId = 763, componentId = 0, itemId = getItemId(item) ?: return, itemSlot = slot, option = 5))
+    player.instructions.send(InteractInterface(interfaceId = 763, componentId = 0, itemId = getItemId(item) ?: return, itemSlot = slot, option = 5))
     await("tick")
 }
 
@@ -61,10 +61,10 @@ suspend fun Bot.deposit(item: String, slot: Int = player.inventory.indexOf(item)
         10 -> 2
         else -> 4
     }
-    player.instructions.emit(InteractInterface(interfaceId = 763, componentId = 0, itemId = getItemId(item) ?: return, itemSlot = slot, option = option))
+    player.instructions.send(InteractInterface(interfaceId = 763, componentId = 0, itemId = getItemId(item) ?: return, itemSlot = slot, option = option))
     if (option == 4) {
         await("tick")
-        player.instructions.emit(EnterInt(value = amount))
+        player.instructions.send(EnterInt(value = amount))
     }
     await("tick")
 }
@@ -79,10 +79,10 @@ suspend fun Bot.withdraw(item: String, slot: Int = player.bank.indexOf(item), am
         10 -> 2
         else -> 4
     }
-    player.instructions.emit(InteractInterface(interfaceId = 762, componentId = 93, itemId = getItemId(item) ?: return, itemSlot = slot, option = option))
+    player.instructions.send(InteractInterface(interfaceId = 762, componentId = 93, itemId = getItemId(item) ?: return, itemSlot = slot, option = option))
     if (option == 4) {
         await("tick")
-        player.instructions.emit(EnterInt(value = amount))
+        player.instructions.send(EnterInt(value = amount))
     }
     await("tick")
 }
@@ -105,7 +105,7 @@ suspend fun Bot.withdrawAll(item: String, slot: Int = player.bank.indexOf(item))
     if (slot == -1) {
         return
     }
-    player.instructions.emit(InteractInterface(interfaceId = 762, componentId = 93, itemId = getItemId(item) ?: return, itemSlot = slot, option = 5))
+    player.instructions.send(InteractInterface(interfaceId = 762, componentId = 93, itemId = getItemId(item) ?: return, itemSlot = slot, option = 5))
     await("tick")
 }
 
@@ -113,7 +113,7 @@ suspend fun Bot.withdrawAllButOne(item: String, slot: Int = player.bank.indexOf(
     if (slot == -1) {
         return
     }
-    player.instructions.emit(InteractInterface(interfaceId = 762, componentId = 93, itemId = getItemId(item) ?: return, itemSlot = slot, option = 6))
+    player.instructions.send(InteractInterface(interfaceId = 762, componentId = 93, itemId = getItemId(item) ?: return, itemSlot = slot, option = 6))
     await("tick")
 }
 

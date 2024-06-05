@@ -13,26 +13,22 @@ import world.gregs.voidps.engine.entity.character.player.skill.level.Interpolati
 import world.gregs.voidps.engine.entity.character.setAnimation
 import world.gregs.voidps.engine.entity.character.setGraphic
 import world.gregs.voidps.engine.entity.obj.GameObject
-import world.gregs.voidps.engine.entity.obj.ObjectOption
-import world.gregs.voidps.engine.event.Priority
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.entity.obj.objectOperate
 import world.gregs.voidps.engine.inv.equipment
 import world.gregs.voidps.engine.inv.remove
 import world.gregs.voidps.engine.queue.weakQueue
-import world.gregs.voidps.engine.suspend.arriveDelay
-import world.gregs.voidps.network.visual.update.player.EquipSlot
+import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
 import world.gregs.voidps.type.random
 import world.gregs.voidps.world.interact.entity.combat.fightStyle
 import world.gregs.voidps.world.interact.entity.combat.hit.Damage
-import world.gregs.voidps.world.interact.entity.combat.underAttack
+import world.gregs.voidps.world.interact.entity.combat.inCombat
 import world.gregs.voidps.world.interact.entity.combat.weapon
 import world.gregs.voidps.world.interact.entity.player.combat.range.ammo
 import world.gregs.voidps.world.interact.entity.proj.shoot
 
-on<ObjectOption>({ operate && target.id == "archery_target" && option == "Shoot-at" }, Priority.HIGH) { player: Player ->
+objectOperate("Shoot-at", "archery_target") {
     player.closeDialogue()
     player.face(target)
-    arriveDelay()
     swing(player, target, 0)
 }
 
@@ -47,7 +43,7 @@ fun swing(player: Player, obj: GameObject, delay: Int) {
             player.message("You can only use a Training bow and arrows against this target.")
             return@weakQueue
         }
-        if (player.underAttack) {
+        if (player.inCombat) {
             player.message("You are already in combat.")
             return@weakQueue
         }
@@ -57,7 +53,7 @@ fun swing(player: Player, obj: GameObject, delay: Int) {
             player.message("There is no ammo left in your quiver.")
             return@weakQueue
         }
-        val remaining = player.remaining("hit_delay")
+        val remaining = player.remaining("action_delay")
         if (remaining <= 0) {
             player.ammo = "training_arrows"
             player.equipment.remove(player.ammo)
@@ -76,7 +72,7 @@ fun swing(player: Player, obj: GameObject, delay: Int) {
                 player.message("That was your last one!")
             }
             val attackDelay = weapon.def["attack_speed", 4]
-            player.start("hit_delay", attackDelay)
+            player.start("action_delay", attackDelay)
             swing(player, obj, attackDelay)
         } else {
             swing(player, obj, remaining)

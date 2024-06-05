@@ -17,7 +17,7 @@ import world.gregs.voidps.engine.map.collision.Collisions
 import world.gregs.voidps.engine.map.collision.check
 import world.gregs.voidps.engine.queue.softQueue
 import world.gregs.voidps.engine.timer.toTicks
-import world.gregs.voidps.network.visual.update.player.EquipSlot
+import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
 import world.gregs.voidps.type.random
 import world.gregs.voidps.world.activity.skill.slayer.undead
 import world.gregs.voidps.world.interact.entity.combat.Equipment
@@ -31,10 +31,20 @@ import java.util.concurrent.TimeUnit
 object Ammo {
     fun required(item: Item) = item.def["ammo_group", "none"] != "none" && !item.id.endsWith("chinchompa")
 
+    fun requiredAmount(weapon: Item, special: Boolean) = if (weapon.id.startsWith("dark_bow") || (weapon.id.startsWith("magic_shortbow") && special)) 2 else 1
+
     fun remove(player: Player, target: Character, ammo: String, required: Int) {
-        if (ammo == "bolt_rack") {
+        if (ammo == "" || ammo == "zaryte_arrow" || ammo == "sling_rock" || ammo == "special_arrow") {
+            return
+        } else if(ammo == "mud_pie" || ammo.endsWith("_tar")) {
+            player.equipment.remove(ammo, required)
+            return
+        } else if (ammo == "bolt_rack" || ammo == "hand_cannon_shot" || ammo.endsWith("chinchompa")) {
             player.softQueue("ammo") {
                 player.equipment.remove(ammo, required)
+                if (!player.equipment.contains(ammo)) {
+                    player.message("That was your last one!")
+                }
             }
             return
         }
@@ -126,6 +136,6 @@ object Ammo {
     }
 }
 
-var Player.ammo: String
+var Character.ammo: String
     get() = get("ammo", "")
     set(value) = set("ammo", value)

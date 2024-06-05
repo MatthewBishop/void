@@ -9,8 +9,8 @@ import world.gregs.voidps.engine.client.message
 import world.gregs.voidps.engine.entity.World
 import world.gregs.voidps.engine.entity.character.player.chat.ChatType
 import world.gregs.voidps.engine.entity.character.player.chat.clan.ClanRank
-import world.gregs.voidps.network.encode.*
-import world.gregs.voidps.network.instruct.*
+import world.gregs.voidps.network.client.instruction.*
+import world.gregs.voidps.network.login.protocol.encode.*
 import world.gregs.voidps.world.community.chat.privateStatus
 import world.gregs.voidps.world.community.clan.ownClan
 import world.gregs.voidps.world.script.WorldTest
@@ -22,10 +22,10 @@ internal class IgnoreTest : WorldTest() {
 
     @BeforeAll
     fun start() {
-        mockkStatic("world.gregs.voidps.network.encode.IgnoreEncoderKt")
-        mockkStatic("world.gregs.voidps.network.encode.ChatEncoderKt")
-        mockkStatic("world.gregs.voidps.network.encode.ClanEncoderKt")
-        mockkStatic("world.gregs.voidps.network.encode.FriendsEncoderKt")
+        mockkStatic("world.gregs.voidps.network.login.protocol.encode.IgnoreEncoderKt")
+        mockkStatic("world.gregs.voidps.network.login.protocol.encode.ChatEncoderKt")
+        mockkStatic("world.gregs.voidps.network.login.protocol.encode.ClanEncoderKt")
+        mockkStatic("world.gregs.voidps.network.login.protocol.encode.FriendsEncoderKt")
         mockkStatic("world.gregs.voidps.engine.client.EncodeExtensionsKt")
     }
 
@@ -34,7 +34,7 @@ internal class IgnoreTest : WorldTest() {
         val (player, client) = createClient("player")
         createPlayer("nuisance")
 
-        player.instructions.emit(IgnoreAdd("nuisance"))
+        player.instructions.send(IgnoreAdd("nuisance"))
         tick()
 
         verify {
@@ -51,7 +51,7 @@ internal class IgnoreTest : WorldTest() {
         }
         createPlayer("nuisance")
 
-        player.instructions.emit(IgnoreAdd("nuisance"))
+        player.instructions.send(IgnoreAdd("nuisance"))
         tick()
 
         verify {
@@ -63,7 +63,7 @@ internal class IgnoreTest : WorldTest() {
     fun `Add non-existent player`() = runTest {
         val (player, client) = createClient("player")
 
-        player.instructions.emit(IgnoreAdd("random"))
+        player.instructions.send(IgnoreAdd("random"))
         tick()
 
         verify {
@@ -77,7 +77,7 @@ internal class IgnoreTest : WorldTest() {
         createPlayer("nuisance")
         player.ignores.add("nuisance")
 
-        player.instructions.emit(IgnoreAdd("nuisance"))
+        player.instructions.send(IgnoreAdd("nuisance"))
         tick()
 
         verify {
@@ -91,7 +91,7 @@ internal class IgnoreTest : WorldTest() {
         createPlayer("friend")
         player.friends["friend"] = ClanRank.Friend
 
-        player.instructions.emit(IgnoreAdd("friend"))
+        player.instructions.send(IgnoreAdd("friend"))
         tick()
 
         verify {
@@ -107,7 +107,7 @@ internal class IgnoreTest : WorldTest() {
         player.ignores.add("nuisance")
         nuisance.friends["player"] = ClanRank.Friend
 
-        player.instructions.emit(IgnoreDelete("nuisance"))
+        player.instructions.send(IgnoreDelete("nuisance"))
         tick()
 
         verify {
@@ -122,7 +122,7 @@ internal class IgnoreTest : WorldTest() {
         val (nuisance, nuisanceClient) = createClient("nuisance")
         player.ignores.add("nuisance")
 
-        nuisance.instructions.emit(ChatPublic("rude", 0))
+        nuisance.instructions.send(ChatPublic("rude", 0))
         tick()
 
         verify {
@@ -139,7 +139,7 @@ internal class IgnoreTest : WorldTest() {
         val (nuisance, client) = createClient("nuisance")
         player.ignores.add("nuisance")
 
-        nuisance.instructions.emit(ChatPrivate("player", "rude"))
+        nuisance.instructions.send(ChatPrivate("player", "rude"))
         tick()
 
         verify {
@@ -152,13 +152,13 @@ internal class IgnoreTest : WorldTest() {
         val (player, playerClient) = createClient("player")
         val (nuisance, nuisanceClient) = createClient("nuisance")
         player.ownClan?.name = "clan"
-        player.instructions.emit(ClanChatJoin("player"))
-        nuisance.instructions.emit(ClanChatJoin("player"))
+        player.instructions.send(ClanChatJoin("player"))
+        nuisance.instructions.send(ClanChatJoin("player"))
         tick()
         player.ignores.add("nuisance")
 
-        nuisance.instructions.emit(ChatTypeChange(1))
-        nuisance.instructions.emit(ChatPublic("rude", 0))
+        nuisance.instructions.send(ChatTypeChange(1))
+        nuisance.instructions.send(ChatPublic("rude", 0))
         tick()
 
         verify {

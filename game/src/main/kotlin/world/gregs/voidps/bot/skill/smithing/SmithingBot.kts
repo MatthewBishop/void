@@ -15,41 +15,41 @@ import world.gregs.voidps.engine.data.definition.AreaDefinitions
 import world.gregs.voidps.engine.data.definition.InterfaceDefinitions
 import world.gregs.voidps.engine.data.definition.ItemDefinitions
 import world.gregs.voidps.engine.data.definition.data.Smithing
-import world.gregs.voidps.engine.entity.Registered
-import world.gregs.voidps.engine.entity.World
 import world.gregs.voidps.engine.entity.character.mode.interact.Interact
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.character.player.skill.level.Level.has
 import world.gregs.voidps.engine.entity.obj.GameObject
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.entity.worldSpawn
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.inv.inventory
-import world.gregs.voidps.engine.timer.TimerStop
+import world.gregs.voidps.engine.timer.timerStop
 
 val interfaceDefinitions: InterfaceDefinitions by inject()
 val itemDefinitions: ItemDefinitions by inject()
 val areas: AreaDefinitions by inject()
 val tasks: TaskManager by inject()
 
-onBot<TimerStop>({ timer == "smithing" }) { bot: Bot ->
-    bot.resume(timer)
+timerStop("smithing") { player ->
+    if (player.isBot) {
+        player.bot.resume(timer)
+    }
 }
 
-on<World, Registered> {
+worldSpawn {
     for (area in areas.getTagged("smithing")) {
         val spaces: Int = area["spaces", 1]
         val task = Task(
             name = "smith on anvil at ${area.name}".toLowerSpaceCase(),
             block = {
-                val gear = getGear(Skill.Smithing) ?: return@Task
+                val gear = bot.getGear(Skill.Smithing) ?: return@Task
                 val types: List<String> = gear.getOrNull("types") ?: return@Task
-                while (player.levels.getMax(Skill.Smithing) < gear.levels.last + 1) {
-                    smith(area, types, gear)
+                while (levels.getMax(Skill.Smithing) < gear.levels.last + 1) {
+                    bot.smith(area, types, gear)
                 }
             },
             area = area.area,
             spaces = spaces,
-            requirements = listOf { hasExactGear(Skill.Smithing) }
+            requirements = listOf { bot.hasExactGear(Skill.Smithing) }
         )
         tasks.register(task)
     }

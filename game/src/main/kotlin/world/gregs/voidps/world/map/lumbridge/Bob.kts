@@ -1,40 +1,41 @@
 package world.gregs.voidps.world.map.lumbridge
 
-import world.gregs.voidps.engine.client.ui.interact.ItemOnNPC
-import world.gregs.voidps.engine.entity.character.npc.NPCOption
+import world.gregs.voidps.engine.client.ui.interact.itemOnNPCOperate
+import world.gregs.voidps.engine.entity.character.npc.npcOperate
 import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.character.player.skill.level.Interpolation.interpolate
 import world.gregs.voidps.engine.entity.item.Item
-import world.gregs.voidps.engine.event.on
 import world.gregs.voidps.engine.inv.inventory
-import world.gregs.voidps.world.interact.dialogue.Cheerful
+import world.gregs.voidps.engine.inv.transact.operation.RemoveItem.remove
+import world.gregs.voidps.engine.inv.transact.operation.ReplaceItem.replace
+import world.gregs.voidps.world.interact.dialogue.Happy
+import world.gregs.voidps.world.interact.dialogue.Quiz
 import world.gregs.voidps.world.interact.dialogue.Talk
-import world.gregs.voidps.world.interact.dialogue.Unsure
 import world.gregs.voidps.world.interact.dialogue.Upset
 import world.gregs.voidps.world.interact.dialogue.type.choice
 import world.gregs.voidps.world.interact.dialogue.type.npc
 import world.gregs.voidps.world.interact.entity.npc.shop.openShop
 
-on<NPCOption>({ operate && target.id == "bob" && option == "Talk-to" }) { player: Player ->
+npcOperate("Talk-to", "bob") {
     choice {
         option("Give me a quest!") {
             npc<Talk>("Sorry I don't have any quests for you at the moment.")
         }
-        option<Unsure>("I'd like to trade.") {
-            npc<Cheerful>("Great! I buy and sell pickaxes and hatchets. There are plenty to choose from, and I've some free samples too. Take your pick... or hatchet.")
+        option<Quiz>("I'd like to trade.") {
+            npc<Happy>("Great! I buy and sell pickaxes and hatchets. There are plenty to choose from, and I've some free samples too. Take your pick... or hatchet.")
             player.openShop("bobs_brilliant_axes")
         }
         option<Upset>("Can you repair my items for me?") {
-            npc<Unsure>("Of course I can, though the material may cost you. Just hand me the item and I'll have a look.")
+            npc<Quiz>("Of course I can, though the material may cost you. Just hand me the item and I'll have a look.")
         }
     }
 }
 
-on<ItemOnNPC>({ operate && target.id == "bob" }) { player: Player ->
+itemOnNPCOperate("*", "bob") {
     if (!repairable(item.id)) {
-        npc<Unsure>("Sorry friend, but I can't do anything with that.")
-        return@on
+        npc<Quiz>("Sorry friend, but I can't do anything with that.")
+        return@itemOnNPCOperate
     }
     val cost = repairCost(player, item)
     npc<Talk>("That'll cost you $cost gold coins to fix, are you sure?")
@@ -45,7 +46,7 @@ on<ItemOnNPC>({ operate && target.id == "bob" }) { player: Player ->
                 replace(item.id, repaired(item.id))
             }
             if (repaired) {
-                npc<Cheerful>("There you go. It's a pleasure doing business with you!")
+                npc<Happy>("There you go. It's a pleasure doing business with you!")
             }
         }
         option("On second thoughts, no thanks.")

@@ -6,7 +6,7 @@ import world.gregs.voidps.engine.entity.item.Item
 import world.gregs.voidps.engine.inv.add
 import world.gregs.voidps.engine.inv.equipment
 import world.gregs.voidps.engine.inv.inventory
-import world.gregs.voidps.network.visual.update.player.EquipSlot
+import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
 import world.gregs.voidps.world.interact.entity.player.combat.prayer.PrayerConfigs
 import world.gregs.voidps.world.interact.entity.player.combat.range.ammo
 import world.gregs.voidps.world.interact.entity.player.equip.InventoryOption
@@ -71,7 +71,7 @@ internal class RangedCombatFormulaTest : CombatFormulaTest() {
         player.equipment.set(EquipSlot.Ammo.index, "rune_arrow")
         val potion = Item("super_ranging_potion_4")
         player.inventory.add(potion.id)
-        player.events.emit(InventoryOption(player, "inventory", potion, 0, "Drink"))
+        player.emit(InventoryOption(player, "inventory", potion, 0, "Drink"))
         val npc = createNPC("giant_rat")
 
         val (offensiveRating, defensiveRating, maxHit, chance) = calculate(player, npc, "range", weapon)
@@ -108,7 +108,7 @@ internal class RangedCombatFormulaTest : CombatFormulaTest() {
         player.ammo = "dragon_arrow"
         val potion = Item("super_ranging_potion_4")
         player.inventory.add(potion.id)
-        player.events.emit(InventoryOption(player, "inventory", potion, 0, "Drink"))
+        player.emit(InventoryOption(player, "inventory", potion, 0, "Drink"))
         val npc = createNPC("giant_rat")
 
         val (offensiveRating, defensiveRating, maxHit, chance) = calculate(player, npc, "range", weapon)

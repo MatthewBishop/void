@@ -1,22 +1,20 @@
 package world.gregs.voidps.world.map.rellekka
 
-import world.gregs.voidps.engine.client.ui.InterfaceOption
 import world.gregs.voidps.engine.client.ui.closeDialogue
 import world.gregs.voidps.engine.client.ui.closeMenu
-import world.gregs.voidps.engine.client.ui.event.InterfaceClosed
-import world.gregs.voidps.engine.client.ui.event.InterfaceOpened
+import world.gregs.voidps.engine.client.ui.event.interfaceClose
+import world.gregs.voidps.engine.client.ui.event.interfaceOpen
+import world.gregs.voidps.engine.client.ui.interfaceOption
 import world.gregs.voidps.engine.data.definition.EnumDefinitions
 import world.gregs.voidps.engine.entity.character.CharacterContext
-import world.gregs.voidps.engine.entity.character.npc.NPCOption
-import world.gregs.voidps.engine.entity.character.player.Player
+import world.gregs.voidps.engine.entity.character.npc.npcOperate
 import world.gregs.voidps.engine.entity.character.player.equip.equipped
 import world.gregs.voidps.engine.entity.character.player.flagAppearance
 import world.gregs.voidps.engine.entity.character.player.sex
-import world.gregs.voidps.engine.event.on
 import world.gregs.voidps.engine.inject
-import world.gregs.voidps.network.visual.update.player.BodyColour
-import world.gregs.voidps.network.visual.update.player.BodyPart
-import world.gregs.voidps.network.visual.update.player.EquipSlot
+import world.gregs.voidps.network.login.protocol.visual.update.player.BodyColour
+import world.gregs.voidps.network.login.protocol.visual.update.player.BodyPart
+import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
 import world.gregs.voidps.world.interact.dialogue.*
 import world.gregs.voidps.world.interact.dialogue.type.choice
 import world.gregs.voidps.world.interact.dialogue.type.npc
@@ -25,13 +23,13 @@ import world.gregs.voidps.world.map.falador.openDressingRoom
 
 val enums: EnumDefinitions by inject()
 
-on<NPCOption>({ operate && target.id == "yrsa" && option == "Talk-to" }) { player: Player ->
-    npc<Happy>("Hi. You wanted to buy some clothes? Or did you want to makeover your shoes?")
+npcOperate("Talk-to", "yrsa") {
+    npc<Pleased>("Hi. You wanted to buy some clothes? Or did you want to makeover your shoes?")
     choice {
-        option<Happy>("I'd like to buy some clothes.") {
+        option<Pleased>("I'd like to buy some clothes.") {
             player.openShop("yrsas_shoe_store")
         }
-        option<Happy>("I'd like to change my shoes.") {
+        option<Pleased>("I'd like to change my shoes.") {
             startShoeShopping()
         }
         option<Talk>("Neither, thanks.") {
@@ -40,7 +38,7 @@ on<NPCOption>({ operate && target.id == "yrsa" && option == "Talk-to" }) { playe
     }
 }
 
-on<NPCOption>({ operate && target.id == "yrsa" && option == "Change-shoes" }) { player: Player ->
+npcOperate("Change-shoes", "yrsa") {
     startShoeShopping()
 }
 
@@ -51,17 +49,17 @@ suspend fun CharacterContext.startShoeShopping() {
         return
     }
     if (player.equipped(EquipSlot.Feet).isNotEmpty()) {
-        npc<Unsure>("You can't try on shoes with those on your feet.")
+        npc<Quiz>("You can't try on shoes with those on your feet.")
         return
     }
     openDressingRoom("yrsas_shoe_store")
 }
 
-on<InterfaceClosed>({ id == "yrsas_shoe_store" }) { player: Player ->
+interfaceClose("yrsas_shoe_store") { player ->
     player.softTimers.stop("dressing_room")
 }
 
-on<InterfaceOpened>({ id == "yrsas_shoe_store" }) { player: Player ->
+interfaceOpen("yrsas_shoe_store") { player ->
     player.interfaces.sendText(id, "confirm_text", "Change")
     player.interfaceOptions.unlockAll(id, "styles", 0 until 40)
     val colours = enums.get("colour_shoes")
@@ -70,19 +68,19 @@ on<InterfaceOpened>({ id == "yrsas_shoe_store" }) { player: Player ->
     player["makeover_colour_shoes"] = player.body.getColour(BodyColour.Feet)
 }
 
-on<InterfaceOption>({ id == "yrsas_shoe_store" && component == "styles" }) { player: Player ->
+interfaceOption(component = "styles", id = "yrsas_shoe_store") {
     val value = enums.get("look_shoes_${player.sex}").getInt(itemSlot / 2)
     player["makeover_shoes"] = value
 }
 
-on<InterfaceOption>({ id == "yrsas_shoe_store" && component == "colours" }) { player: Player ->
+interfaceOption(component = "colours", id = "yrsas_shoe_store") {
     player["makeover_colour_shoes"] = enums.get("colour_shoes").getInt(itemSlot / 2)
 }
 
-on<InterfaceOption>({ id == "yrsas_shoe_store" && component == "confirm" }) { player: Player ->
+interfaceOption(component = "confirm", id = "yrsas_shoe_store") {
     player.body.setLook(BodyPart.Feet, player["makeover_shoes", 0])
     player.body.setColour(BodyColour.Feet, player["makeover_colour_shoes", 0])
     player.flagAppearance()
     player.closeMenu()
-    npc<Cheerful>("yrsa", "Hey, They look great!")
+    npc<Happy>("yrsa", "Hey, They look great!")
 }

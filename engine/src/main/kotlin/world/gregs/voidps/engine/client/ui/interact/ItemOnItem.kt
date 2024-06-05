@@ -1,12 +1,11 @@
 package world.gregs.voidps.engine.client.ui.interact
 
+import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.item.Item
 import world.gregs.voidps.engine.event.Event
+import world.gregs.voidps.engine.event.EventDispatcher
+import world.gregs.voidps.engine.event.Events
 
-/**
- * @author Jacob Rhiel <jacob.rhiel@gmail.com>
- * @created Jun 20, 2021
- */
 data class ItemOnItem(
     val fromItem: Item,
     val toItem: Item,
@@ -18,13 +17,74 @@ data class ItemOnItem(
     val toComponent: String,
     val fromInventory: String,
     val toInventory: String
-) : Event
+) : Event {
 
-fun ItemOnItem.either(block: (Item, Item) -> Boolean): Boolean {
-    return block.invoke(fromItem, toItem) || block.invoke(toItem, fromItem)
+    override val size = 7
+
+    override fun parameter(dispatcher: EventDispatcher, index: Int) = when (index) {
+        0 -> "item_on_item"
+        1 -> fromItem.id
+        2 -> fromInterface
+        3 -> fromComponent
+        4 -> toItem.id
+        5 -> toInterface
+        6 -> toComponent
+        else -> null
+    }
+
+    internal fun flip() = copy(
+        fromItem = toItem,
+        toItem = fromItem,
+        fromSlot = toSlot,
+        toSlot = fromSlot,
+        fromInterface = toInterface,
+        fromComponent = toComponent,
+        toInterface = fromInterface,
+        toComponent = fromComponent,
+        fromInventory = toInventory,
+        toInventory = fromInventory
+    )
 }
 
-fun ItemOnItem.sort(condition: (Item) -> Boolean): Pair<Item, Item> {
-    val flip = condition(toItem)
-    return (if (flip) toItem else fromItem) to (if (flip) fromItem else toItem)
+fun itemOnItem(
+    fromItem: String = "*",
+    toItem: String = "*",
+    fromInterface: String = "*",
+    fromComponent: String = "*",
+    toInterface: String = fromInterface,
+    toComponent: String = fromComponent,
+    override: Boolean = true,
+    bidirectional: Boolean = true,
+    handler: suspend ItemOnItem.(Player) -> Unit
+) {
+    Events.handle("item_on_item", fromItem, fromInterface, fromComponent, toItem, toInterface, toComponent, override = override, handler = handler)
+    if (bidirectional) {
+        Events.handle<ItemOnItem>("item_on_item", toItem, toInterface, toComponent, fromItem, fromInterface, fromComponent, override = override) {
+            handler.invoke(flip(), it as Player)
+        }
+    }
+}
+
+fun itemOnItems(
+    fromItems: Array<String> = arrayOf("*"),
+    toItems: Array<String> = arrayOf("*"),
+    fromInterface: String = "*",
+    fromComponent: String = "*",
+    toInterface: String = fromInterface,
+    toComponent: String = fromComponent,
+    override: Boolean = true,
+    bidirectional: Boolean = true,
+    handler: suspend ItemOnItem.(Player) -> Unit
+) {
+    val bidirectionalHandler: suspend ItemOnItem.(EventDispatcher) -> Unit = {
+        handler.invoke(flip(), it as Player)
+    }
+    for (fromItem in fromItems) {
+        for (toItem in toItems) {
+            Events.handle("item_on_item", fromItem, fromInterface, fromComponent, toItem, toInterface, toComponent, override = override, handler = handler)
+            if (bidirectional) {
+                Events.handle("item_on_item", toItem, toInterface, toComponent, fromItem, fromInterface, fromComponent, override = override, handler = bidirectionalHandler)
+            }
+        }
+    }
 }

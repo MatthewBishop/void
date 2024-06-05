@@ -6,27 +6,36 @@ import world.gregs.voidps.engine.data.definition.InventoryDefinitions
 import world.gregs.voidps.engine.data.definition.ItemDefinitions
 import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.item.Item
-import world.gregs.voidps.engine.event.Events
+import world.gregs.voidps.engine.event.EventDispatcher
 import world.gregs.voidps.engine.get
-import world.gregs.voidps.engine.inv.remove.DefaultItemRemovalChecker
-import world.gregs.voidps.engine.inv.remove.ShopItemRemovalChecker
+import world.gregs.voidps.engine.inv.remove.DefaultItemAmountBounds
+import world.gregs.voidps.engine.inv.remove.ShopItemAmountBounds
 import world.gregs.voidps.engine.inv.restrict.ItemRestrictionRule
 import world.gregs.voidps.engine.inv.restrict.ShopRestrictions
 import world.gregs.voidps.engine.inv.stack.AlwaysStack
-import world.gregs.voidps.engine.inv.stack.DependentOnItem
+import world.gregs.voidps.engine.inv.stack.ItemStackingRule
 import world.gregs.voidps.engine.inv.stack.NeverStack
 
 class Inventories(
-    val inventories: MutableMap<String, Array<Item>> = mutableMapOf()
-) : MutableMap<String, Array<Item>> by inventories {
+    private val inventories: Map<String, Array<Item>> = mutableMapOf(),
+) {
+
+    fun contains(key: String): Boolean = instances.containsKey(key)
 
     val instances: MutableMap<String, Inventory> = mutableMapOf()
 
     lateinit var definitions: InventoryDefinitions
     lateinit var itemDefinitions: ItemDefinitions
     lateinit var validItemRule: ItemRestrictionRule
-    lateinit var events: Events
-    lateinit var normalStack: DependentOnItem
+    lateinit var events: EventDispatcher
+    lateinit var normalStack: ItemStackingRule
+
+    fun start() {
+        for ((id, value) in inventories) {
+            instances[id] = create(id, value, definitions.get(id.removePrefix("_")))
+        }
+        (inventories as MutableMap<*, *>).clear()
+    }
 
     fun inventory(definition: InventoryDefinition, secondary: Boolean = false): Inventory {
         return inventory(definition.stringId, definition, secondary)
@@ -38,40 +47,46 @@ class Inventories(
     }
 
     fun inventory(id: String, def: InventoryDefinition, secondary: Boolean = false): Inventory {
-        val shop = def["shop", false]
         val inventoryId = if (secondary) "_$id" else id
         return instances.getOrPut(inventoryId) {
-            val removalCheck = if (shop) ShopItemRemovalChecker else DefaultItemRemovalChecker
-            val data = inventories.getOrPut(inventoryId) {
-                val ids = def.ids
-                val amounts = def.amounts
-                if (ids != null && amounts != null) {
-                    Array(def.length) { Item(itemDefinitions.get(ids[it]).stringId, amounts[it]) }
-                } else {
-                    Array(def.length) { Item("", removalCheck.getMinimum(it)) }
-                }
+            val ids = def.ids
+            val amounts = def.amounts
+            val data = if (ids != null && amounts != null) {
+                Array(def.length) { Item(itemDefinitions.get(ids[it]).stringId, amounts[it]) }
+            } else {
+                val amountBounds = if (def["shop", false]) ShopItemAmountBounds else DefaultItemAmountBounds
+                Array(def.length) { Item("", amountBounds.minimum(it)) }
             }
-            val stackRule = if (shop) AlwaysStack else when (def["stack", "normal"].lowercase()) {
-                "always" -> AlwaysStack
-                "never" -> NeverStack
-                else -> normalStack
-            }
-            Inventory(
-                data = data,
-                id = inventoryId,
-                itemRule = if (shop) ShopRestrictions(data) else validItemRule,
-                stackRule = stackRule,
-                removalCheck = removalCheck,
-            ).apply {
-                transaction.changes.bind(events)
-            }
+            create(inventoryId, data, def)
+        }
+    }
+
+    private fun create(
+        inventoryId: String,
+        data: Array<Item>,
+        def: InventoryDefinition
+    ): Inventory {
+        val shop = def["shop", false]
+        val amountBounds = if (shop) ShopItemAmountBounds else DefaultItemAmountBounds
+        val stackRule = if (shop) AlwaysStack else when (def["stack", "normal"].lowercase()) {
+            "always" -> AlwaysStack
+            "never" -> NeverStack
+            else -> normalStack
+        }
+        return Inventory(
+            data = data,
+            id = inventoryId,
+            itemRule = if (shop) ShopRestrictions(data) else validItemRule,
+            stackRule = stackRule,
+            amountBounds = amountBounds,
+        ).apply {
+            transaction.changes.bind(events)
         }
     }
 
     fun clear(id: String, secondary: Boolean = false) {
         val inventoryId = if (secondary) "_$id" else id
         instances.remove(inventoryId)
-        inventories.remove(inventoryId)
     }
 }
 

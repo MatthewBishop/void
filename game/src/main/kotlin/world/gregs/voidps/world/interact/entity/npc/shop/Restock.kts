@@ -1,18 +1,16 @@
 package world.gregs.voidps.world.interact.entity.npc.shop
 
 import world.gregs.voidps.cache.config.data.InventoryDefinition
+import world.gregs.voidps.engine.data.definition.InventoryDefinitions
+import world.gregs.voidps.engine.entity.World
+import world.gregs.voidps.engine.entity.playerDespawn
+import world.gregs.voidps.engine.entity.playerSpawn
+import world.gregs.voidps.engine.entity.worldSpawn
+import world.gregs.voidps.engine.inject
+import world.gregs.voidps.engine.inv.Inventory
 import world.gregs.voidps.engine.inv.add
 import world.gregs.voidps.engine.inv.remove
-import world.gregs.voidps.engine.data.definition.InventoryDefinitions
-import world.gregs.voidps.engine.entity.Registered
-import world.gregs.voidps.engine.entity.Unregistered
-import world.gregs.voidps.engine.entity.World
-import world.gregs.voidps.engine.entity.character.player.Player
-import world.gregs.voidps.engine.event.on
-import world.gregs.voidps.engine.inject
-import world.gregs.voidps.engine.timer.TimerStart
-import world.gregs.voidps.engine.timer.TimerTick
-import world.gregs.voidps.engine.timer.toTicks
+import world.gregs.voidps.engine.timer.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.math.max
@@ -23,17 +21,16 @@ import kotlin.math.max
 val inventoryDefinitions: InventoryDefinitions by inject()
 val restockTimeTicks = TimeUnit.SECONDS.toTicks(60)
 
-on<Registered> { player: Player ->
+playerSpawn { player ->
     player.softTimers.restart("shop_restock")
 }
 
-on<TimerStart>({ timer == "shop_restock" }) { _: Player ->
+timerStart("shop_restock") {
     interval = restockTimeTicks
 }
 
-on<TimerTick>({ timer == "shop_restock" }) { player: Player ->
-    for (name in player.inventories.keys) {
-        val inventory = player.inventories.inventory(name)
+timerTick("shop_restock") { player ->
+    for ((name, inventory) in player.inventories.instances) {
         val def = inventoryDefinitions.get(name)
         if (!def["shop", false]) {
             continue
@@ -43,7 +40,8 @@ on<TimerTick>({ timer == "shop_restock" }) { player: Player ->
 }
 
 // Remove restocked shops to save space
-on<Unregistered> { player: Player ->
+playerDespawn { player ->
+    val removal = mutableListOf<String>()
     for ((name, inventory) in player.inventories.instances) {
         val def = inventoryDefinitions.get(name)
         if (!def["shop", false]) {
@@ -51,26 +49,30 @@ on<Unregistered> { player: Player ->
         }
         val amounts = def.amounts ?: continue
         if (inventory.items.withIndex().all { (index, item) -> item.amount == amounts.getOrNull(index) }) {
-            player.inventories.remove(name)
+            removal.add(name)
         }
+    }
+    for (name in removal) {
+        player.inventories.instances.remove(name)
     }
 }
 
-on<World, Registered> {
-    restock()
+worldSpawn {
+    World.timers.start("general_store_restock")
 }
 
-fun restock() {
-    World.run("general_store_restock", restockTimeTicks) {
-        for ((key, inventory) in GeneralStores.stores) {
-            val def = inventoryDefinitions.get(key)
-            restock(def, inventory)
-        }
-        restock()
+worldTimerStart("general_store_restock") {
+    interval = restockTimeTicks
+}
+
+worldTimerTick("general_store_restock") {
+    for ((key, inventory) in GeneralStores.stores) {
+        val def = inventoryDefinitions.get(key)
+        restock(def, inventory)
     }
 }
 
-fun restock(def: InventoryDefinition, inventory: world.gregs.voidps.engine.inv.Inventory) {
+fun restock(def: InventoryDefinition, inventory: Inventory) {
     val defaults = def.getOrNull<List<Map<String, Int>>>("defaults")
     for (index in 0 until def.length) {
         val map = defaults?.getOrNull(index)

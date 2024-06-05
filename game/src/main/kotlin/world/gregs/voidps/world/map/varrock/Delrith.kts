@@ -7,25 +7,24 @@ import world.gregs.voidps.engine.client.turnCamera
 import world.gregs.voidps.engine.client.variable.hasClock
 import world.gregs.voidps.engine.client.variable.start
 import world.gregs.voidps.engine.data.definition.AreaDefinitions
-import world.gregs.voidps.engine.entity.Unregistered
 import world.gregs.voidps.engine.entity.character.*
 import world.gregs.voidps.engine.entity.character.mode.EmptyMode
 import world.gregs.voidps.engine.entity.character.mode.PauseMode
 import world.gregs.voidps.engine.entity.character.mode.interact.Interact
-import world.gregs.voidps.engine.entity.character.mode.move.AreaEntered
-import world.gregs.voidps.engine.entity.character.mode.move.Moved
+import world.gregs.voidps.engine.entity.character.mode.move.enterArea
+import world.gregs.voidps.engine.entity.character.mode.move.move
 import world.gregs.voidps.engine.entity.character.move.tele
 import world.gregs.voidps.engine.entity.character.move.walkTo
 import world.gregs.voidps.engine.entity.character.npc.NPC
 import world.gregs.voidps.engine.entity.character.npc.NPCOption
 import world.gregs.voidps.engine.entity.character.npc.NPCs
+import world.gregs.voidps.engine.entity.character.npc.npcOperate
 import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
-import world.gregs.voidps.engine.entity.character.player.skill.level.CurrentLevelChanged
+import world.gregs.voidps.engine.entity.character.player.skill.level.npcLevelChange
 import world.gregs.voidps.engine.entity.item.Item
 import world.gregs.voidps.engine.entity.obj.GameObjects
-import world.gregs.voidps.engine.event.Priority
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.entity.playerDespawn
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.map.collision.Collisions
 import world.gregs.voidps.engine.map.collision.clear
@@ -42,7 +41,7 @@ import world.gregs.voidps.world.interact.dialogue.type.choice
 import world.gregs.voidps.world.interact.dialogue.type.npc
 import world.gregs.voidps.world.interact.dialogue.type.player
 import world.gregs.voidps.world.interact.dialogue.type.statement
-import world.gregs.voidps.world.interact.entity.combat.CombatSwing
+import world.gregs.voidps.world.interact.entity.combat.combatPrepare
 import world.gregs.voidps.world.interact.entity.effect.transform
 import world.gregs.voidps.world.interact.entity.gfx.areaGraphic
 import world.gregs.voidps.world.interact.entity.player.music.playTrack
@@ -64,8 +63,10 @@ val targets = listOf(
     Tile(3228, 3370) to Tile(3231, 3373)
 )
 
-on<AreaEntered>({ name == "demon_slayer_stone_circle" && it["demon_slayer_silverlight", false] && !player.hasClock("demon_slayer_instance_exit") }) { _: Player ->
-    cutscene()
+enterArea("demon_slayer_stone_circle") {
+    if (!player.questComplete("demon_slayer") && player["demon_slayer_silverlight", false] && !player.hasClock("demon_slayer_instance_exit")) {
+        cutscene()
+    }
 }
 
 fun CharacterContext.setCutsceneEnd(instance: Region) {
@@ -82,12 +83,14 @@ fun CharacterContext.endCutscene(instance: Region, tile: Tile? = null) {
     destroyInstance(player)
 }
 
-on<Moved>({ exitArea(it, to) }) { player: Player ->
+move({ exitArea(it, to) }) { player ->
     destroyInstance(player)
 }
 
-on<Unregistered>({ it.contains("demon_slayer_instance") }) { player: Player ->
-    destroyInstance(player)
+playerDespawn { player ->
+    if (player.contains("demon_slayer_instance")) {
+        destroyInstance(player)
+    }
 }
 
 fun exitArea(player: Player, to: Tile): Boolean {
@@ -154,11 +157,11 @@ suspend fun CharacterContext.cutscene() {
     player.moveCamera(Tile(3224, 3376).add(offset), 475, 232, 232)
     player.turnCamera(Tile(3227, 3369).add(offset), 300, 232, 232)
     player.moveCamera(Tile(3231, 3376).add(offset), 475, 1, 1)
-    npc<Cheerful>("denath", "Arise, O mighty Delrith! Bring destruction to this soft, weak city!")
+    npc<Happy>("denath", "Arise, O mighty Delrith! Bring destruction to this soft, weak city!")
     for (wizard in wizards) {
         wizard.forceChat = "Arise, Delrith!"
     }
-    npc<Talking>("dark_wizard_water", "Arise, Delrith!", title = "Dark wizards")
+    npc<Neutral>("dark_wizard_water", "Arise, Delrith!", title = "Dark wizards")
 
     statement("The wizards cast an evil spell", clickToContinue = false)
     val regular = objects[Tile(3227, 3369).add(offset), "demon_slayer_stone_table"]!!
@@ -200,7 +203,7 @@ suspend fun CharacterContext.cutscene() {
         wizard.clearAnimation()
         wizard.face(delrith)
     }
-    npc<Laugh>("denath", """
+    npc<Chuckle>("denath", """
         Ha ha ha! At last you are free, my demonic brother!
         Rest now, and then have your revenge on this pitiful
         city!
@@ -214,7 +217,7 @@ suspend fun CharacterContext.cutscene() {
     denath.walkTo(Tile(3236, 3368).add(offset))
     player.clearCamera()
     player.moveCamera(Tile(3226, 3383).add(offset), 1000, 1, 1)
-    npc<Suspicious>("denath", "I've got to get out of here...")
+    npc<Shifty>("denath", "I've got to get out of here...")
     player.queue.clear("demon_slayer_delrith_cutscene_end")
     showTabs()
     player.clearCamera()
@@ -223,18 +226,23 @@ suspend fun CharacterContext.cutscene() {
     }
 }
 
-on<CombatSwing>({ target is NPC && target.id == "delrith" && target.transform == "delrith_weakened" }, Priority.HIGHEST) { player: Player ->
-    cancel()
-    player.strongQueue("banish_delrith", 1) {
-        player.mode = Interact(player, target, NPCOption(player, target as NPC, target.def, "Banish"))
+combatPrepare("melee") { player ->
+    if (target is NPC && target.id == "delrith" && target.transform == "delrith_weakened") {
+        cancel()
+        player.strongQueue("banish_delrith", 1) {
+            player.mode = Interact(player, target, NPCOption(player, target, target.def, "Banish"))
+        }
     }
 }
 
 val words = listOf("Carlem", "Aber", "Camerinthum", "Purchai", "Gabindo")
 
-on<NPCOption>({ operate && target.id == "delrith" && target.transform == "delrith_weakened" }) { player: Player ->
+npcOperate("*", "delrith") {
+    if (target.transform != "delrith_weakened") {
+        return@npcOperate
+    }
     player.weakQueue("banish_delrith") {
-        player<Furious>("Now what was that incantation again?")
+        player<Angry>("Now what was that incantation again?")
         var correct = true
         repeat(5) { index ->
             val choice = choice(listOf("Carlem", "Aber", "Camerinthum", "Purchai", "Gabindo"))
@@ -250,7 +258,6 @@ on<NPCOption>({ operate && target.id == "delrith" && target.transform == "delrit
                 correct = false
                 npcs.remove(target)
                 npcs.removeIndex(target)
-                npcs.releaseIndex(target)
                 delay(2)
             } else {
                 delay(3)
@@ -263,7 +270,6 @@ on<NPCOption>({ operate && target.id == "delrith" && target.transform == "delrit
             delay(14)
             npcs.remove(target)
             npcs.removeIndex(target)
-            npcs.releaseIndex(target)
             statement("...back into the dark dimension from which he came.")
             destroyInstance(player)
             questComplete()
@@ -274,8 +280,10 @@ on<NPCOption>({ operate && target.id == "delrith" && target.transform == "delrit
 }
 
 
-on<CurrentLevelChanged>({ skill == Skill.Constitution && to <= 0 && it.id == "delrith" }, Priority.HIGH) { npc: NPC ->
-    cancel()
+npcLevelChange("delrith", Skill.Constitution) { npc ->
+    if (to > 0) {
+        return@npcLevelChange
+    }
 //    player.playSound("demon_slayer_portal_open")
     npc.transform = "delrith_weakened"
     npc.mode = PauseMode

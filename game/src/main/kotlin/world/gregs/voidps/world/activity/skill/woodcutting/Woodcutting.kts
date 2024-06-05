@@ -15,18 +15,14 @@ import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.character.player.skill.level.Interpolation
 import world.gregs.voidps.engine.entity.character.player.skill.level.Level
 import world.gregs.voidps.engine.entity.character.player.skill.level.Level.has
-import world.gregs.voidps.engine.entity.character.player.skill.level.Level.hasRequirementsToUse
 import world.gregs.voidps.engine.entity.character.setAnimation
 import world.gregs.voidps.engine.entity.item.Item
 import world.gregs.voidps.engine.entity.obj.GameObject
 import world.gregs.voidps.engine.entity.obj.GameObjects
-import world.gregs.voidps.engine.entity.obj.ObjectOption
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.entity.obj.objectOperate
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.inv.add
-import world.gregs.voidps.engine.inv.holdsItem
 import world.gregs.voidps.engine.inv.inventory
-import world.gregs.voidps.engine.suspend.arriveDelay
 import world.gregs.voidps.engine.suspend.awaitDialogues
 import world.gregs.voidps.engine.suspend.pause
 import world.gregs.voidps.type.random
@@ -39,15 +35,14 @@ val objects: GameObjects by inject()
 val minPlayers = 0
 val maxPlayers = 2000
 
-on<ObjectOption>({ operate && def.contains("woodcutting") && (option == "Chop down" || option == "Chop") }) { player: Player ->
-    val tree: Tree = def.getOrNull("woodcutting") ?: return@on
-    val hatchet = getBestHatchet(player)
+objectOperate("Chop*") {
+    val tree: Tree = def.getOrNull("woodcutting") ?: return@objectOperate
+    val hatchet = Hatchet.best(player)
     if (hatchet == null) {
         player.message("You need a hatchet to chop down this tree.")
         player.message("You do not have a hatchet which you have the woodcutting level to use.")
-        return@on
+        return@objectOperate
     }
-    arriveDelay()
     player.closeDialogue()
     player.softTimers.start("woodcutting")
     val ivy = tree.log.isEmpty()
@@ -66,17 +61,17 @@ on<ObjectOption>({ operate && def.contains("woodcutting") && (option == "Chop do
             break
         }
 
-        if (!hasRequirements(player, hatchet, true)) {
+        if (!Hatchet.hasRequirements(player, hatchet, true)) {
             break
         }
         if (first) {
             player.message("You swing your hatchet at the ${if (ivy) "ivy" else "tree"}.")
             first = false
         }
-        val remaining = player.remaining("skill_delay")
+        val remaining = player.remaining("action_delay")
         if (remaining < 0) {
             player.setAnimation("${hatchet.id}_chop${if (ivy) "_ivy" else ""}")
-            player.start("skill_delay", 3)
+            player.start("action_delay", 3)
             pause(3)
         } else if (remaining > 0) {
             pause(remaining)
@@ -91,34 +86,9 @@ on<ObjectOption>({ operate && def.contains("woodcutting") && (option == "Chop do
                 player.message("You successfully chop away some ivy.")
             }
         }
-        player.stop("skill_delay")
+        player.stop("action_delay")
     }
     player.softTimers.stop("woodcutting")
-}
-
-val hatchets = listOf(
-    Item("inferno_adze"),
-    Item("volatile_clay_hatchet"),
-    Item("sacred_clay_hatchet"),
-    Item("dragon_hatchet"),
-    Item("rune_hatchet"),
-    Item("adamant_hatchet"),
-    Item("mithril_hatchet"),
-    Item("black_hatchet"),
-    Item("steel_hatchet"),
-    Item("iron_hatchet"),
-    Item("bronze_hatchet")
-)
-
-fun getBestHatchet(player: Player): Item? {
-    return hatchets.firstOrNull { hasRequirements(player, it, false) && player.holdsItem(it.id) }
-}
-
-fun hasRequirements(player: Player, hatchet: Item, message: Boolean = false): Boolean {
-    if (hatchet.id == "inferno_adze" && !player.has(Skill.Firemaking, hatchet.def["fm_level", 1], message)) {
-        return false
-    }
-    return player.hasRequirementsToUse(hatchet, message, setOf(Skill.Firemaking, Skill.Firemaking))
 }
 
 fun success(level: Int, hatchet: Item, tree: Tree): Boolean {

@@ -19,12 +19,14 @@ internal class IntEntryTest : DialogueTest() {
         }
         assertTrue(player.dialogueSuspension is IntSuspension)
         verify {
-            player.sendScript(108, "text")
+            player.sendScript("int_entry", "text")
         }
     }
 
     @Test
     fun `Int entry returns int`() {
+        mockkStatic("world.gregs.voidps.engine.client.EncodeExtensionsKt")
+        every { player.sendScript(any(), *anyVararg()) } just Runs
         var result = -1
         dialogue {
             result = intEntry("text")

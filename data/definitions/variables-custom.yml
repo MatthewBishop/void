@@ -1,3 +1,12 @@
+dororan_ruby_bracelet:
+  format: boolean
+  persist: true
+dororan_dragonstone_necklace:
+  format: boolean
+  persist: true
+dororan_onyx_amulet:
+  format: boolean
+  persist: true
 demon_slayer_bones:
   format: int
   persist: true
@@ -248,15 +257,12 @@ wilderness_lever_warning:
   default: true
 binding_necklace_charges:
   format: int
-  default: 16
   persist: true
 camulet_charges:
   format: int
-  default: 4
   persist: true
 crystal_saw_charges:
   format: int
-  default: 28
   persist: true
 explorers_ring_last_use:
   format: long
@@ -266,20 +272,71 @@ explorers_ring_charges:
   persist: true
 falador_shield_charges:
   format: int
-  default: 1
   persist: true
 ibans_staff_charges:
   format: int
   default: 120
-  persist: true
 ring_of_recoil_charges:
   format: int
-  default: 400
   persist: true
 skull_sceptre_charges:
   format: int
-  default: 10
+  persist: true
+shooting_star_bonus_ore:
+  format: int
+  default: 0
   persist: true
 al_the_camel:
   format: boolean
+  persist: true
+magical_blastbox_mode:
+  format: boolean
+  persist: true
+magical_blastbox_mode_dungeoneering:
+  format: boolean
+  persist: true
+celestial_surgebox_mode:
+  format: boolean
+  persist: true
+celestial_surgebox_mode_dungeoneering:
+  format: boolean
+  persist: true
+small_pouch_essence:
+  format: int
+  persist: true
+small_pouch_pure:
+  format: boolean
+  persist: true
+medium_pouch_essence:
+  format: int
+  persist: true
+medium_pouch_pure:
+  format: boolean
+  persist: true
+large_pouch_essence:
+  format: int
+  persist: true
+large_pouch_pure:
+  format: boolean
+  persist: true
+giant_pouch_essence:
+  format: int
+  persist: true
+giant_pouch_pure:
+  format: boolean
+  persist: true
+coal_bag_coal:
+  format: int
+  persist: true
+gem_bag_sapphire:
+  format: int
+  persist: true
+gem_bag_emerald:
+  format: int
+  persist: true
+gem_bag_ruby:
+  format: int
+  persist: true
+gem_bag_diamond:
+  format: int
   persist: true

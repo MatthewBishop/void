@@ -13,7 +13,7 @@ import world.gregs.voidps.engine.entity.character.npc.NPC
 import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.engine.suspend.dialogue.ContinueSuspension
-import world.gregs.voidps.network.encode.npcDialogueHead
+import world.gregs.voidps.network.login.protocol.encode.npcDialogueHead
 import world.gregs.voidps.world.interact.dialogue.Expression
 import world.gregs.voidps.world.interact.dialogue.sendChat
 
@@ -31,7 +31,9 @@ suspend inline fun <reified E : Expression> CharacterContext.npc(npcId: String, 
 suspend fun CharacterContext.npc(expression: String, text: String, largeHead: Boolean? = null, clickToContinue: Boolean = true, title: String? = null) {
     val target: NPC = player["dialogue_target"] ?: throw IllegalArgumentException("No npc specified for dialogue. Please use player.talkWith(npc) or npc(npcId, text).")
     val id = target["transform_id", player.get<NPCDefinition>("dialogue_def")?.stringId ?: target.id]
-    target.mode = Face(target, player)
+    if (target["faces", true]) {
+        target.mode = Face(target, player)
+    }
     npc(id, expression, text, largeHead, clickToContinue, title)
 }
 
@@ -43,7 +45,7 @@ suspend fun CharacterContext.npc(npcId: String, expression: String, text: String
     val npcDef = get<NPCDefinitions>().get(npcId)
     val head = getChatHeadComponentName(largeHead ?: npcDef["large_head", false])
     sendNPCHead(player, id, head, npcDef.id)
-    player.interfaces.sendChat(id, head, expression, title ?: npcDef.name, lines)
+    player.interfaces.sendChat(id, head, if (npcDef["old_model", false]) "${expression}_old" else expression, title ?: npcDef.name, lines)
     if (clickToContinue) {
         ContinueSuspension()
         player.close(id)

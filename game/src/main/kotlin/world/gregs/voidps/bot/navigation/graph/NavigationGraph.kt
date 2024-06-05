@@ -9,9 +9,9 @@ import world.gregs.voidps.engine.entity.obj.GameObject
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.engine.getProperty
 import world.gregs.voidps.engine.timedLoad
-import world.gregs.voidps.network.Instruction
-import world.gregs.voidps.network.instruct.InteractObject
-import world.gregs.voidps.network.instruct.Walk
+import world.gregs.voidps.network.client.Instruction
+import world.gregs.voidps.network.client.instruction.InteractObject
+import world.gregs.voidps.network.client.instruction.Walk
 import world.gregs.voidps.type.Distance
 import world.gregs.voidps.type.Tile
 import world.gregs.yaml.Yaml
@@ -73,10 +73,10 @@ class NavigationGraph(
                 }
             }
             val data: Map<String, Any> = yaml.load(path, config)
-            val edges = data["edges"] as Map<String, Any>
+            val edgeMap = data["edges"] as Map<String, Any>
             val map = Object2ObjectOpenHashMap<Any, ObjectOpenHashSet<Edge>>()
             var count = 0
-            flatten("", edges) { path, edges ->
+            flatten("", edgeMap) { path, edges ->
                 for (edge in edges) {
                     count++
                     val start = edge["from"] as Tile
@@ -115,6 +115,7 @@ class NavigationGraph(
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun flatten(path: String, map: Map<String, Any>, process: (String, List<Map<String, Any>>) -> Unit): List<Map<String, Any>> {
         val list = mutableListOf<Map<String, Any>>()
         for ((key, value) in map) {

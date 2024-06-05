@@ -10,6 +10,7 @@ import world.gregs.yaml.write.YamlWriterConfiguration
  * name:
  *   id: 0
  */
+@Suppress("UNCHECKED_CAST")
 object YamlSorter {
 
     private fun anchor(key: String) = key == "<<" || key == "&"
@@ -36,17 +37,17 @@ object YamlSorter {
             val key2 = o2.first
             if (anchor(key1)) {
                 return -1
-            } else if(anchor(key2)) {
+            } else if (anchor(key2)) {
                 return 1
             }
             if (prioritise.contains(key1)) {
                 return -1
-            } else if(prioritise.contains(key2)) {
+            } else if (prioritise.contains(key2)) {
                 return 1
             }
             if (deprioritise.contains(key1)) {
                 return 1
-            } else if(deprioritise.contains(key2)) {
+            } else if (deprioritise.contains(key2)) {
                 return -1
             }
             return (key1.length + length(o1.second)).compareTo(key2.length + length(o2.second))

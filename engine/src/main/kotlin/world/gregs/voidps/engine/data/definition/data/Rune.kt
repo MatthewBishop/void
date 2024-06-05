@@ -7,11 +7,14 @@ import world.gregs.voidps.engine.entity.character.player.skill.Skill
  * @param xp experience from successfully crafting a rune
  * @param pure whether pure essence is required
  * @param levels level required for each amount of runes created
+ * @param doubleChance of getting double at ourania altar with medium ardougne diary
  */
 data class Rune(
     val xp: Double = 0.0,
     val pure: Boolean = false,
-    val levels: IntArray = intArrayOf()
+    val levels: IntArray = intArrayOf(),
+    val combinations: Map<String, List<Any>> = emptyMap(),
+    val doubleChance: Double = 0.0
 ) {
     fun multiplier(player: Player): Int {
         var multiplier = 1
@@ -49,6 +52,8 @@ data class Rune(
             xp = map["xp"] as? Double ?: EMPTY.xp,
             pure = map["pure"] as? Boolean ?: EMPTY.pure,
             levels = (map["levels"] as? List<Int>)?.toIntArray() ?: EMPTY.levels,
+            combinations = (map["combinations"] as? Map<String, List<Any>>) ?: EMPTY.combinations,
+            doubleChance = (map["ourania_chance"] as? Double) ?: EMPTY.doubleChance,
         )
 
         val EMPTY = Rune()

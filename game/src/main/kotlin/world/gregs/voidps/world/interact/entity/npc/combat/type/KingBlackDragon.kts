@@ -3,17 +3,14 @@ package world.gregs.voidps.world.interact.entity.npc.combat.type
 import world.gregs.voidps.engine.client.message
 import world.gregs.voidps.engine.entity.character.Character
 import world.gregs.voidps.engine.entity.character.mode.move.target.CharacterTargetStrategy
-import world.gregs.voidps.engine.entity.character.npc.NPC
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.character.setAnimation
 import world.gregs.voidps.engine.entity.character.size
-import world.gregs.voidps.engine.event.Priority
-import world.gregs.voidps.engine.event.on
 import world.gregs.voidps.type.Tile
 import world.gregs.voidps.type.random
-import world.gregs.voidps.world.interact.entity.combat.CombatSwing
-import world.gregs.voidps.world.interact.entity.combat.hit.CombatAttack
 import world.gregs.voidps.world.interact.entity.combat.hit.hit
+import world.gregs.voidps.world.interact.entity.combat.hit.npcCombatAttack
+import world.gregs.voidps.world.interact.entity.combat.npcCombatSwing
 import world.gregs.voidps.world.interact.entity.effect.freeze
 import world.gregs.voidps.world.interact.entity.player.toxin.poison
 import world.gregs.voidps.world.interact.entity.proj.shoot
@@ -21,7 +18,7 @@ import world.gregs.voidps.world.interact.entity.sound.playSound
 
 val specials = listOf("toxic", "ice", "shock")
 
-on<CombatSwing>({ npc -> !swung() && npc.id == "king_black_dragon" }, Priority.HIGHEST) { npc: NPC ->
+npcCombatSwing("king_black_dragon") { npc ->
     val canMelee = CharacterTargetStrategy(npc).reached(target)
     when (random.nextInt(if (canMelee) 3 else 2)) {
         0 -> {
@@ -43,7 +40,6 @@ on<CombatSwing>({ npc -> !swung() && npc.id == "king_black_dragon" }, Priority.H
             npc.hit(target, type = "melee")
         }
     }
-    delay = npc.def["attack_speed", 4]
 }
 
 /**
@@ -57,7 +53,7 @@ fun nearestTile(source: Character, target: Character): Tile {
     return centre.add(direction).add(direction)
 }
 
-on<CombatAttack>({ it.id == "king_black_dragon" }) { npc: NPC ->
+npcCombatAttack("king_black_dragon") { npc ->
     when (spell) {
         "toxic" -> npc.poison(target, 80)
         "ice" -> npc.freeze(target, 10)

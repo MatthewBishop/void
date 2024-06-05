@@ -49,18 +49,18 @@ expression_scared1: 9777
 expression_scared2: 9778
 expression_scared3: 9779
 expression_scared4: 9780
-expression_angry1: 9781
-expression_angry2: 9782
-expression_angry3: 9783
-expression_angry4: 9784
+expression_frustrated1: 9781
+expression_frustrated2: 9782
+expression_frustrated3: 9783
+expression_frustrated4: 9784
 expression_angry_old1: 614
 expression_angry_old2: 615
 expression_angry_old3: 616
 expression_angry_old4: 617
-expression_furious1: 9785
-expression_furious2: 9786
-expression_furious3: 9787
-expression_furious4: 9788
+expression_angry1: 9785
+expression_angry2: 9786
+expression_angry3: 9787
+expression_angry4: 9788
 expression_mad1: 9789
 expression_mad2: 9790
 expression_mad3: 9791
@@ -75,18 +75,14 @@ expression_evil_grin2: 9799
 expression_evil_grin3: 9800
 expression_evil_grin4: 9801
 expression_asleep: 9802
-expression_asleep_old1: 600
-expression_asleep_old2: 601
-expression_asleep_old3: 602
-expression_asleep_old4: 603
-expression_talking1: 9803
-expression_talking2: 9804
-expression_talking3: 9805
-expression_talking4: 9806
-expression_talking_old1: 588
-expression_talking_old2: 589
-expression_talking_old3: 590
-expression_talking_old4: 591
+expression_neutral1: 9803
+expression_neutral2: 9804
+expression_neutral3: 9805
+expression_neutral4: 9806
+expression_neutral_old1: 588
+expression_neutral_old2: 589
+expression_neutral_old3: 590
+expression_neutral_old4: 591
 expression_talk1: 9807
 expression_talk2: 9808
 expression_talk3: 9809
@@ -112,14 +108,14 @@ expression_no_disgust1: 9823
 expression_no_disgust2: 9824
 expression_no_disgust3: 9825
 expression_no_disgust4: 9826
-expression_unsure1: 9827
-expression_unsure2: 9828
-expression_unsure3: 9829
-expression_unsure4: 9830
-expression_unsure_old1: 554
-expression_unsure_old2: 555
-expression_unsure_old3: 556
-expression_unsure_old4: 557
+expression_quiz1: 9827
+expression_quiz2: 9828
+expression_quiz3: 9829
+expression_quiz4: 9830
+expression_quiz_old1: 554
+expression_quiz_old2: 555
+expression_quiz_old3: 556
+expression_quiz_old4: 557
 expression_roll_eyes1: 9831
 expression_roll_eyes2: 9832
 expression_roll_eyes3: 9833
@@ -129,39 +125,42 @@ expression_roll_eyes_old2: 563
 expression_roll_eyes_old3: 564
 expression_roll_eyes_old4: 565
 expression_drunk: 9835
-expression_drunk_old: 600
-expression_suspicious1: 9836
-expression_suspicious2: 9837
-expression_suspicious3: 9838
-expression_suspicious4: 9839
-expression_suspicious_old1: 592
-expression_suspicious_old2: 593
-expression_suspicious_old3: 594
-expression_suspicious_old4: 595
+expression_drunk_old1: 600
+expression_drunk_old2: 601
+expression_drunk_old3: 602
+expression_drunk_old4: 603
+expression_shifty1: 9836
+expression_shifty2: 9837
+expression_shifty3: 9838
+expression_shifty4: 9839
+expression_shifty_old1: 592
+expression_shifty_old2: 593
+expression_shifty_old3: 594
+expression_shifty_old4: 595
 expression_chuckle: 9840
 expression_hysterics: 9841
 expression_evil_laugh: 9842
 expression_evil_laugh_old: 609
-expression_happy1: 9843
-expression_happy2: 9844
-expression_happy3: 9845
-expression_happy4: 9846
-expression_cheerful1: 9847
-expression_cheerful2: 9848
-expression_cheerful3: 9849
-expression_cheerful4: 9850
-expression_cheerful_old1: 567
-expression_cheerful_old2: 568
-expression_cheerful_old3: 569
-expression_cheerful_old4: 570
+expression_pleased1: 9843
+expression_pleased2: 9844
+expression_pleased3: 9845
+expression_pleased4: 9846
+expression_happy1: 9847
+expression_happy2: 9848
+expression_happy3: 9849
+expression_happy4: 9850
+expression_happy_old1: 567
+expression_happy_old2: 568
+expression_happy_old3: 569
+expression_happy_old4: 570
 expression_laugh1: 9851
 expression_laugh2: 9852
 expression_laugh3: 9853
 expression_laugh4: 9854
-expression_laugh_old1: 605
-expression_laugh_old2: 606
-expression_laugh_old3: 607
-expression_laugh_old4: 608
+expression_chuckle_old1: 605
+expression_chuckle_old2: 606
+expression_chuckle_old3: 607
+expression_chuckle_old4: 608
 expression_unamused1: 9855
 expression_unamused2: 9856
 expression_unamused3: 9857
@@ -1305,7 +1304,7 @@ rat_hit: 2706
 giant_rat_attack: 14859
 giant_rat_death: 14860
 giant_rat_hit: 14861
-player_death: 836
+human_death: 836
 sap: 12569
 leech: 12575
 deflect: 12573
@@ -1347,41 +1346,46 @@ korasis_sword_block: 12030
 dragon_dagger_attack: 376
 dragon_dagger_slash: 377
 dragon_dagger_block: 403
-puncture: 1062
+puncture_special: 1062
 defender_block: 4177
 book_block: 420
 shield_block: 1156
-statius_warhammer_smash: 10505
-vestas_longsword_feint: 10502
-rampage: 1056
-slice_and_dice: 10961
-cleave: 12033
-shatter: 1060
-the_judgement: 11989
-sanctuary: 1168
-sever: 12031
-saradomins_lightning: 11993
-favour_of_the_war_god: 6147
-liquify: 6118
-backstab: 4198
-sunder: 5870
-warstrike: 11991
-healing_blade: 12019
-ice_cleave: 7070
-sweep: 1203
-powerstab: 7078
-shove: 1064
-quick_smash: 1667
-clobber: 2876
-disrupt: 14788
-darklight_weaken: 2890
-impale: 923
-spear_wall: 10499
-easter_carrot_whack: 11547
+smash_special: 10505
+feint_special: 10502
+rampage_special: 1056
+slice_and_dice_special: 10961
+cleave_special: 12033
+shatter_special: 1060
+the_judgement_special: 11989
+sanctuary_special: 1168
+sever_special: 12031
+saradomins_lightning_special: 11993
+favour_of_the_war_god_special: 6147
+liquify_special: 6118
+backstab_special: 4198
+sunder_special: 5870
+warstrike_special: 11991
+healing_blade_special: 12019
+ice_cleave_special: 7070
+sweep_special: 1203
+powerstab_special: 7078
+shove_special: 1064
+fall_back_on_butt: 4172
+step_back_startled: 4835
+quick_smash_special: 1667
+clobber_special: 2876
+disrupt_special: 14788
+weaken_special: 2890
+impale_special: 923
+spear_wall_special: 10499
+easter_carrot_whack:
+  id: 11547
+  walk: false
+  run: false
 banner_attack: 1428
 banner_hit: 1429
 mouse_toy_attack: 1658
-power_of_light: 12804
+power_of_light_special: 12804
 wind_spell: 10546
 wind_spell_staff: 14221
 water_spell: 10542
@@ -1472,8 +1476,9 @@ delrith_appear: 4623
 delrith_death: 4624
 wally_demon_slay: 4603
 silverlight_sword_case_open: 12630
-silverlight_open_sword_case: 12629
-silverlight_remove_sword: 12616
+silverlight_unlock_sword_case: 12629
+silverlight_open_sword_case: 12616
+silverlight_remove_sword: 12628
 silverlight_sword_removed: 12617
 silverlight_hand_over: 12618
 silverlight_take: 12615
@@ -1495,6 +1500,9 @@ unarmed_punch: 422
 unarmed_kick: 423
 unarmed_block: 422
 unarmed_hit: 424
+human_attack: 422
+human_block: 422
+human_hit: 424
 staff_bash: 419
 staff_pound: 419
 staff_focus: 419
@@ -1545,7 +1553,7 @@ hammer_hit: 403
 whip_flick: 11968 # needs verification
 whip_lash: 11969 # needs verification
 whip_deflect: 11970 # needs verification
-whip_special: 11971 # needs verification
+energy_drain_special: 11971 # needs verification
 whip_block: 11974 # needs verification
 fun_pound: 400
 fun_pummel: 400
@@ -1568,7 +1576,7 @@ bow_accurate: 426
 bow_rapid: 426
 bow_long_range: 426
 bow_hit: 424
-magic_shortbow_special: 1074
+snapshot_special: 1074
 crossbow_accurate: 4230
 crossbow_rapid: 4230
 crossbow_long_range: 4230
@@ -1597,9 +1605,9 @@ scythe_chop: 440
 scythe_jab: 438
 scythe_block: 440
 scythe_hit: 435
-ivandis_flail_slash: 9047 # needs verification
-ivandis_flail_crush: 9047 # needs verification
-ivandis_flail_hit: 9048 # needs verification
+ivandis_flail_slash: 9047
+ivandis_flail_crush: 9047
+ivandis_flail_hit: 9048
 sling_rock: 14867 # needs verification
 sling_sling: 14867 # needs verification
 sling_chuck: 14867 # needs verification
@@ -1609,10 +1617,12 @@ trident_jab: -1 # needs verification
 trident_swipe: -1 # needs verification
 trident_fend: -1 # needs verification
 trident_hit: -1 # needs verification
-staff_of_light_jab: 13040 # needs verification
-staff_of_light_swipe: 15071 # needs verification
-staff_of_light_fend: 15072 # needs verification
-staff_of_light_hit: 13043 # needs verification
+staff_of_light_jab: 15072
+staff_of_light_swipe: 15071
+staff_of_light_fend: 414
+staff_of_light_hit: 12806
+chaotic_maul_attack: 13055
+chaotic_maul_block: 13054
 pull_lever: 2140
 dragon_breath: 81
 dragon_attack: 91
@@ -1625,3 +1635,62 @@ teleport_pharaohs_sceptre:
   id: 9596
   ticks: 3
 fill_bucket: 895
+altar_pray: 645
+engrave: 14736
+hand_over_item: 14737
+pocket_item: 14738
+dororan_lean_on_door: 14725
+player_lean_on_door_start: 6706
+player_lean_on_door: 14724
+player_calm_doroan: 6709
+gunthor_announcement: 14734
+kjell_cheer: 1531
+haakon_cheer: 14739
+mixing_potion: 363
+pestle_and_mortar: 5249
+fletching_log: 1248
+fletching_string_normal_shortbow: 6678
+fletching_string_normal_longbow: 6684
+fletching_string_oak_shortbow: 6679
+fletching_string_oak_longbow: 6685
+fletching_string_willow_shortbow: 6680
+fletching_string_willow_longbow: 6686
+fletching_string_maple_shortbow: 6681
+fletching_string_maple_longbow: 6687
+fletching_string_yew_shortbow: 6682
+fletching_string_yew_longbow: 6688
+fletching_string_magic_shortbow: 6683
+fletching_string_magic_longbow: 6689
+fletching_string_bronze_crossbow: 6671
+fletching_string_blurite_crossbow: 6672
+fletching_string_iron_crossbow: 6673
+fletching_string_steel_crossbow: 6674
+fletching_string_mithril_crossbow: 6675
+fletching_string_adamant_crossbow: 6676
+fletching_string_rune_crossbow: 6677
+dig_with_spade: 830
+giant_mole_burrow: 3314
+giant_mole_attack: 3312
+giant_mole_hit: 3311
+giant_mole_death: 3310
+dirt_projectile: 570
+giant_mole_burrow_up: 1664
+tele_other: 1818
+lunar_teleport: 1816
+distract_eyes: 1835
+stomp_eyes: 794
+abyss_kneel: 1331
+abyss_stand: 1332
+crawling_cave: 844
+abyssal_leech_hit: 2182
+abyssal_leech_attack: 2181
+abyssal_leech_death: 2183
+abyssal_guardian_hit: 2188
+abyssal_guardian_attack: 2186
+abyssal_guardian_death: 2189
+abyssal_walker_hit: 2192
+abyssal_walker_attack: 2193
+abyssal_walker_death: 2194
+gecko_hit: 7208
+gecko_attack: 7207
+gecko_death: 7205

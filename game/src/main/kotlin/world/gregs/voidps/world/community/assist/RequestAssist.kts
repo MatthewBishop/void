@@ -4,22 +4,22 @@ import com.github.michaelbull.logging.InlineLogger
 import world.gregs.voidps.engine.client.message
 import world.gregs.voidps.engine.client.ui.chat.plural
 import world.gregs.voidps.engine.client.ui.close
-import world.gregs.voidps.engine.client.ui.event.InterfaceClosed
+import world.gregs.voidps.engine.client.ui.event.interfaceClose
 import world.gregs.voidps.engine.client.variable.hasClock
 import world.gregs.voidps.engine.client.variable.remaining
 import world.gregs.voidps.engine.client.variable.start
 import world.gregs.voidps.engine.entity.character.face
 import world.gregs.voidps.engine.entity.character.player.Player
-import world.gregs.voidps.engine.entity.character.player.PlayerOption
 import world.gregs.voidps.engine.entity.character.player.chat.ChatType
 import world.gregs.voidps.engine.entity.character.player.name
+import world.gregs.voidps.engine.entity.character.player.playerOperate
 import world.gregs.voidps.engine.entity.character.player.req.hasRequest
 import world.gregs.voidps.engine.entity.character.player.req.request
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.character.player.skill.exp.BlockedExperience
 import world.gregs.voidps.engine.entity.character.setAnimation
 import world.gregs.voidps.engine.entity.character.setGraphic
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.event.onEvent
 import world.gregs.voidps.engine.timer.TICKS
 import world.gregs.voidps.world.community.assist.Assistance.MAX_EXPERIENCE
 import world.gregs.voidps.world.community.assist.Assistance.canAssist
@@ -50,16 +50,16 @@ val skills = listOf(
 )
 val logger = InlineLogger()
 
-on<PlayerOption>({ operate && option == "Req Assist" }) { player: Player ->
+playerOperate("Req Assist") {
     val filter = target["assist_filter", "on"]
     if (filter == "off" || (filter == "friends" && !target.friend(player))) {
-        return@on
+        return@playerOperate
     }
     if (target.hasRequest(player, "assist")) {
         player.message("Sending assistance response.", ChatType.Assist)
     } else {
         if (requestingTooQuickly(player) || refuseRequest(target, player)) {
-            return@on
+            return@playerOperate
         }
         player.message("Sending assistance request.", ChatType.Assist)
         target.message("is requesting your assistance.", ChatType.AssistRequest, name = player.name)
@@ -116,8 +116,8 @@ fun setupAssistant(player: Player, assisted: Player) {
     toggleInventory(player, enabled = false)
 }
 
-on<InterfaceClosed>({ id == "assist_xp" }) { player: Player ->
-    val assisted: Player = player["assisted"] ?: return@on
+interfaceClose("assist_xp") { player ->
+    val assisted: Player = player["assisted"] ?: return@interfaceClose
     cancelAssist(player, assisted)
 }
 
@@ -159,8 +159,8 @@ fun cancelAssist(assistant: Player?, assisted: Player?) {
     }
 }
 
-on<BlockedExperience>({ it.contains("assistant") }) { assisted: Player ->
-    val player: Player = assisted["assistant"] ?: return@on
+onEvent<Player, BlockedExperience> { assisted ->
+    val player: Player = assisted["assistant"] ?: return@onEvent
     val active = player["assist_toggle_${skill.name.lowercase()}", false]
     var gained = player["total_xp_earned", 0].toDouble()
     if (active && !exceededMaximum(gained)) {

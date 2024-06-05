@@ -5,19 +5,17 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import world.gregs.voidps.FakeRandom
-import world.gregs.voidps.engine.entity.character.npc.NPC
 import world.gregs.voidps.engine.entity.character.player.appearance
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.character.player.skill.level.Levels
-import world.gregs.voidps.engine.event.on
 import world.gregs.voidps.engine.inv.add
 import world.gregs.voidps.engine.inv.equipment
 import world.gregs.voidps.engine.inv.inventory
-import world.gregs.voidps.network.instruct.InteractPlayer
-import world.gregs.voidps.network.visual.update.player.EquipSlot
+import world.gregs.voidps.network.client.instruction.InteractPlayer
+import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
 import world.gregs.voidps.type.Tile
 import world.gregs.voidps.type.setRandom
-import world.gregs.voidps.world.interact.entity.combat.hit.CombatHit
+import world.gregs.voidps.world.interact.entity.combat.hit.npcCombatHit
 import world.gregs.voidps.world.script.*
 import kotlin.random.Random
 
@@ -75,6 +73,13 @@ internal class CombatTest : WorldTest() {
 
     @Test
     fun `Kill rat with range`() {
+        setRandom(object : FakeRandom() {
+            override fun nextInt(from: Int, until: Int): Int {
+                return until / 2
+            }
+
+            override fun nextBits(bitCount: Int) = 100
+        })
         val player = createPlayer("player", emptyTile)
         val npc = createNPC("rat", emptyTile.addY(4))
 
@@ -95,7 +100,7 @@ internal class CombatTest : WorldTest() {
         assertEquals(emptyTile, player.tile)
         assertTrue(player.equipment[EquipSlot.Ammo.index].amount < 100)
         assertTrue(drops.any { it.id == "bones" })
-        assertTrue(floorItems[emptyTile.addY(4)].any { it.id == "rune_arrow" })
+        assertTrue(floorItems[emptyTile.addY(3)].any { it.id == "rune_arrow" })
         assertTrue(player.experience.get(Skill.Ranged) > EXPERIENCE)
         assertTrue(player.experience.get(Skill.Defence) > EXPERIENCE)
         assertTrue(player.inventory.count("rune_arrow") < 100)
@@ -104,7 +109,7 @@ internal class CombatTest : WorldTest() {
     @Test
     fun `Dragon dagger special attack`() {
         var hits = 0
-        on<NPC, CombatHit> {
+        npcCombatHit {
             hits++
         }
         val player = createPlayer("player", emptyTile)
@@ -117,8 +122,7 @@ internal class CombatTest : WorldTest() {
 
         player.interfaceOption("combat_styles", "special_attack_bar", "Use")
         player.npcOption(npc, "Attack")
-        tick()
-        tick()
+        tick(2)
 
         assertEquals(2, hits)
     }
@@ -134,7 +138,7 @@ internal class CombatTest : WorldTest() {
         player.levels.set(Skill.Constitution, 990)
         player.levels.set(Skill.Prayer, 99)
         val npc = createNPC("rat", emptyTile.addY(1))
-        npc.levels.link(npc.events, object : Levels.Level {
+        npc.levels.link(npc, object : Levels.Level {
             override fun getMaxLevel(skill: Skill): Int {
                 return if (skill == Skill.Constitution) 10000 else 1
             }
@@ -143,7 +147,7 @@ internal class CombatTest : WorldTest() {
 
         player.interfaceOption("prayer_list", "regular_prayers", "Activate", slot = 19, optionIndex = 0)
         player.npcOption(npc, "Attack")
-        tick(2)
+        tick(4)
 
         assertEquals(990, player.levels.get(Skill.Constitution))
         assertNotEquals(0, player["protected_damage", 0])
@@ -216,7 +220,7 @@ internal class CombatTest : WorldTest() {
 
         player.interfaceOption("combat_styles", "style3")
         runTest {
-            player.instructions.emit(InteractPlayer(target.index, 1))
+            player.instructions.send(InteractPlayer(target.index, 1))
         }
         tick(2)
 

@@ -12,40 +12,40 @@ import world.gregs.voidps.engine.data.config.GearDefinition
 import world.gregs.voidps.engine.data.definition.AreaDefinition
 import world.gregs.voidps.engine.data.definition.AreaDefinitions
 import world.gregs.voidps.engine.data.definition.ItemDefinitions
-import world.gregs.voidps.engine.entity.Registered
-import world.gregs.voidps.engine.entity.World
 import world.gregs.voidps.engine.entity.character.mode.interact.Interact
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.obj.GameObject
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.entity.worldSpawn
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.inv.inventory
-import world.gregs.voidps.engine.timer.TimerStop
-import world.gregs.voidps.network.instruct.InteractDialogue
+import world.gregs.voidps.engine.timer.timerStop
+import world.gregs.voidps.network.client.instruction.InteractDialogue
 import world.gregs.voidps.world.activity.skill.smithing.oreToBar
 
 val areas: AreaDefinitions by inject()
 val tasks: TaskManager by inject()
 val itemDefinitions: ItemDefinitions by inject()
 
-onBot<TimerStop>({ timer == "smelting" }) { bot: Bot ->
-    bot.resume(timer)
+timerStop("smelting") { player ->
+    if (player.isBot) {
+        player.bot.resume(timer)
+    }
 }
 
-on<World, Registered> {
+worldSpawn {
     for (area in areas.getTagged("smelting")) {
         val spaces: Int = area["spaces", 1]
         val task = Task(
             name = "smelt bars at ${area.name}".toLowerSpaceCase(),
             block = {
-                val gear = getGear("smelting", Skill.Smithing) ?: return@Task
-                while (player.levels.getMax(Skill.Smithing) < gear.levels.last + 1) {
-                    smelt(area, gear)
+                val gear = bot.getGear("smelting", Skill.Smithing) ?: return@Task
+                while (levels.getMax(Skill.Smithing) < gear.levels.last + 1) {
+                    bot.smelt(area, gear)
                 }
             },
             area = area.area,
             spaces = spaces,
-            requirements = listOf { hasExactGear("smelting", Skill.Smithing) }
+            requirements = listOf { bot.hasExactGear("smelting", Skill.Smithing) }
         )
         tasks.register(task)
     }
@@ -83,7 +83,7 @@ suspend fun Bot.smelt(map: AreaDefinition, set: GearDefinition) {
                 break
             }
         }
-        player.instructions.emit(InteractDialogue(905, 14 + index, -1))
+        player.instructions.send(InteractDialogue(905, 14 + index, -1))
         await("smelting")
     }
 }

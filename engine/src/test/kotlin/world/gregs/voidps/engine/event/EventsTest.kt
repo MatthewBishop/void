@@ -1,58 +1,178 @@
 package world.gregs.voidps.engine.event
 
-import io.mockk.mockk
-import org.junit.jupiter.api.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
+import kotlin.test.Test
 
-internal class EventsTest {
+class EventsTest {
+
+    private val entity = object : EventDispatcher {}
 
     @Test
-    fun `Cancelled events stops processing`() {
-        val events = Events(mockk())
-        val event = object : CancellableEvent() {}
-        val klass = event::class
-        var cancelled = false
-        val block: CancellableEvent.(EventDispatcher) -> Unit = {
-            cancelled = true
-            cancel()
-        }
-        val handler1 = EventHandler(klass, { true }, Priority.HIGH, block as Event.(EventDispatcher) -> Unit)
-        var called = false
-        val handler2 = EventHandler(klass, { true }, Priority.MEDIUM, { called = true })
-        events.set(mapOf(klass to listOf(handler1, handler2)))
+    fun `Exact match`() {
+        val trie = Events()
+        val handler: suspend Event.(EventDispatcher) -> Unit = {}
+        trie.insert(arrayOf("param1", "param2"), handler)
 
-        assertTrue(events.emit(event))
+        val result = trie.search(entity, event("param1", "param2"))
 
-        assertTrue(cancelled)
-        assertFalse(called)
+        assertEquals(setOf(handler), result)
     }
 
     @Test
-    fun `Handlers with conditions not met aren't called`() {
-        val events = Events(mockk())
-        val event = object : Event {}
-        val klass = event::class
-        var called1 = false
-        var called2 = false
-        val handler1 = EventHandler(klass, { false }, Priority.HIGH, { called1 = true })
-        val handler2 = EventHandler(klass, { true }, Priority.MEDIUM, { called2 = true })
-        events.set(mapOf(klass to listOf(handler1, handler2)))
+    fun `Exact match non string values`() {
+        val trie = Events()
+        val handler: suspend Event.(EventDispatcher) -> Unit = {}
+        trie.insert(arrayOf("param1", 2), handler)
 
-        assertTrue(events.emit(event))
+        val result = trie.search(entity, event("param1", 2))
 
-        assertFalse(called1)
-        assertTrue(called2)
+        assertEquals(setOf(handler), result)
     }
 
     @Test
-    fun `Emit returns false if nothing executed`() {
-        val events = Events(mockk())
-        val event = object : Event {}
-        val klass = event::class
-        val handler = EventHandler(klass, { false }, Priority.HIGH, {})
-        events.set(mapOf(klass to listOf(handler)))
+    fun `Exact match null values`() {
+        val trie = Events()
+        val handler: suspend Event.(EventDispatcher) -> Unit = {}
+        trie.insert(arrayOf("param1", null), handler)
 
-        assertFalse(events.emit(event))
+        val result = trie.search(entity, event("param1", null))
+
+        assertEquals(setOf(handler), result)
+    }
+
+    @Test
+    fun `Wildcard match`() {
+        val trie = Events()
+        val handler: suspend Event.(EventDispatcher) -> Unit = {}
+        trie.insert(arrayOf("param1", "param#"), handler)
+
+        val result = trie.search(entity, event("param1", "param2"))
+
+        assertEquals(setOf(handler), result)
+    }
+
+    @Test
+    fun `Default match`() {
+        val trie = Events()
+        val handler: suspend Event.(EventDispatcher) -> Unit = {}
+        trie.insert(arrayOf("*", "*"), handler)
+
+        val result = trie.search(entity, event("param1", "param2"))
+
+        assertEquals(setOf(handler), result)
+    }
+
+    @Test
+    fun `Match multiple layers when find all`() {
+        val trie = Events()
+        val handler1: suspend Event.(EventDispatcher) -> Unit = {}
+        trie.insert(arrayOf("*", "*"), handler1)
+        val handler2: suspend Event.(EventDispatcher) -> Unit = {}
+        trie.insert(arrayOf("param1", "*"), handler2)
+        val handler3: suspend Event.(EventDispatcher) -> Unit = {}
+        trie.insert(arrayOf("param1", "param2"), handler3)
+
+        val result = trie.search(entity, event("param1", "param2", findAll = true))
+
+        assertEquals(setOf(handler1, handler2, handler3), result)
+    }
+
+    @Test
+    fun `Exact takes priority over wildcards`() {
+        val trie = Events()
+        val handler: suspend Event.(EventDispatcher) -> Unit = {}
+        trie.insert(arrayOf("param1", "param2"), handler)
+        trie.insert(arrayOf("param1", "param#")) {}
+
+        val result = trie.search(entity, event("param1", "param2"))
+
+        assertEquals(setOf(handler), result)
+    }
+
+    @Test
+    fun `Exact takes priority over mixed`() {
+        val trie = Events()
+        val handler: suspend Event.(EventDispatcher) -> Unit = {}
+        trie.insert(arrayOf("param1", "param2", "param3"), handler)
+        trie.insert(arrayOf("param1", "*", "param#")) {}
+
+        val result = trie.search(entity, event("param1", "param2", "param3"))
+
+        assertEquals(setOf(handler), result)
+    }
+
+    @Test
+    fun `Wildcards take priority over defaults`() {
+        val trie = Events()
+        val handler: suspend Event.(EventDispatcher) -> Unit = {}
+        trie.insert(arrayOf("param1", "param#"), handler)
+        trie.insert(arrayOf("param1", "*")) {}
+
+        val result = trie.search(entity, event("param1", "param2"))
+
+        assertEquals(setOf(handler), result)
+    }
+
+    @Test
+    fun `Fall back to default when exact and wildcards don't match`() {
+        val trie = Events()
+        val handler: suspend Event.(EventDispatcher) -> Unit = {}
+        trie.insert(arrayOf("*", "param_4")) {}
+        trie.insert(arrayOf("*", "param_#")) {}
+        trie.insert(arrayOf("*", "*"), handler)
+
+        val result = trie.search(entity, event("param1", "param2"))
+
+        assertEquals(setOf(handler), result)
+    }
+
+    @Test
+    fun `Match ignoring exact`() {
+        val trie = Events()
+        val handler: suspend Event.(EventDispatcher) -> Unit = {}
+        val exactHandler: suspend Event.(EventDispatcher) -> Unit = {}
+        trie.insert(arrayOf("*", "param2"), handler)
+        trie.insert(arrayOf("param1", "param2"), exactHandler)
+
+        val result = trie.search(entity, event("param1", "param2"), skip = exactHandler)
+
+        assertEquals(setOf(handler), result)
+    }
+
+    @Test
+    fun `No match`() {
+        val trie = Events()
+        val result = trie.search(entity, event("param1", "param2"))
+
+        assertNull(result)
+    }
+
+    @Test
+    fun `No matching different lengths`() {
+        val trie = Events()
+        trie.insert(arrayOf("*", "*", "*")) {}
+        trie.insert(arrayOf("*")) {}
+
+        val result = trie.search(entity, event("param1", "param2"))
+        assertNull(result)
+    }
+
+    @Test
+    fun `Clear removes all handlers`() {
+        val trie = Events()
+        trie.insert(arrayOf("*", "*")) {}
+        trie.clear()
+
+        val result = trie.search(entity, event("param1", "param2"))
+        assertNull(result)
+    }
+
+    private fun event(vararg params: Any?, findAll: Boolean = false) = object : Event {
+        override val notification = findAll
+
+        override val size = params.size
+
+        override fun parameter(dispatcher: EventDispatcher, index: Int) = params[index]
     }
 }

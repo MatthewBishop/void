@@ -1,9 +1,9 @@
 package world.gregs.voidps.engine.data.definition
 
+import com.github.michaelbull.logging.InlineLogger
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import net.pearx.kasechange.toSentenceCase
-import world.gregs.voidps.cache.definition.data.ItemDefinition
 import world.gregs.voidps.engine.client.ui.chat.toIntRange
 import world.gregs.voidps.engine.data.config.ItemOnItemDefinition
 import world.gregs.voidps.engine.data.yaml.DefinitionIdsConfig
@@ -18,21 +18,27 @@ class ItemOnItemDefinitions {
 
     private lateinit var definitions: Map<String, List<ItemOnItemDefinition>>
 
-    fun get(one: Item, two: Item) = definitions[id(one, two)] ?: definitions[id(two, one)] ?: emptyList()
+    fun get(one: Item, two: Item) = getOrNull(one, two) ?: emptyList()
+
+    fun getOrNull(one: Item, two: Item) = definitions[id(one, two)] ?: definitions[id(two, one)]
 
     fun contains(one: Item, two: Item) = definitions.containsKey(id(one, two)) || definitions.containsKey(id(two, one))
 
     @Suppress("UNCHECKED_CAST")
-    fun load(yaml: Yaml = get(), path: String = getProperty("itemOnItemDefinitionsPath")): ItemOnItemDefinitions {
+    fun load(yaml: Yaml = get(), path: String = getProperty("itemOnItemDefinitionsPath"), itemDefinitions: ItemDefinitions = get()): ItemOnItemDefinitions {
         timedLoad("item on item definition") {
             val definitions = Object2ObjectOpenHashMap<String, MutableList<ItemOnItemDefinition>>()
             var count = 0
             val config = object : DefinitionIdsConfig() {
                 override fun add(list: MutableList<Any>, value: Any, parentMap: String?) {
                     super.add(list, if (value is Map<*, *>) {
-                        Item(value["item"] as String, value["amount"] as? Int ?: 1, ItemDefinition.EMPTY)
+                        val id = value["item"] as String
+                        if (itemDefinitions != null && !itemDefinitions.contains(id)) {
+                            logger.warn { "Invalid item-on-item id: $id" }
+                        }
+                        Item(id, value["amount"] as? Int ?: 1)
                     } else {
-                        Item(value as String, amount = 1, def = ItemDefinition.EMPTY)
+                        Item(value as String, amount = 1)
                     }, parentMap)
                 }
 
@@ -72,6 +78,7 @@ class ItemOnItemDefinitions {
     }
 
     companion object {
+        private val logger = InlineLogger()
         private fun id(one: Item, two: Item): String = "${one.id}&${two.id}"
     }
 

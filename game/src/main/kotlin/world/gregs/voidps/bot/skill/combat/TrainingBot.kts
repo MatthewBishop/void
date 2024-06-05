@@ -11,8 +11,6 @@ import world.gregs.voidps.engine.client.update.view.Viewport
 import world.gregs.voidps.engine.client.variable.remaining
 import world.gregs.voidps.engine.data.definition.AreaDefinition
 import world.gregs.voidps.engine.data.definition.AreaDefinitions
-import world.gregs.voidps.engine.entity.Registered
-import world.gregs.voidps.engine.entity.World
 import world.gregs.voidps.engine.entity.character.mode.combat.CombatMovement
 import world.gregs.voidps.engine.entity.character.move.walkTo
 import world.gregs.voidps.engine.entity.character.npc.NPC
@@ -22,23 +20,23 @@ import world.gregs.voidps.engine.entity.character.player.equip.has
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.obj.GameObject
 import world.gregs.voidps.engine.entity.obj.ObjectOption
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.entity.worldSpawn
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.inv.inventory
 import world.gregs.voidps.engine.timer.epochSeconds
-import world.gregs.voidps.network.visual.update.player.EquipSlot
+import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
 import world.gregs.voidps.world.activity.bank.ownsItem
 import world.gregs.voidps.world.interact.entity.combat.attackRange
 import world.gregs.voidps.world.interact.entity.combat.attackers
+import world.gregs.voidps.world.interact.entity.combat.inCombat
 import world.gregs.voidps.world.interact.entity.player.combat.magic.spell.spellBook
-import world.gregs.voidps.world.interact.entity.combat.underAttack
 
 val areas: AreaDefinitions by inject()
 val tasks: TaskManager by inject()
 
-on<World, Registered> {
-    val area = areas.getOrNull("lumbridge_combat_tutors") ?: return@on
+worldSpawn {
+    val area = areas.getOrNull("lumbridge_combat_tutors") ?: return@worldSpawn
     val range = 1..5
     val skills = listOf(Skill.Attack, Skill.Magic, Skill.Ranged)
     val melees = listOf(Skill.Attack, Skill.Strength, Skill.Defence)
@@ -47,14 +45,14 @@ on<World, Registered> {
         val task = Task(
             name = "train ${if (melee) "melee" else skill.name} at ${area.name}".toLowerSpaceCase(),
             block = {
-                val skill = if (melee) melees.filter { player.levels.getMax(it) in range }.random() else skill
-                train(area, skill, range)
+                val actualSkill = if (melee) melees.filter { levels.getMax(it) in range }.random() else skill
+                bot.train(area, actualSkill, range)
             },
             area = area.area,
             spaces = if (melee) 3 else 2,
             requirements = listOf(
-                { if (melee) melees.any { player.levels.getMax(it) in range } else player.levels.getMax(skill) in range },
-                { canGetGearAndAmmo(skill) }
+                { if (melee) melees.any { levels.getMax(it) in range } else levels.getMax(skill) in range },
+                { bot.canGetGearAndAmmo(skill) }
             )
         )
         tasks.register(task)
@@ -160,7 +158,7 @@ fun Bot.isAvailableTarget(map: AreaDefinition, npc: NPC, skill: Skill): Boolean 
     if (!npc.tile.within(player.tile, Viewport.VIEW_RADIUS)) {
         return false
     }
-    if (npc.underAttack && !npc.attackers.contains(player)) {
+    if (npc.inCombat && !npc.attackers.contains(player)) {
         return false
     }
     if (!npc.def.options.contains("Attack")) {

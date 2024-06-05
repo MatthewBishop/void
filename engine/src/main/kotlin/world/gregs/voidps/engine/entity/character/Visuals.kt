@@ -1,7 +1,5 @@
 package world.gregs.voidps.engine.entity.character
 
-import world.gregs.voidps.engine.client.variable.hasClock
-import world.gregs.voidps.engine.client.variable.start
 import world.gregs.voidps.engine.data.definition.AnimationDefinitions
 import world.gregs.voidps.engine.data.definition.GraphicDefinitions
 import world.gregs.voidps.engine.entity.Entity
@@ -13,11 +11,10 @@ import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.obj.GameObject
 import world.gregs.voidps.engine.entity.obj.ObjectShape
 import world.gregs.voidps.engine.get
-import world.gregs.voidps.engine.queue.strongQueue
-import world.gregs.voidps.network.visual.VisualMask
-import world.gregs.voidps.network.visual.Visuals
-import world.gregs.voidps.network.visual.update.Hitsplat
-import world.gregs.voidps.network.visual.update.Turn
+import world.gregs.voidps.network.login.protocol.visual.VisualMask
+import world.gregs.voidps.network.login.protocol.visual.Visuals
+import world.gregs.voidps.network.login.protocol.visual.update.Hitsplat
+import world.gregs.voidps.network.login.protocol.visual.update.Turn
 import world.gregs.voidps.type.Delta
 import world.gregs.voidps.type.Direction
 import world.gregs.voidps.type.Distance
@@ -31,7 +28,7 @@ fun Character.flagForceChat() = visuals.flag(if (this is Player) VisualMask.PLAY
 
 fun Character.flagHits() = visuals.flag(if (this is Player) VisualMask.PLAYER_HITS_MASK else VisualMask.NPC_HITS_MASK)
 
-fun Character.flagForceMovement() = visuals.flag(if (this is Player) VisualMask.PLAYER_FORCE_MOVEMENT_MASK else VisualMask.NPC_FORCE_MOVEMENT_MASK)
+fun Character.flagExactMovement() = visuals.flag(if (this is Player) VisualMask.PLAYER_EXACT_MOVEMENT_MASK else VisualMask.NPC_EXACT_MOVEMENT_MASK)
 
 fun Character.flagTurn() = visuals.flag(if (this is Player) VisualMask.PLAYER_TURN_MASK else VisualMask.NPC_TURN_MASK)
 
@@ -42,10 +39,9 @@ fun Character.flagWatch() = visuals.flag(if (this is Player) VisualMask.PLAYER_W
 fun Character.setAnimation(id: String, delay: Int? = null, override: Boolean = false): Int {
     val definition = get<AnimationDefinitions>().getOrNull(id) ?: return -1
     val anim = visuals.animation
-    if (!override && hasClock("animation_delay") && definition.priority < anim.priority) {
+    if (!override && definition.priority < anim.priority) {
         return -1
     }
-    start("animation_delay", 1)
     val stand = definition["stand", true]
     if (stand) {
         anim.stand = definition.id
@@ -173,14 +169,14 @@ private fun watchIndex(character: Character) = if (character is Player) characte
  * @param startDelay Client ticks until starting the movement
  * @param direction The cardinal direction to face during movement
  */
-fun Character.setForceMovement(
+fun Character.setExactMovement(
     endDelta: Delta = Delta.EMPTY,
     endDelay: Int = 0,
     startDelta: Delta = Delta.EMPTY,
     startDelay: Int = 0,
     direction: Direction = Direction.NONE
 ) {
-    val move = visuals.forceMovement
+    val move = visuals.exactMovement
     check(endDelay > startDelay) { "End delay ($endDelay) must be after start delay ($startDelay)." }
     move.startX = startDelta.x
     move.startY = startDelta.y
@@ -189,27 +185,19 @@ fun Character.setForceMovement(
     move.endY = endDelta.y
     move.endDelay = endDelay
     move.direction = direction.ordinal
-    flagForceMovement()
+    flagExactMovement()
 }
 
-fun Character.forceWalk(delta: Delta, delay: Int = 0, direction: Direction = Direction.NONE, block: () -> Unit = {}) {
-    setForceMovement(delta, delay, direction = direction)
-    this["force_walk"] = block
-    if(this is Player) {
-        strongQueue("force_walk", delay / 30) {
-            tele(delta)
-            clearAnimation()
-        }
-    } else if(this is NPC) {
-        strongQueue("force_walk", delay / 30) {
-            tele(delta)
-            clearAnimation()
-        }
-    }
+fun Character.exactMove(delta: Delta, delay: Int = tile.distanceTo(tile.add(delta)) * 30, direction: Direction = Direction.NONE) {
+    val start = tile
+    tele(delta)
+    setExactMovement(Delta.EMPTY, delay, start.delta(tile), direction = direction)
 }
 
-fun Character.forceWalk(target: Tile, delay: Int = tile.distanceTo(target) * 30, direction: Direction = Direction.NONE, block: () -> Unit = {}) {
-    forceWalk(target.delta(tile), delay, direction, block)
+fun Character.exactMove(target: Tile, delay: Int = tile.distanceTo(target) * 30, direction: Direction = Direction.NONE) {
+    val start = tile
+    tele(target)
+    setExactMovement(Delta.EMPTY, delay, start.delta(tile), direction = direction)
 }
 
 val Character.turn: Delta

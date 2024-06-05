@@ -7,17 +7,19 @@ import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.player.combatLevel
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.character.player.skill.exp.exp
-import world.gregs.voidps.engine.event.on
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.world.activity.skill.slayer.isTask
 import world.gregs.voidps.world.interact.entity.combat.attackStyle
 import world.gregs.voidps.world.interact.entity.combat.attackType
-import world.gregs.voidps.world.interact.entity.combat.hit.CombatAttack
+import world.gregs.voidps.world.interact.entity.combat.hit.combatAttack
 import kotlin.math.floor
 
 val definitions: SpellDefinitions by inject()
 
-on<CombatAttack>({ damage > 0 }) { player: Player ->
+combatAttack { player ->
+    if (damage <= 0) {
+        return@combatAttack
+    }
     if (type == "magic" || type == "blaze") {
         val base = definitions.get(spell).experience
         if (player["defensive_cast", false]) {
@@ -26,14 +28,7 @@ on<CombatAttack>({ damage > 0 }) { player: Player ->
         } else {
             grant(player, target, Skill.Magic, base + damage / 5.0)
         }
-    } else if (type == "range") {
-        if (player.attackType == "long_range") {
-            grant(player, target, Skill.Ranged, damage / 5.0)
-            grant(player, target, Skill.Defence, damage / 5.0)
-        } else {
-            grant(player, target, Skill.Ranged, damage / 2.5)
-        }
-    } else if (type == "melee") {
+    } else if (type == "melee" || type == "scorch") {
         when (player.attackStyle) {
             "accurate" -> grant(player, target, Skill.Attack, damage / 2.5)
             "aggressive" -> grant(player, target, Skill.Strength, damage / 2.5)
@@ -43,6 +38,13 @@ on<CombatAttack>({ damage > 0 }) { player: Player ->
                 grant(player, target, Skill.Defence, damage / 7.5)
             }
             "defensive" -> grant(player, target, Skill.Defence, damage / 2.5)
+        }
+    } else if (type == "range") {
+        if (player.attackType == "long_range") {
+            grant(player, target, Skill.Ranged, damage / 5.0)
+            grant(player, target, Skill.Defence, damage / 5.0)
+        } else {
+            grant(player, target, Skill.Ranged, damage / 2.5)
         }
     }
     if (target is NPC && player.isTask(target)) {

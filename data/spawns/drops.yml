@@ -1,3 +1,9 @@
+empty_drop_table:
+  type: all
+  drops:
+    - type: all
+      drops:
+        - id: bones
 allotment_seed_drop_table:
   roll: 128
   drops:
@@ -465,6 +471,7 @@ cow_drop_table:
       drops:
         - id: clue_scroll_easy
           chance: 1
+          lacks: clue_scroll_easy*
 chicken_drop_table:
   type: all
   drops:
@@ -484,6 +491,7 @@ chicken_drop_table:
       drops:
         - id: clue_scroll_easy
           chance: 1
+          lacks: clue_scroll_easy*
 rat_drop_table:
   type: all
   drops:
@@ -642,6 +650,1049 @@ king_black_dragon_drop_table:
           drops:
           - id: clue_scroll_elite
             chance: 4
+            lacks: clue_scroll_elite*
           - type: all
             drops:
             - id: clue_scroll_hard
+              lacks: clue_scroll_hard*
+haakon_the_champion_drop_table:
+  type: all
+  drops:
+    - type: all
+      drops:
+        - id: bones
+    - roll: 512
+      drops:
+        - id: coins
+          amount: 5-32
+          chance: 32
+        - id: cooked_meat
+          chance: 32
+        - id: necklace_mould
+          chance: 8
+        - id: bear_fur
+          chance: 8
+        - id: beer
+          chance: 8
+        - id: flier
+          chance: 8
+        - id: clue_scroll_easy
+          chance: 2
+          lacks: clue_scroll_easy*
+        - id: uncut_sapphire
+          chance: 2
+        - id: uncut_emerald
+          chance: 2
+        - id: uncut_ruby
+          chance: 2
+        - id: uncut_diamond
+          chance: 2
+        - id: uncut_dragonstone
+          chance: 2
+        - id: loop_half_of_a_key
+dark_wizard_water_drop_table:
+  type: all
+  drops:
+    - type: all
+      drops:
+        - id: bones
+    - roll: 128
+      drops:
+        - id: staff
+          chance: 8
+        - id: black_wizard_hat
+          chance: 6
+          members: false
+        - id: black_wizard_hat
+          chance: 4
+          members: true
+        - id: black_wizard_robe_top
+          chance: 3
+        - id: earth_rune
+          chance: 4
+          amount: 36
+        - id: air_rune
+          chance: 3
+          amount: 10
+        - id: water_rune
+          chance: 3
+          amount: 10
+        - id: earth_rune
+          chance: 3
+          amount: 10
+        - id: fire_rune
+          chance: 3
+          amount: 10
+        - id: air_rune
+          chance: 2
+          amount: 18
+        - id: water_rune
+          chance: 2
+          amount: 18
+        - id: earth_rune
+          chance: 2
+          amount: 18
+        - id: fire_rune
+          chance: 2
+          amount: 18
+        - id: nature_rune
+          chance: 7
+          amount: 4
+        - id: chaos_rune
+          chance: 6
+          amount: 5
+        - id: mind_rune
+          chance: 3
+          amount: 10
+        - id: body_rune
+          chance: 3
+          amount: 10
+        - id: mind_rune
+          chance: 2
+          amount: 18
+        - id: body_rune
+          chance: 2
+          amount: 18
+        - id: blood_rune
+          chance: 2
+          amount: 2
+          members: true
+        - id: cosmic_rune
+          amount: 2
+        - id: law_rune
+          amount: 3
+        - id: coins
+          chance: 17
+        - id: coins
+          chance: 16
+          amount: 2
+        - id: coins
+          chance: 7
+          amount: 4
+        - id: coins
+          chance: 3
+          amount: 29
+        - id: coins
+          amount: 30
+        - id: water_talisman
+        - id: fire_talisman
+        - id: nothing
+          chance: 16
+          amount: 0
+    - roll: 50
+      drops:
+        - id: clue_scroll_easy
+          lacks: clue_scroll_easy*
+dark_wizard_earth_drop_table:
+  type: all
+  drops:
+    - type: all
+      drops:
+        - id: bones
+    - roll: 128
+      drops:
+        - id: staff
+          chance: 4
+        - id: black_wizard_hat
+          chance: 6
+          members: false
+        - id: black_wizard_hat
+          chance: 4
+          members: true
+        - id: black_wizard_robe_top
+          chance: 3
+        - id: earth_rune
+          chance: 4
+          amount: 36
+        - id: air_rune
+          chance: 3
+          amount: 10
+        - id: water_rune
+          chance: 3
+          amount: 10
+        - id: earth_rune
+          chance: 3
+          amount: 10
+        - id: fire_rune
+          chance: 3
+          amount: 10
+        - id: air_rune
+          chance: 2
+          amount: 18
+        - id: water_rune
+          chance: 2
+          amount: 18
+        - id: earth_rune
+          chance: 2
+          amount: 18
+        - id: fire_rune
+          chance: 2
+          amount: 18
+        - id: nature_rune
+          chance: 7
+          amount: 4
+        - id: chaos_rune
+          chance: 6
+          amount: 5
+        - id: mind_rune
+          chance: 3
+          amount: 10
+        - id: body_rune
+          chance: 3
+          amount: 10
+        - id: mind_rune
+          chance: 2
+          amount: 18
+        - id: body_rune
+          chance: 2
+          amount: 18
+        - id: blood_rune
+          chance: 2
+          amount: 2
+          members: true
+        - id: cosmic_rune
+          amount: 2
+        - id: law_rune
+          amount: 3
+        - id: coins
+          chance: 17
+        - id: coins
+          chance: 16
+          amount: 2
+        - id: coins
+          chance: 7
+          amount: 4
+        - id: coins
+          chance: 3
+          amount: 29
+        - id: coins
+          amount: 30
+        - id: water_talisman
+        - id: fire_talisman
+        - id: nothing
+          chance: 16
+          amount: 0
+    - roll: 35
+      drops:
+        - id: clue_scroll_easy
+          lacks: clue_scroll_easy*
+human_drop_table:
+  type: all
+  drops:
+    - type: all
+      drops:
+        - id: bones
+giant_mole_drop_table:
+  type: all
+  drops:
+    - type: all
+      drops:
+        - id: big_bones
+        - id: mole_claw
+        - id: mole_skin
+          amount: 1-3
+    - roll: 6
+      drops:
+        - id: air_rune
+          amount: 105
+          chance: 1
+        - id: blood_rune
+          amount: 15
+          chance: 1
+    - roll: 11
+      drops:
+        - id: fire_rune
+          amount: 105
+          chance: 1
+    - roll: 12
+      drops:
+        - id: adamant_longsword
+          chance: 1
+        - id: iron_arrow
+          amount: 690
+          chance: 1
+        - id: yew_logs_noted
+          amount: 100
+          chance: 1
+    - roll: 14
+      drops:
+        - id: mithril_platebody
+          chance: 1
+    - roll: 18
+      drops:
+        - id: amulet_of_strength
+          chance: 1
+    - roll: 25
+      drops:
+        - id: law_rune
+          amount: 15
+          chance: 1
+    - roll: 32
+      drops:
+        - id: shark
+          amount: 4
+          chance: 1
+    - roll: 34
+      drops:
+        - id: nothing
+          chance: 1
+    - roll: 42
+      drops:
+        - id: mithril_bar
+          chance: 1
+        - id: death_rune
+          amount: 7
+          chance: 1
+    - roll: 64
+      drops:
+        - id: mithril_hatchet
+          chance: 1
+        - id: iron_ore_noted
+          amount: 100
+          chance: 1
+    - roll: 77
+      drops:
+        - id: uncut_sapphire
+          chance: 1
+    - roll: 128
+      drops:
+        - id: mithril_battleaxe
+          chance: 1
+        - id: rune_med_helm
+          chance: 1
+        - id: oyster_pearls
+          chance: 1
+    - roll: 154
+      drops:
+        - id: uncut_emerald
+          chance: 1
+    - roll: 189
+      drops:
+        - id: loop_half_of_a_key
+          chance: 1
+        - id: tooth_half_of_a_key
+          chance: 1
+    - roll: 195
+      drops:
+        - id: coins
+          amount: 3000
+          chance: 1
+    - roll: 309
+      drops:
+        - id: uncut_ruby
+          chance: 1
+    - roll: 819
+      drops:
+        - id: rune_bar
+          chance: 1
+    - roll: 824
+      drops:
+        - id: nature_talisman
+          chance: 1
+    - roll: 1237
+      drops:
+        - id: uncut_diamond
+          chance: 1
+    - roll: 1365
+      drops:
+        - id: nature_rune
+          amount: 67
+          chance: 1
+        - id: rune_2h_sword
+          chance: 1
+        - id: rune_battleaxe
+          chance: 1
+    - roll: 2048
+      drops:
+        - id: law_rune
+          amount: 45
+          chance: 1
+        - id: death_rune
+          amount: 45
+          chance: 1
+        - id: steel_arrow
+          amount: 150
+          chance: 1
+        - id: rune_arrow
+          amount: 42
+          chance: 1
+        - id: adamant_javelin
+          amount: 20
+          chance: 1
+        - id: rune_sq_shield
+          chance: 1
+        - id: dragonstone
+          chance: 1
+        - id: silver_ore_noted
+          amount: 100
+          chance: 1
+    - roll: 2473
+      drops:
+        - id: rune_javelin
+          amount: 5
+          chance: 1
+    - roll: 3935
+      drops:
+        - id: rune_spear
+          chance: 1
+    - roll: 4096
+      drops:
+        - id: rune_kiteshield
+          chance: 1
+        - id: dragon_med_helm
+          chance: 1
+    - roll: 7869
+      drops:
+        - id: shield_left_half
+          chance: 1
+    - roll: 10492
+      drops:
+        - id: dragon_spear
+          chance: 1
+abyssal_walker_drop_table:
+  type: all
+  drops:
+    - type: all
+      drops:
+        - id: ashes
+    - roll: 256
+      drops:
+        - id: air_talisman
+          chance: 5
+        - id: water_talisman
+          chance: 5
+        - id: earth_talisman
+          chance: 5
+        - id: fire_talisman
+          chance: 5
+        - id: mind_talisman
+          chance: 5
+        - id: body_talisman
+          chance: 5
+        - id: cosmic_talisman
+          chance: 2
+        - id: chaos_talisman
+          chance: 2
+        - id: nature_talisman
+          chance: 2
+        - id: elemental_talisman
+        - id: small_pouch
+          chance: 6
+          lacks: small_pouch
+        - id: medium_pouch
+          chance: 6
+          charges: 45
+          owns: small_pouch
+          lacks: medium_pouch*
+        - id: large_pouch
+          chance: 6
+          charges: 29
+          owns: medium_pouch*
+          lacks: large_pouch*
+        - id: giant_pouch
+          chance: 6
+          charges: 10
+          owns: large_pouch*
+          lacks: giant_pouch*
+        - id: pure_essence_noted
+          chance: 36
+        - id: pure_essence
+          chance: 34
+        - id: pure_essence_noted
+          chance: 4
+          amount: 5
+        - id: pure_essence_noted
+          chance: 4
+          amount: 10
+        - id: pure_essence_noted
+          chance: 4
+          amount: 15
+        - id: binding_necklace
+          chance: 3
+    - roll: 256
+      drops:
+        - id: clue_scroll_medium
+          lacks: clue_scroll_medium*
+abyssal_guardian_drop_table:
+  type: all
+  drops:
+    - type: all
+      drops:
+        - id: ashes
+    - roll: 256
+      drops:
+        - id: air_talisman
+          chance: 5
+        - id: water_talisman
+          chance: 5
+        - id: earth_talisman
+          chance: 5
+        - id: fire_talisman
+          chance: 5
+        - id: mind_talisman
+          chance: 5
+        - id: body_talisman
+          chance: 5
+        - id: cosmic_talisman
+          chance: 2
+        - id: chaos_talisman
+          chance: 2
+        - id: nature_talisman
+          chance: 2
+        - id: elemental_talisman
+        - id: small_pouch
+          chance: 6
+          lacks: small_pouch
+        - id: medium_pouch
+          chance: 6
+          charges: 45
+          owns: small_pouch
+          lacks: medium_pouch*
+        - id: large_pouch
+          chance: 6
+          charges: 29
+          owns: medium_pouch*
+          lacks: large_pouch*
+        - id: giant_pouch
+          chance: 6
+          charges: 10
+          owns: large_pouch*
+          lacks: giant_pouch*
+        - id: pure_essence_noted
+          chance: 36
+        - id: pure_essence
+          chance: 34
+        - id: pure_essence_noted
+          chance: 4
+          amount: 5
+        - id: pure_essence_noted
+          chance: 4
+          amount: 10
+        - id: pure_essence_noted
+          chance: 4
+          amount: 15
+        - id: binding_necklace
+          chance: 3
+    - roll: 256
+      drops:
+        - id: clue_scroll_medium
+          lacks: clue_scroll_medium*
+abyssal_leech_drop_table:
+  type: all
+  drops:
+    - type: all
+      drops:
+        - id: ashes
+    - roll: 256
+      drops:
+        - id: air_talisman
+          chance: 5
+        - id: water_talisman
+          chance: 5
+        - id: earth_talisman
+          chance: 5
+        - id: fire_talisman
+          chance: 5
+        - id: mind_talisman
+          chance: 5
+        - id: body_talisman
+          chance: 5
+        - id: cosmic_talisman
+          chance: 2
+        - id: chaos_talisman
+          chance: 2
+        - id: nature_talisman
+          chance: 2
+        - id: elemental_talisman
+        - id: small_pouch
+          chance: 6
+          lacks: small_pouch
+        - id: medium_pouch
+          chance: 6
+          charges: 45
+          owns: small_pouch
+          lacks: medium_pouch*
+        - id: large_pouch
+          chance: 6
+          charges: 29
+          owns: medium_pouch*
+          lacks: large_pouch*
+        - id: giant_pouch
+          chance: 6
+          charges: 10
+          owns: large_pouch*
+          lacks: giant_pouch*
+        - id: pure_essence_noted
+          chance: 36
+        - id: pure_essence
+          chance: 34
+        - id: pure_essence_noted
+          chance: 4
+          amount: 5
+        - id: pure_essence_noted
+          chance: 4
+          amount: 10
+        - id: pure_essence_noted
+          chance: 4
+          amount: 15
+        - id: binding_necklace
+          chance: 3
+    - roll: 256
+      drops:
+        - id: clue_scroll_medium
+          lacks: clue_scroll_medium*
+ourania_rune_table_level_0:
+  roll: 10000
+  drops:
+    - id: mind_rune
+      chance: 5000
+    - id: water_rune
+      chance: 2500
+    - id: earth_rune
+      chance: 1200
+    - id: fire_rune
+      chance: 600
+    - id: body_rune
+      chance: 300
+    - id: cosmic_rune
+      chance: 150
+    - id: chaos_rune
+      chance: 85
+    - id: astral_rune
+      chance: 60
+    - id: nature_rune
+      chance: 45
+    - id: law_rune
+      chance: 30
+    - id: death_rune
+      chance: 15
+    - id: blood_rune
+      chance: 8
+    - id: soul_rune
+      chance: 5
+ourania_rune_table_level_1:
+  roll: 10000
+  drops:
+    - id: mind_rune
+      chance: 1500
+    - id: water_rune
+      chance: 1800
+    - id: earth_rune
+      chance: 2100
+    - id: fire_rune
+      chance: 2400
+    - id: body_rune
+      chance: 1200
+    - id: cosmic_rune
+      chance: 600
+    - id: chaos_rune
+      chance: 175
+    - id: astral_rune
+      chance: 80
+    - id: nature_rune
+      chance: 60
+    - id: law_rune
+      chance: 40
+    - id: death_rune
+      chance: 24
+    - id: blood_rune
+      chance: 12
+    - id: soul_rune
+      chance: 6
+ourania_rune_table_level_2:
+  roll: 10000
+  drops:
+    - id: mind_rune
+      chance: 1200
+    - id: water_rune
+      chance: 1300
+    - id: earth_rune
+      chance: 1350
+    - id: fire_rune
+      chance: 1400
+    - id: body_rune
+      chance: 1500
+    - id: cosmic_rune
+      chance: 1600
+    - id: chaos_rune
+      chance: 800
+    - id: astral_rune
+      chance: 420
+    - id: nature_rune
+      chance: 210
+    - id: law_rune
+      chance: 110
+    - id: death_rune
+      chance: 55
+    - id: blood_rune
+      chance: 32
+    - id: soul_rune
+      chance: 15
+ourania_rune_table_level_3:
+  roll: 1000
+  drops:
+    - id: mind_rune
+      chance: 70
+    - id: water_rune
+      chance: 80
+    - id: earth_rune
+      chance: 90
+    - id: fire_rune
+      chance: 110
+    - id: body_rune
+      chance: 120
+    - id: cosmic_rune
+      chance: 130
+    - id: chaos_rune
+      chance: 200
+    - id: astral_rune
+      chance: 100
+    - id: nature_rune
+      chance: 50
+    - id: law_rune
+      chance: 25
+    - id: death_rune
+      chance: 13
+    - id: blood_rune
+      chance: 6
+    - id: soul_rune
+      chance: 4
+ourania_rune_table_level_4:
+  roll: 1000
+  drops:
+    - id: mind_rune
+      chance: 60
+    - id: water_rune
+      chance: 65
+    - id: earth_rune
+      chance: 70
+    - id: fire_rune
+      chance: 75
+    - id: body_rune
+      chance: 80
+    - id: cosmic_rune
+      chance: 100
+    - id: chaos_rune
+      chance: 150
+    - id: astral_rune
+      chance: 200
+    - id: nature_rune
+      chance: 100
+    - id: law_rune
+      chance: 50
+    - id: death_rune
+      chance: 26
+    - id: blood_rune
+      chance: 12
+    - id: soul_rune
+      chance: 8
+ourania_rune_table_level_5:
+  roll: 1000
+  drops:
+    - id: mind_rune
+      chance: 50
+    - id: water_rune
+      chance: 55
+    - id: earth_rune
+      chance: 60
+    - id: fire_rune
+      chance: 65
+    - id: body_rune
+      chance: 70
+    - id: cosmic_rune
+      chance: 75
+    - id: chaos_rune
+      chance: 100
+    - id: astral_rune
+      chance: 110
+    - id: nature_rune
+      chance: 150
+    - id: law_rune
+      chance: 135
+    - id: death_rune
+      chance: 70
+    - id: blood_rune
+      chance: 35
+    - id: soul_rune
+      chance: 17
+ourania_rune_table_level_6:
+  roll: 200
+  drops:
+    - id: mind_rune
+      chance: 9
+    - id: water_rune
+      chance: 10
+    - id: earth_rune
+      chance: 11
+    - id: fire_rune
+      chance: 12
+    - id: body_rune
+      chance: 14
+    - id: cosmic_rune
+      chance: 15
+    - id: chaos_rune
+      chance: 19
+    - id: astral_rune
+      chance: 21
+    - id: nature_rune
+      chance: 28
+    - id: law_rune
+      chance: 31
+    - id: death_rune
+      chance: 16
+    - id: blood_rune
+      chance: 8
+    - id: soul_rune
+      chance: 4
+ourania_rune_table_level_7:
+  roll: 100
+  drops:
+    - id: mind_rune
+      chance: 3
+    - id: water_rune
+      chance: 3
+    - id: earth_rune
+      chance: 3
+    - id: fire_rune
+      chance: 4
+    - id: body_rune
+      chance: 4
+    - id: cosmic_rune
+      chance: 5
+    - id: chaos_rune
+      chance: 7
+    - id: astral_rune
+      chance: 9
+    - id: nature_rune
+      chance: 12
+    - id: law_rune
+      chance: 15
+    - id: death_rune
+      chance: 18
+    - id: blood_rune
+      chance: 10
+    - id: soul_rune
+      chance: 5
+ourania_rune_table_level_8:
+  roll: 200
+  drops:
+    - id: mind_rune
+      chance: 4
+    - id: water_rune
+      chance: 4
+    - id: earth_rune
+      chance: 6
+    - id: fire_rune
+      chance: 8
+    - id: body_rune
+      chance: 10
+    - id: cosmic_rune
+      chance: 12
+    - id: chaos_rune
+      chance: 14
+    - id: astral_rune
+      chance: 16
+    - id: nature_rune
+      chance: 21
+    - id: law_rune
+      chance: 27
+    - id: death_rune
+      chance: 29
+    - id: blood_rune
+      chance: 29
+    - id: soul_rune
+      chance: 12
+ourania_rune_table_level_9:
+  roll: 200
+  drops:
+    - id: mind_rune
+      chance: 2
+    - id: water_rune
+      chance: 2
+    - id: earth_rune
+      chance: 4
+    - id: fire_rune
+      chance: 6
+    - id: body_rune
+      chance: 8
+    - id: cosmic_rune
+      chance: 10
+    - id: chaos_rune
+      chance: 12
+    - id: astral_rune
+      chance: 14
+    - id: nature_rune
+      chance: 20
+    - id: law_rune
+      chance: 27
+    - id: death_rune
+      chance: 29
+    - id: blood_rune
+      chance: 33
+    - id: soul_rune
+      chance: 20
+ourania_rune_table_level_10:
+  roll: 200
+  drops:
+    - id: mind_rune
+      chance: 2
+    - id: water_rune
+      chance: 2
+    - id: earth_rune
+      chance: 4
+    - id: fire_rune
+      chance: 6
+    - id: body_rune
+      chance: 6
+    - id: cosmic_rune
+      chance: 8
+    - id: chaos_rune
+      chance: 10
+    - id: astral_rune
+      chance: 12
+    - id: nature_rune
+      chance: 19
+    - id: law_rune
+      chance: 27
+    - id: death_rune
+      chance: 29
+    - id: blood_rune
+      chance: 31
+    - id: soul_rune
+      chance: 26
+zamorak_warrior_drop_table:
+  type: all
+  drops:
+    - type: all
+      drops:
+        - id: bones
+    - roll: 50
+      drops:
+        - id: rune_dagger
+          chance: 2
+        - id: adamant_longsword
+        - id: steel_scimitar
+          chance: 2
+        - id: steel_dagger
+          chance: 2
+        - id: rune_scimitar
+    - roll: 50
+      drops:
+        - id: coins
+          chance: 40
+          amount: 100
+        - id: lobster
+          chance: 2
+          amount: 3
+zamorak_mage_drop_table:
+  type: all
+  drops:
+    - type: all
+      drops:
+        - id: bones
+    - roll: 50
+      drops:
+        - id: fire_rune
+          chance: 2
+          amount: 7
+        - id: water_rune
+          chance: 2
+          amount: 6
+        - id: air_rune
+          chance: 2
+          amount: 5
+        - id: nature_rune
+          chance: 2
+          amount: 2
+        - id: law_rune
+          amount: 2
+        - id: blood_rune
+    - roll: 50
+      drops:
+        - id: coins
+          chance: 40
+          amount: 100
+zamorak_ranger_drop_table:
+  type: all
+  drops:
+    - type: all
+      drops:
+        - id: bones
+    - roll: 50
+      drops:
+        - id: willow_shortbow
+          chance: 2
+        - id: willow_longbow
+        - id: steel_arrow
+          chance: 2
+          amount: 10
+        - id: mithril_arrow
+          chance: 2
+          amount: 10
+        - id: mithril_arrow
+          amount: 20
+        - id: bow_string_noted
+          chance: 2
+          amount: 10
+    - roll: 50
+      drops:
+        - id: coins
+          chance: 40
+          amount: 100
+zamorak_crafter_drop_table:
+  type: all
+  drops:
+    - type: all
+      drops:
+        - id: bones
+    - roll: 70
+      drops:
+        - id: air_rune
+          chance: 10
+          amount: 5
+        - id: body_rune
+          chance: 5
+          amount: 3
+        - id: blood_rune
+          chance: 2
+          amount: 4
+        - id: chaos_rune
+          chance: 5
+          amount: 4
+        - id: death_rune
+          chance: 2
+          amount: 3
+        - id: earth_rune
+          chance: 5
+          amount: 6
+        - id: water_rune
+          chance: 10
+          amount: 5
+        - id: soul_rune
+          chance: 2
+          amount: 3
+        - id: fire_rune
+          chance: 10
+          amount: 2
+        - id: law_rune
+          amount: 3
+        - id: nature_rune
+          chance: 2
+          amount: 2
+        - id: pure_essence
+          chance: 5
+          amount: 3
+        - id: pure_essence
+          amount: 10
+        - id: coins
+          chance: 10
+          amount: 50
+monk_of_zamorak_drop_table:
+  type: all
+  drops:
+    - drops:
+        - id: bones
+    - roll: 20
+      drops:
+        - id: zamorak_monk_bottom
+        - id: zamorak_monk_top

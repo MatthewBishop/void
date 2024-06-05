@@ -7,13 +7,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import world.gregs.voidps.engine.entity.Registered
+import world.gregs.voidps.engine.entity.Spawn
 import world.gregs.voidps.engine.entity.World
 import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.player.chat.clan.ClanRank
 import world.gregs.voidps.network.client.Client
-import world.gregs.voidps.network.encode.Friend
-import world.gregs.voidps.network.encode.sendFriendsList
+import world.gregs.voidps.network.login.protocol.encode.Friend
+import world.gregs.voidps.network.login.protocol.encode.sendFriendsList
 import world.gregs.voidps.world.script.WorldTest
 import world.gregs.voidps.world.script.interfaceOption
 
@@ -27,7 +27,7 @@ internal class PrivateChatStatusTest : WorldTest() {
 
     @BeforeEach
     fun start() {
-        mockkStatic("world.gregs.voidps.network.encode.FriendsEncoderKt")
+        mockkStatic("world.gregs.voidps.network.login.protocol.encode.FriendsEncoderKt")
         runBlocking(Dispatchers.Default) {
             player = createClient("player")
             friend = createClient("friend")
@@ -48,7 +48,7 @@ internal class PrivateChatStatusTest : WorldTest() {
         player["private_status"] = "off"
 
         runBlocking(Dispatchers.Default) {
-            player.events.emit(Registered)
+            player.emit(Spawn)
         }
 
         verify {
@@ -67,7 +67,7 @@ internal class PrivateChatStatusTest : WorldTest() {
         player["private_status"] = "friends"
 
         runBlocking(Dispatchers.Default) {
-            player.events.emit(Registered)
+            player.emit(Spawn)
         }
 
         verify {
@@ -86,7 +86,7 @@ internal class PrivateChatStatusTest : WorldTest() {
         player["private_status"] = "on"
 
         runBlocking(Dispatchers.Default) {
-            player.events.emit(Registered)
+            player.emit(Spawn)
         }
 
         verify {

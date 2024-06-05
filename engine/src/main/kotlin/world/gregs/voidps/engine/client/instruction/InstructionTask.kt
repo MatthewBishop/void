@@ -1,6 +1,14 @@
 package world.gregs.voidps.engine.client.instruction
 
 import com.github.michaelbull.logging.InlineLogger
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.produceIn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import world.gregs.voidps.engine.data.definition.InterfaceDefinitions
 import world.gregs.voidps.engine.data.definition.ItemDefinitions
 import world.gregs.voidps.engine.data.definition.NPCDefinitions
@@ -36,9 +44,9 @@ class InstructionTask(
     )
 
     override fun run() {
-        players.forEach { player ->
-            val instructions = player.instructions
-            for (instruction in instructions.replayCache) {
+        for (player in players) {
+            for (i in 0 until MAX_INSTRUCTIONS) {
+                val instruction = player.instructions.tryReceive().getOrNull() ?: break
                 if (player["debug", false]) {
                     logger.debug { "${player.accountName} ${player.tile} - $instruction" }
                 }
@@ -48,7 +56,36 @@ class InstructionTask(
                     logger.error(e) { "Error in instruction $instruction" }
                 }
             }
-            instructions.resetReplayCache()
+        }
+    }
+
+    companion object {
+        const val MAX_INSTRUCTIONS = 20
+
+        fun Flow<Int>.test() {
+
+            flow<List<Int>> {
+                coroutineScope {
+                    val upstreamChannel = buffer(10).produceIn(this)
+                    upstreamChannel.tryReceive().getOrNull()
+                }
+            }
+        }
+
+        @JvmStatic
+        fun main(args: Array<String>): Unit = runBlocking {
+
+            val channel = Channel<Int>(5)
+
+            for (i in 0 until 4) {
+                channel.send(i)
+            }
+            launch {
+                for (i in 0 until 5) {
+                    val it = channel.tryReceive().getOrNull() ?: break
+                    println(it)
+                }
+            }
         }
     }
 }

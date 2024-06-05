@@ -1,10 +1,10 @@
 package world.gregs.voidps.engine.timer
 
-import world.gregs.voidps.engine.event.Events
+import world.gregs.voidps.engine.event.EventDispatcher
 import java.util.*
 
 class TimerQueue(
-    private val events: Events
+    private val events: EventDispatcher
 ) : Timers {
 
     val queue = PriorityQueue<Timer>()
@@ -12,6 +12,9 @@ class TimerQueue(
     private val changes = mutableListOf<Timer>()
 
     override fun start(name: String, restart: Boolean): Boolean {
+        if (names.contains(name)) {
+            return false
+        }
         val start = TimerStart(name, restart)
         events.emit(start)
         if (start.cancelled) {

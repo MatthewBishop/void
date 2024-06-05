@@ -3,20 +3,19 @@ package world.gregs.voidps.world.interact.world.map
 import world.gregs.voidps.bot.isBot
 import world.gregs.voidps.engine.client.update.view.Viewport
 import world.gregs.voidps.engine.entity.MAX_PLAYERS
-import world.gregs.voidps.engine.entity.Registered
-import world.gregs.voidps.engine.entity.Unregistered
-import world.gregs.voidps.engine.entity.World
-import world.gregs.voidps.engine.entity.character.mode.move.Moved
+import world.gregs.voidps.engine.entity.character.mode.move.ReloadRegion
+import world.gregs.voidps.engine.entity.character.mode.move.move
 import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.player.Players
-import world.gregs.voidps.engine.event.Priority
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.entity.playerDespawn
+import world.gregs.voidps.engine.event.onEvent
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.map.region.RegionRetry
 import world.gregs.voidps.engine.map.zone.DynamicZones
+import world.gregs.voidps.engine.map.zone.RegionLoad
 import world.gregs.voidps.engine.map.zone.ReloadZone
-import world.gregs.voidps.network.encode.dynamicMapRegion
-import world.gregs.voidps.network.encode.mapRegion
+import world.gregs.voidps.network.login.protocol.encode.dynamicMapRegion
+import world.gregs.voidps.network.login.protocol.encode.mapRegion
 import world.gregs.voidps.type.Distance
 import world.gregs.voidps.type.Zone
 
@@ -32,10 +31,10 @@ val playerRegions = IntArray(MAX_PLAYERS - 1)
 
 private val blankXtea = IntArray(4)
 
-on<Registered>(priority = Priority.HIGHEST) { player: Player ->
+onEvent<Player, RegionLoad> { player ->
     player.viewport?.seen(player)
     playerRegions[player.index - 1] = player.tile.regionLevel.id
-    val viewport = player.viewport ?: return@on
+    val viewport = player.viewport ?: return@onEvent
     players.forEach { other ->
         viewport.seen(other)
     }
@@ -43,31 +42,35 @@ on<Registered>(priority = Priority.HIGHEST) { player: Player ->
     viewport.players.addSelf(player)
 }
 
-on<RegionRetry>({ it.networked }) { player: Player ->
-    println("Failed to load region. Retrying...")
-    updateRegion(player, initial = false, force = true)
+onEvent<Player, RegionRetry> { player ->
+    if (player.networked) {
+        println("Failed to load region. Retrying...")
+        updateRegion(player, initial = false, force = true)
+    }
 }
 
 /*
     Player regions
  */
 
-on<Unregistered> { player: Player ->
+playerDespawn { player ->
     playerRegions[player.index - 1] = 0
 }
 
 /*
     Region updating
  */
-on<Moved>({ from.regionLevel != to.regionLevel }) { player: Player ->
+move({ from.regionLevel != to.regionLevel }) { player ->
     playerRegions[player.index - 1] = to.regionLevel.id
 }
 
-on<Moved>({ it.networked && needsRegionChange(it) }, Priority.HIGH) { player: Player ->
-    updateRegion(player, false, crossedDynamicBoarder(player))
+onEvent<Player, ReloadRegion> { player ->
+    if (player.networked && needsRegionChange(player)) {
+        updateRegion(player, false, crossedDynamicBoarder(player))
+    }
 }
 
-on<World, ReloadZone> {
+onEvent<ReloadZone> {
     players.forEach { player ->
         if (player.networked && inViewOfZone(player, zone)) {
             updateRegion(player, initial = false, force = true)

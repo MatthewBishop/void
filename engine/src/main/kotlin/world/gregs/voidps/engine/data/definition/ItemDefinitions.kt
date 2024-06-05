@@ -13,7 +13,7 @@ import world.gregs.voidps.engine.entity.item.ItemKept
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.engine.getProperty
 import world.gregs.voidps.engine.timedLoad
-import world.gregs.voidps.network.visual.update.player.EquipSlot
+import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
 import world.gregs.yaml.Yaml
 import world.gregs.yaml.read.YamlReader
 
@@ -112,6 +112,11 @@ class ItemDefinitions(
                     "silver_jewellery" -> Silver(value as Map<String, Any>)
                     "runecrafting" -> Rune(value as Map<String, Any>)
                     "ammo" -> ObjectOpenHashSet(value as List<String>)
+                    "cleaning" -> Cleaning(value as Map<String, Any>)
+                    "fletch_dart" -> FletchDarts(value as Map<String, Any>)
+                    "fletch_bolts" -> FletchBolts(value as Map<String, Any>)
+                    "fletching_unf" -> Fletching(value as Map<String, Any>)
+                    "light_source" -> LightSources(value as Map<String, Any>)
                     "skill_req" -> (value as MutableMap<String, Any>).mapKeys { Skill.valueOf(it.key.toSentenceCase()) }
                     else -> value
                 }, indent, parentMap)

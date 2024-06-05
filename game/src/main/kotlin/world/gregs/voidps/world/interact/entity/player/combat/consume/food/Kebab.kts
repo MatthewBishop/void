@@ -2,14 +2,12 @@ package world.gregs.voidps.world.interact.entity.player.combat.consume.food
 
 import world.gregs.voidps.engine.client.message
 import world.gregs.voidps.engine.entity.character.forceChat
-import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.player.chat.ChatType
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
-import world.gregs.voidps.engine.event.on
 import world.gregs.voidps.type.random
-import world.gregs.voidps.world.interact.entity.player.combat.consume.Consume
+import world.gregs.voidps.world.interact.entity.player.combat.consume.consume
 
-on<Consume>({ item.id == "kebab" }) { player: Player ->
+consume("kebab") { player ->
     val random = random.nextDouble(100.0)
     when {
         random < 66 -> {
@@ -32,7 +30,7 @@ on<Consume>({ item.id == "kebab" }) { player: Player ->
     cancel()
 }
 
-on<Consume>({ item.id == "super_kebab" }) { player: Player ->
+consume("super_kebab") { player ->
     if (random.nextInt(8) < 5) {
         player.levels.restore(Skill.Constitution, 30, 0.07)
     }
@@ -48,7 +46,7 @@ on<Consume>({ item.id == "super_kebab" }) { player: Player ->
 
 val phrases = listOf("Lovely!", "Scrummy!", "Delicious!", "Yum!")
 
-on<Consume>({ item.id == "ugthanki_kebab" }) { player: Player ->
+consume("ugthanki_kebab") { player ->
     if (player.levels.get(Skill.Constitution) != player.levels.getMax(Skill.Constitution)) {
         player.forceChat = phrases.random()
     }

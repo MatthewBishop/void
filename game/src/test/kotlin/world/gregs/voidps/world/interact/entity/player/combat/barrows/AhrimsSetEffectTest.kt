@@ -1,14 +1,13 @@
 package world.gregs.voidps.world.interact.entity.player.combat.barrows
 
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.item.Item
 import world.gregs.voidps.engine.inv.Inventory
 import world.gregs.voidps.engine.inv.clear
 import world.gregs.voidps.engine.inv.equipment
-import world.gregs.voidps.network.visual.update.player.EquipSlot
+import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
 import world.gregs.voidps.world.interact.entity.combat.hit.hit
 import world.gregs.voidps.world.interact.entity.player.combat.CombatFormulaTest
 
@@ -22,7 +21,7 @@ internal class AhrimsSetEffectTest : CombatFormulaTest() {
         val target = createPlayer(Skill.Strength to 99, Skill.Constitution to 990)
 
         player.hit(target, Item("ahrims_staff"), "magic", damage = 100)
-        tick(2)
+        tick(3)
 
         assertEquals(880, target.levels.get(Skill.Constitution))
         assertEquals(99, target.levels.get(Skill.Strength))
@@ -48,7 +47,7 @@ internal class AhrimsSetEffectTest : CombatFormulaTest() {
         val target = createPlayer(Skill.Strength to 99, Skill.Constitution to 990)
 
         player.hit(target, Item("ahrims_staff"), "magic", damage = 100)
-        tick(2)
+        tick(3)
 
         assertEquals(880, target.levels.get(Skill.Constitution))
         assertEquals(94, target.levels.get(Skill.Strength))

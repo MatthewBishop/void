@@ -4,6 +4,7 @@ import com.github.michaelbull.logging.InlineLogger
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.logger.Level
@@ -19,17 +20,15 @@ import world.gregs.voidps.cache.config.decoder.StructDecoder
 import world.gregs.voidps.cache.definition.decoder.*
 import world.gregs.voidps.cache.secure.Huffman
 import world.gregs.voidps.engine.*
-import world.gregs.voidps.engine.client.ConnectionGatekeeper
-import world.gregs.voidps.engine.client.ConnectionQueue
 import world.gregs.voidps.engine.client.instruction.InterfaceHandler
 import world.gregs.voidps.engine.client.update.batch.ZoneBatchUpdates
-import world.gregs.voidps.engine.client.update.iterator.SequentialIterator
 import world.gregs.voidps.engine.client.update.view.Viewport
-import world.gregs.voidps.engine.data.PlayerAccounts
+import world.gregs.voidps.engine.data.AccountManager
 import world.gregs.voidps.engine.data.definition.*
 import world.gregs.voidps.engine.entity.World
 import world.gregs.voidps.engine.entity.character.npc.NPC
 import world.gregs.voidps.engine.entity.character.npc.NPCs
+import world.gregs.voidps.engine.entity.character.npc.hunt.Hunting
 import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.player.Players
 import world.gregs.voidps.engine.entity.item.Item
@@ -38,15 +37,16 @@ import world.gregs.voidps.engine.entity.item.floor.FloorItems
 import world.gregs.voidps.engine.entity.obj.GameObject
 import world.gregs.voidps.engine.entity.obj.GameObjects
 import world.gregs.voidps.engine.entity.obj.ObjectShape
-import world.gregs.voidps.engine.event.EventHandlerStore
+import world.gregs.voidps.engine.event.Events
 import world.gregs.voidps.engine.inv.Inventory
 import world.gregs.voidps.engine.map.collision.CollisionDecoder
 import world.gregs.voidps.engine.map.collision.Collisions
-import world.gregs.voidps.engine.map.collision.GameObjectCollision
+import world.gregs.voidps.engine.map.collision.GameObjectCollisionAdd
+import world.gregs.voidps.engine.map.collision.GameObjectCollisionRemove
 import world.gregs.voidps.gameModule
 import world.gregs.voidps.getTickStages
-import world.gregs.voidps.network.NetworkGatekeeper
 import world.gregs.voidps.network.client.Client
+import world.gregs.voidps.network.client.ConnectionQueue
 import world.gregs.voidps.script.loadScripts
 import world.gregs.voidps.type.Tile
 import world.gregs.voidps.type.setRandom
@@ -63,13 +63,12 @@ abstract class WorldTest : KoinTest {
 
     private val logger = InlineLogger()
     private lateinit var engine: GameLoop
-    private lateinit var store: EventHandlerStore
     lateinit var players: Players
-    private lateinit var gatekeeper: NetworkGatekeeper
     lateinit var npcs: NPCs
     lateinit var floorItems: FloorItems
     lateinit var objects: GameObjects
     private lateinit var accountDefs: AccountDefinitions
+    private lateinit var accounts: AccountManager
     private var saves: File? = null
 
     val extraProperties: MutableMap<String, Any> = mutableMapOf()
@@ -101,15 +100,13 @@ abstract class WorldTest : KoinTest {
     }
 
     fun createPlayer(name: String, tile: Tile = Tile.EMPTY): Player {
-        val accounts: PlayerAccounts = get()
-        val index = gatekeeper.connect(name)!!
         val player = Player(tile = tile, accountName = name, passwordHash = "")
-        accounts.initPlayer(player, index)
+        assertTrue(accounts.setup(player))
         accountDefs.add(player)
         tick()
         player["creation"] = -1
         player["skip_level_up"] = true
-        player.login(null, 0)
+        accounts.spawn(player, null, 0)
         player.softTimers.clear("restore_stats")
         player.softTimers.clear("restore_hitpoints")
         tick()
@@ -128,8 +125,8 @@ abstract class WorldTest : KoinTest {
         return objects.add(id, tile, shape, rotation)
     }
 
-    fun createFloorItem(id: String, tile: Tile = Tile.EMPTY, amount: Int = 1, revealTicks: Int = FloorItems.NEVER, disappearTicks: Int = FloorItems.NEVER, owner: Player? = null): FloorItem {
-        return floorItems.add(tile, id, amount, revealTicks, disappearTicks, owner)
+    fun createFloorItem(id: String, tile: Tile = Tile.EMPTY, amount: Int = 1, revealTicks: Int = FloorItems.NEVER, disappearTicks: Int = FloorItems.NEVER, charges: Int = 0, owner: Player? = null): FloorItem {
+        return floorItems.add(tile, id, amount, revealTicks, disappearTicks, charges, owner)
     }
 
     fun Inventory.set(index: Int, id: String, amount: Int = 1) = transaction { set(index, Item(id, amount)) }
@@ -155,6 +152,7 @@ abstract class WorldTest : KoinTest {
                 single(createdAtStart = true) { structDefinitions }
                 single(createdAtStart = true) { quickChatPhraseDefinitions }
                 single(createdAtStart = true) { weaponStyleDefinitions }
+                single(createdAtStart = true) { weaponAnimationDefinitions }
                 single(createdAtStart = true) { enumDefinitions }
                 single(createdAtStart = true) { fontDefinitions }
                 single { ammoDefinitions }
@@ -162,14 +160,18 @@ abstract class WorldTest : KoinTest {
                 single { gameObjects }
                 single { mapDefinitions }
                 single { collisions }
-                single { objectCollision }
+                single { objectCollisionAdd }
+                single { objectCollisionAdd }
+                single { objectCollisionRemove }
+                single { Hunting(get(), get(), get(), get(), get(), get(), object : FakeRandom() {
+                    override fun nextBits(bitCount: Int) = 0
+                }) }
             })
         }
         loadScripts()
         MapDefinitions(CollisionDecoder(get()), get(), get(), cache).loadCache()
         saves = File(getProperty("savePath"))
         saves?.mkdirs()
-        store = get()
         val millis = measureTimeMillis {
             val handler = InterfaceHandler(get(), get(), get())
             val tickStages = getTickStages(get(),
@@ -186,17 +188,16 @@ abstract class WorldTest : KoinTest {
                 get(),
                 get(),
                 handler,
-                iterator = SequentialIterator())
-            engine = GameLoop(tickStages, mockk(relaxed = true))
-            store.populate(World)
+                sequential = true)
+            engine = GameLoop(tickStages)
             World.start(true)
         }
-        gatekeeper = get<ConnectionGatekeeper>()
         players = get()
         npcs = get()
         floorItems = get()
         objects = get()
         accountDefs = get()
+        accounts = get()
         logger.info { "World startup took ${millis}ms" }
         for (x in 0 until 24 step 8) {
             for (y in 0 until 24 step 8) {
@@ -213,18 +214,17 @@ abstract class WorldTest : KoinTest {
 
     @AfterEach
     fun afterEach() {
-        gatekeeper.clear()
         players.clear()
         npcs.clear()
         floorItems.clear()
         objects.reset()
-        World.clearTimers()
+        World.clear()
     }
 
     @AfterAll
     fun afterAll() {
         saves?.deleteRecursively()
-        store.clear()
+        Events.events.clear()
         World.shutdown()
         stopKoin()
     }
@@ -244,10 +244,12 @@ abstract class WorldTest : KoinTest {
         private val structDefinitions: StructDefinitions by lazy { StructDefinitions(StructDecoder(parameterDefinitions).load(cache)).load() }
         private val quickChatPhraseDefinitions: QuickChatPhraseDefinitions by lazy { QuickChatPhraseDefinitions(QuickChatPhraseDecoder().load(cache)).load() }
         private val weaponStyleDefinitions: WeaponStyleDefinitions by lazy { WeaponStyleDefinitions().load() }
+        private val weaponAnimationDefinitions: WeaponAnimationDefinitions by lazy { WeaponAnimationDefinitions().load() }
         private val enumDefinitions: EnumDefinitions by lazy { EnumDefinitions(EnumDecoder().load(cache), structDefinitions).load() }
         private val collisions: Collisions by lazy { Collisions() }
-        private val objectCollision: GameObjectCollision by lazy { GameObjectCollision(collisions) }
-        private val gameObjects: GameObjects by lazy { GameObjects(objectCollision, ZoneBatchUpdates(), objectDefinitions, storeUnused = true) }
+        private val objectCollisionAdd: GameObjectCollisionAdd by lazy { GameObjectCollisionAdd(collisions) }
+        private val objectCollisionRemove: GameObjectCollisionRemove by lazy { GameObjectCollisionRemove(collisions) }
+        private val gameObjects: GameObjects by lazy { GameObjects(objectCollisionAdd, objectCollisionRemove, ZoneBatchUpdates(), objectDefinitions, storeUnused = true) }
         private val mapDefinitions: MapDefinitions by lazy { MapDefinitions(CollisionDecoder( collisions), objectDefinitions, gameObjects, cache).loadCache() }
         private val fontDefinitions: FontDefinitions by lazy { FontDefinitions(FontDecoder().load(cache)).load() }
         val emptyTile = Tile(2655, 4640)

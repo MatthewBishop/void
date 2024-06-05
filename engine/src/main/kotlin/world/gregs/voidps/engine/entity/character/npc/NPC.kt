@@ -8,13 +8,12 @@ import world.gregs.voidps.engine.entity.character.mode.EmptyMode
 import world.gregs.voidps.engine.entity.character.mode.Mode
 import world.gregs.voidps.engine.entity.character.mode.move.Steps
 import world.gregs.voidps.engine.entity.character.player.skill.level.Levels
-import world.gregs.voidps.engine.event.Events
-import world.gregs.voidps.type.Tile
 import world.gregs.voidps.engine.queue.ActionQueue
 import world.gregs.voidps.engine.suspend.Suspension
 import world.gregs.voidps.engine.timer.TimerSlot
 import world.gregs.voidps.engine.timer.Timers
-import world.gregs.voidps.network.visual.NPCVisuals
+import world.gregs.voidps.network.login.protocol.visual.NPCVisuals
+import world.gregs.voidps.type.Tile
 import kotlin.coroutines.Continuation
 
 /**
@@ -28,21 +27,20 @@ data class NPC(
 
     override var mode: Mode = EmptyMode
         set(value) {
-            field.stop()
+            field.stop(value)
             field = value
             value.start()
         }
-    override val events: Events = Events(this)
     lateinit var def: NPCDefinition
     override var queue = ActionQueue(this)
-    override var softTimers: Timers = TimerSlot(events)
+    override var softTimers: Timers = TimerSlot(this)
     override var delay: Continuation<Unit>? = null
     override var suspension: Suspension? = null
         set(value) {
             field?.cancel()
             field = value
         }
-    override var variables: Variables = Variables(events)
+    override var variables: Variables = Variables(this)
     override val steps: Steps = Steps(this)
 
     override lateinit var collision: CollisionStrategy

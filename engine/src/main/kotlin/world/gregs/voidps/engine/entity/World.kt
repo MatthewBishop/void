@@ -1,13 +1,13 @@
 package world.gregs.voidps.engine.entity
 
+import com.github.michaelbull.logging.InlineLogger
 import org.koin.core.component.KoinComponent
 import world.gregs.voidps.engine.GameLoop
 import world.gregs.voidps.engine.client.variable.Variable
 import world.gregs.voidps.engine.client.variable.Variables
 import world.gregs.voidps.engine.event.EventDispatcher
-import world.gregs.voidps.engine.event.EventHandlerStore
-import world.gregs.voidps.engine.event.Events
-import world.gregs.voidps.engine.get
+import world.gregs.voidps.engine.timer.TimerQueue
+import world.gregs.voidps.engine.timer.Timers
 import world.gregs.voidps.type.Tile
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -17,9 +17,9 @@ const val MAX_NPCS = 0x8000 // 32768
 
 object World : Entity, Variable, EventDispatcher, Runnable, KoinComponent {
     override var tile = Tile.EMPTY
-    override val events: Events = Events(this)
 
-    override val variables = Variables(events)
+    override val variables = Variables(this)
+    private val logger = InlineLogger()
 
     var id = 0
         private set(value) {
@@ -40,43 +40,44 @@ object World : Entity, Variable, EventDispatcher, Runnable, KoinComponent {
     fun start(members: Boolean = true, id: Int = 16) {
         this.members = members
         this.id = id
-        val store: EventHandlerStore = get()
-        store.populate(World)
-        events.emit(Registered)
+        emit(Spawn)
     }
 
-    private val timers = ConcurrentHashMap<String, Pair<Int, () -> Unit>>()
+    val timers: Timers = TimerQueue(this)
 
-    fun run(name: String, delay: Int, block: () -> Unit) {
-        timers[name] = (GameLoop.tick + delay) to block
+    private val actions = ConcurrentHashMap<String, Pair<Int, () -> Unit>>()
+
+    fun queue(name: String, initialDelay: Int = 0, block: () -> Unit) {
+        actions[name] = (GameLoop.tick + initialDelay) to block
     }
 
     override fun run() {
-        val iterator = timers.iterator()
+        timers.run()
+        val iterator = actions.iterator()
         while (iterator.hasNext()) {
             val (_, pair) = iterator.next()
             val (tick, block) = pair
             if (GameLoop.tick <= tick) {
                 continue
             }
-            block.invoke()
             iterator.remove()
+            try {
+                block.invoke()
+            } catch (e: Exception) {
+                logger.error(e) { "Error in world action!" }
+            }
         }
     }
 
-    fun stopTimer(name: String) {
-        val (_, block) = timers.remove(name) ?: return
-        block.invoke()
-    }
-
-    fun clearTimers() {
-        for ((_, block) in timers.values) {
+    fun clear() {
+        timers.clearAll()
+        for ((_, block) in actions.values) {
             block.invoke()
         }
-        timers.clear()
+        actions.clear()
     }
 
     fun shutdown() {
-        events.emit(Unregistered)
+        emit(Despawn)
     }
 }

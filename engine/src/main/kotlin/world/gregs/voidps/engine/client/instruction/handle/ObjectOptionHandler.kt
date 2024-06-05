@@ -13,7 +13,7 @@ import world.gregs.voidps.engine.entity.obj.GameObject
 import world.gregs.voidps.engine.entity.obj.GameObjects
 import world.gregs.voidps.engine.entity.obj.ObjectOption
 import world.gregs.voidps.engine.get
-import world.gregs.voidps.network.instruct.InteractObject
+import world.gregs.voidps.network.client.instruction.InteractObject
 import world.gregs.voidps.type.Tile
 
 class ObjectOptionHandler(
@@ -46,7 +46,7 @@ class ObjectOptionHandler(
             logger.warn { "Invalid object option $target $index" }
             return
         }
-        player.mode = Interact(player, target, ObjectOption(player, target, definition, selectedOption), approachRange = -1)
+        player.mode = Interact(player, target, ObjectOption(player, target, definition, selectedOption))
     }
 
     private fun getObject(tile: Tile, objectId: Int): GameObject? {

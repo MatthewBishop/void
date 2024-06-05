@@ -11,9 +11,9 @@ import world.gregs.voidps.engine.entity.character.player.chat.clan.ClanRank
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.character.player.skill.exp.Experience
 import world.gregs.voidps.engine.inv.equipment
-import world.gregs.voidps.network.encode.message
-import world.gregs.voidps.network.instruct.ClanChatJoin
-import world.gregs.voidps.network.visual.update.player.EquipSlot
+import world.gregs.voidps.network.client.instruction.ClanChatJoin
+import world.gregs.voidps.network.login.protocol.encode.message
+import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
 import world.gregs.voidps.type.setRandom
 import world.gregs.voidps.world.interact.entity.combat.damageDealers
 import world.gregs.voidps.world.interact.entity.combat.inMultiCombat
@@ -31,15 +31,15 @@ internal class LootShareTest : WorldTest() {
     fun start() {
         setRandom(Random)
         mockkStatic("world.gregs.voidps.engine.client.EncodeExtensionsKt")
-        mockkStatic("world.gregs.voidps.network.encode.ChatEncoderKt")
-        mockkStatic("world.gregs.voidps.network.encode.ClanEncoderKt")
+        mockkStatic("world.gregs.voidps.network.login.protocol.encode.ChatEncoderKt")
+        mockkStatic("world.gregs.voidps.network.login.protocol.encode.ClanEncoderKt")
     }
 
     @Test
     fun `Can't toggle loot share if it's disabled`() = runTest {
         val (player, client) = createClient("player")
         repeat(2) {
-            player.instructions.emit(ClanChatJoin("player"))
+            player.instructions.send(ClanChatJoin("player"))
             tick()
         }
 
@@ -55,7 +55,7 @@ internal class LootShareTest : WorldTest() {
     fun `Activate loot share`() = runTest {
         val (player, client) = createClient("player")
         repeat(2) {
-            player.instructions.emit(ClanChatJoin("player"))
+            player.instructions.send(ClanChatJoin("player"))
             tick()
         }
         player.clan?.lootRank = ClanRank.Anyone
@@ -73,7 +73,7 @@ internal class LootShareTest : WorldTest() {
     fun `Activate coin share while sharing loot`() = runTest {
         val (player, client) = createClient("player")
         repeat(2) {
-            player.instructions.emit(ClanChatJoin("player"))
+            player.instructions.send(ClanChatJoin("player"))
             tick()
         }
         player["loot_share"] = true
@@ -93,7 +93,7 @@ internal class LootShareTest : WorldTest() {
     fun `Disable coin share`() = runTest {
         val (player, client) = createClient("player")
         repeat(2) {
-            player.instructions.emit(ClanChatJoin("player"))
+            player.instructions.send(ClanChatJoin("player"))
             tick()
         }
         val clan = player.clan!!
@@ -116,7 +116,7 @@ internal class LootShareTest : WorldTest() {
         mockkStatic("world.gregs.voidps.world.interact.entity.combat.WildernessKt")
         val (player, client) = createClient("player", emptyTile)
         repeat(2) {
-            player.instructions.emit(ClanChatJoin("player"))
+            player.instructions.send(ClanChatJoin("player"))
             tick()
         }
         val clan = player.clan!!
@@ -147,12 +147,12 @@ internal class LootShareTest : WorldTest() {
         player.experience.set(Skill.Attack, Experience.MAXIMUM_EXPERIENCE)
         val member = createPlayer("member", emptyTile)
         repeat(2) {
-            player.instructions.emit(ClanChatJoin("player"))
+            player.instructions.send(ClanChatJoin("player"))
             tick()
         }
         val clan = player.clan!!
         clan.lootRank = ClanRank.Anyone
-        member.instructions.emit(ClanChatJoin("player"))
+        member.instructions.send(ClanChatJoin("player"))
         tick()
         member["loot_share"] = true
         val npc = createNPC("rat", emptyTile.addY(1))

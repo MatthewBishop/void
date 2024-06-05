@@ -17,24 +17,22 @@ import world.gregs.voidps.engine.client.update.view.PlayerTrackingSet
 import world.gregs.voidps.engine.client.update.view.Viewport
 import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.player.Players
-import world.gregs.voidps.engine.event.EventHandlerStore
 import world.gregs.voidps.engine.script.KoinMock
 import world.gregs.voidps.engine.value
 import world.gregs.voidps.network.client.Client
-import world.gregs.voidps.network.encode.updatePlayers
-import world.gregs.voidps.network.visual.PlayerVisuals
-import world.gregs.voidps.network.visual.VisualEncoder
+import world.gregs.voidps.network.login.protocol.encode.updatePlayers
+import world.gregs.voidps.network.login.protocol.visual.PlayerVisuals
+import world.gregs.voidps.network.login.protocol.visual.VisualEncoder
 import world.gregs.voidps.type.Delta
 import world.gregs.voidps.type.Tile
 
 internal class PlayerUpdateTaskTest : KoinMock() {
 
-    lateinit var task: PlayerUpdateTask
-    lateinit var players: Players
+    private lateinit var task: PlayerUpdateTask
+    private lateinit var players: Players
     private lateinit var encoder: VisualEncoder<PlayerVisuals>
     override val modules = listOf(
         module {
-            single { EventHandlerStore() }
             single { Players() }
         }
     )
@@ -57,7 +55,7 @@ internal class PlayerUpdateTaskTest : KoinMock() {
         val entities = mockk<PlayerTrackingSet>(relaxed = true)
         every { player.viewport } returns viewport
         every { viewport.players } returns entities
-        mockkStatic("world.gregs.voidps.network.encode.PlayerUpdateEncoderKt")
+        mockkStatic("world.gregs.voidps.network.login.protocol.encode.PlayerUpdateEncoderKt")
         val client: Client = mockk(relaxed = true)
         every { player.client } returns client
         every { client.updatePlayers(any(), any()) } just Runs
@@ -141,10 +139,8 @@ internal class PlayerUpdateTaskTest : KoinMock() {
         val viewport = mockk<Viewport>(relaxed = true)
         val entities = mockk<PlayerTrackingSet>(relaxed = true)
         val sync: Writer = mockk(relaxed = true)
-        val value = 1
 
         every { player.index } returns 1
-        every { player.changeValue } returns value
         every { players.indexed(1) } returns player
         every { player.visuals.walkStep } returns 0 // North
         every { entities.localCount } returns 1

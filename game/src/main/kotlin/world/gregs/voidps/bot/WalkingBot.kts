@@ -1,30 +1,27 @@
 package world.gregs.voidps.bot
 
 import world.gregs.voidps.bot.navigation.await
-import world.gregs.voidps.engine.entity.Registered
-import world.gregs.voidps.engine.entity.World
-import world.gregs.voidps.engine.event.on
+import world.gregs.voidps.engine.entity.worldSpawn
 import world.gregs.voidps.engine.inject
-import world.gregs.voidps.network.instruct.Walk
+import world.gregs.voidps.network.client.instruction.Walk
 
 val tasks: TaskManager by inject()
 
-on<World, Registered> {
+worldSpawn {
     val task = Task(
         name = "walk randomly",
         block = {
             while (true) {
-                val tile = player.tile.toCuboid(10).random()
-//                clickInterface(271, 8, 0, itemSlot = 19)
-                player.instructions.emit(Walk(tile.x, tile.y))
-                await("tick")
+                val tile = tile.toCuboid(10).random()
+                instructions.send(Walk(tile.x, tile.y))
+                bot.await("tick")
             }
         },
         area = null,
         spaces = Int.MAX_VALUE,
         requirements = emptyList()
     )
-//    if (TaskManager.DEBUG) {
-//        tasks.register(task, true)
-//    }
+    if (TaskManager.DEBUG) {
+        tasks.register(task, true)
+    }
 }

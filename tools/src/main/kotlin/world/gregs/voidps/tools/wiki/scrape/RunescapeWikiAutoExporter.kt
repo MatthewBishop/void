@@ -2,6 +2,7 @@ package world.gregs.voidps.tools.wiki.scrape
 
 import world.gregs.voidps.tools.wiki.model.Wiki
 
+@Suppress("UNCHECKED_CAST")
 internal object RunescapeWikiAutoExporter {
 
     @JvmStatic
@@ -31,7 +32,7 @@ internal object RunescapeWikiAutoExporter {
                             value.split(",").forEach {
                                 ids[it.trim().toInt()] = page.title
                             }
-                        } else if(value.isNotBlank()) {
+                        } else if (value.isNotBlank()) {
                             ids[value.toInt()] = page.title
                         }
                     }
@@ -43,7 +44,7 @@ internal object RunescapeWikiAutoExporter {
                     ids[(map["id3"] as String).toInt()] = page.title
                 } else if (map.containsKey("id4")) {
                     ids[(map["id4"] as String).toInt()] = page.title
-                } else if(!map.containsKey("rscid")) {
+                } else if (!map.containsKey("rscid")) {
                     println("No id $map")
                 }
             }

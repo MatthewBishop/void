@@ -11,7 +11,7 @@ import world.gregs.voidps.engine.client.ui.Interfaces.Companion.ROOT_ID
 import world.gregs.voidps.engine.client.ui.Interfaces.Companion.ROOT_INDEX
 import world.gregs.voidps.engine.client.ui.event.InterfaceClosed
 import world.gregs.voidps.engine.client.ui.event.InterfaceRefreshed
-import world.gregs.voidps.network.encode.closeInterface
+import world.gregs.voidps.network.login.protocol.encode.closeInterface
 
 internal class InterfacesSingleTest : InterfaceTest() {
 
@@ -25,7 +25,7 @@ internal class InterfacesSingleTest : InterfaceTest() {
             "parent_fixed" to ROOT_ID,
             "index_fixed" to ROOT_INDEX
         ))
-        gameframe.resizable = false
+        interfaces.resizable = false
     }
 
     @Test
