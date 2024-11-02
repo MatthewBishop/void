@@ -7,7 +7,7 @@ import world.gregs.voidps.type.area.Rectangle
  * Represents a 64x64 tiled area
  */
 @JvmInline
-value class Region(val id: Int) {
+value class Region(val id: Int) {//MapSquareKey
 
     constructor(x: Int, y: Int) : this(id(x, y))
 

@@ -7,7 +7,7 @@ import world.gregs.voidps.type.area.Rectangle
  * Represents a 8x8 tiled area
  */
 @JvmInline
-value class Zone(val id: Int) : Coordinate3D<Zone> {
+value class Zone(val id: Int) : Coordinate3D<Zone> {//this is a zonekey
 
     constructor(x: Int, y: Int, level: Int = 0) : this(id(x, y, level))
 

@@ -3,7 +3,7 @@ package world.gregs.voidps.type
 import world.gregs.voidps.type.area.Cuboid
 
 @JvmInline
-value class RegionLevel(val id: Int) : Coordinate3D<RegionLevel> {
+value class RegionLevel(val id: Int) : Coordinate3D<RegionLevel> {//MapSquareGrid
 
     constructor(x: Int, y: Int, level: Int) : this(id(x, y, level))
 

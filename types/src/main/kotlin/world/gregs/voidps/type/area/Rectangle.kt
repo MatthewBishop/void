@@ -2,7 +2,7 @@ package world.gregs.voidps.type.area
 
 import world.gregs.voidps.type.*
 
-data class Rectangle(
+data class Rectangle(//bounds
     val minX: Int,
     val minY: Int,
     val maxX: Int,

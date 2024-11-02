@@ -3,7 +3,7 @@ package world.gregs.voidps.type
 import world.gregs.voidps.type.area.Cuboid
 
 @JvmInline
-value class Tile(val id: Int) : Coordinate3D<Tile> {
+value class Tile(val id: Int) : Coordinate3D<Tile> {//coordgrid
 
     constructor(x: Int, y: Int, level: Int = 0) : this(id(x, y, level))
 
