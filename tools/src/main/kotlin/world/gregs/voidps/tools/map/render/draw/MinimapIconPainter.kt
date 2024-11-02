@@ -6,8 +6,8 @@ import world.gregs.voidps.cache.Index.DEFAULTS
 import world.gregs.voidps.cache.Index.WORLD_MAP
 import world.gregs.voidps.cache.config.data.WorldMapInfoDefinition
 import world.gregs.voidps.cache.definition.data.*
-import world.gregs.voidps.type.Region
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.MapSquareKey
+import world.gregs.voidps.type.CoordGrid
 import java.awt.Graphics
 import java.awt.image.BufferedImage
 
@@ -65,7 +65,7 @@ class MinimapIconPainter(
             val level = positions[i] shr 28 and 0x3
             for (it in sections) {
                 if (level == it.level && it.minX <= x && x <= it.maxX && y >= it.minY && y <= it.maxY) {
-                    val key = Tile.id(x, y, level)
+                    val key = CoordGrid.id(x, y, level)
                     val list = nameAreas.getOrPut(key) { mutableListOf() }
                     list.add(worldMapInfoDefinitions[ids[i]])
                     break
@@ -74,15 +74,15 @@ class MinimapIconPainter(
         }
     }
 
-    fun paint(g: Graphics, region: Region, level: Int, objects: Map<Int, List<MapObject>?>) {
+    fun paint(g: Graphics, region: MapSquareKey, level: Int, objects: Map<Int, List<MapObject>?>) {
         val iconScale = 2
         for (regionX in region.x - 1..region.x + 1) {
             for (regionY in region.y - 1..region.y + 1) {
-                val id = Region.id(regionX, regionY)
+                val id = MapSquareKey.id(regionX, regionY)
                 val images = loadIcons(regionX, regionY, objects[id] ?: continue)
                 for (x in 0..64) {
                     for (y in 0..64) {
-                        val it = images[Tile.id(x, y, level)] ?: continue
+                        val it = images[CoordGrid.id(x, y, level)] ?: continue
                         val width = it.bi.width * iconScale
                         val height = it.bi.height * iconScale
                         val regionTileX = (region.x - 1) * 64
@@ -104,7 +104,7 @@ class MinimapIconPainter(
                 if (sprite != null) {
                     val x = regionX * 64 + it.x
                     val y = regionY * 64 + it.y
-                    images[Tile.id(it.x, it.y, it.level)] = MapIcon(x, y, it.level, sprite.toBufferedImage())
+                    images[CoordGrid.id(it.x, it.y, it.level)] = MapIcon(x, y, it.level, sprite.toBufferedImage())
                 }
             }
         }

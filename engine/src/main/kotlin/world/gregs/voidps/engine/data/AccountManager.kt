@@ -25,7 +25,7 @@ import world.gregs.voidps.network.client.ConnectionQueue
 import world.gregs.voidps.network.login.protocol.encode.logout
 import world.gregs.voidps.network.login.protocol.visual.PlayerVisuals
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 class AccountManager(
     private val interfaceDefinitions: InterfaceDefinitions,
@@ -34,7 +34,7 @@ class AccountManager(
     private val accountDefinitions: AccountDefinitions,
     private val collisionStrategyProvider: CollisionStrategyProvider,
     private val variableDefinitions: VariableDefinitions,
-    private val homeTile: Tile,
+    private val homeTile: CoordGrid,
     private val saveQueue: SaveQueue,
     private val connectionQueue: ConnectionQueue,
     private val players: Players,

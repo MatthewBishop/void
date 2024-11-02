@@ -6,7 +6,7 @@ import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.character.player.skill.exp.Experience
 import world.gregs.voidps.engine.entity.character.player.skill.level.Levels
 import world.gregs.voidps.engine.entity.item.Item
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.yaml.read.YamlReaderConfiguration
 
 internal class PlayerYamlReaderConfig(
@@ -31,7 +31,7 @@ internal class PlayerYamlReaderConfig(
     @Suppress("UNCHECKED_CAST")
     override fun set(map: MutableMap<String, Any>, key: String, value: Any, indent: Int, parentMap: String?) {
         if (parentMap == "tile") {
-            super.set(map, key, Tile.fromMap(value as Map<String, Any>), indent, parentMap)
+            super.set(map, key, CoordGrid.fromMap(value as Map<String, Any>), indent, parentMap)
         } else if (key == "experience" && value is Map<*, *>) {
             value as Map<String, Any>
             val exp = Experience(

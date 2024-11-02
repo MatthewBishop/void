@@ -10,15 +10,15 @@ import world.gregs.voidps.engine.entity.obj.ObjectLayer
 import world.gregs.voidps.engine.entity.worldSpawn
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.type.Distance.nearestTo
-import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.CoordGrid
+import world.gregs.voidps.type.ZoneKey
 import world.gregs.voidps.type.area.Rectangle
 import kotlin.collections.set
 
 val objects: GameObjects by inject()
 val areas: AreaDefinitions by inject()
 
-val borders = mutableMapOf<Zone, Rectangle>()
+val borders = mutableMapOf<ZoneKey, Rectangle>()
 val guards = mutableMapOf<Rectangle, List<GameObject>>()
 
 worldSpawn {
@@ -66,7 +66,7 @@ fun changeGuardState(guards: List<GameObject>, raise: Boolean) {
 }
 
 // Longest axis determines direction, current location above is underside else above
-fun getOppositeSide(border: Rectangle, tile: Tile) = if (border.height > border.width) {
+fun getOppositeSide(border: Rectangle, tile: CoordGrid) = if (border.height > border.width) {
     tile.copy(y = if (tile.y > border.minY) border.minY - 1 else border.maxY + 1)
 } else {
     tile.copy(x = if (tile.x > border.minX) border.minX - 1 else border.maxX + 1)

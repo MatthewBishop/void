@@ -9,7 +9,7 @@ import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.player.chat.ChatType
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.network.login.protocol.encode.*
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import java.util.*
 
 /**
@@ -167,7 +167,7 @@ fun Player.publicStatus(
 fun Player.updateFriend(friend: Friend) = client?.sendFriendsList(listOf(friend)) ?: Unit
 
 fun Player.moveCamera(
-    tile: Tile,
+    tile: CoordGrid,
     height: Int,
     constantSpeed: Int = 232,
     variableSpeed: Int = 232,
@@ -179,7 +179,7 @@ fun Player.moveCamera(
 }
 
 fun Player.turnCamera(
-    tile: Tile,
+    tile: CoordGrid,
     height: Int,
     constantSpeed: Int = 232,
     variableSpeed: Int = 232,

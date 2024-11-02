@@ -10,7 +10,7 @@ import world.gregs.voidps.engine.event.EventDispatcher
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.network.login.protocol.encode.zone.ObjectAnimation
 import world.gregs.voidps.type.Distance
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 /**
  * Interactive Object
@@ -22,8 +22,8 @@ value class GameObject(internal val packed: Long) : Entity, EventDispatcher {
 
     val id: String
         get() = def.stringId
-    override var tile: Tile
-        get() = Tile(x, y, level)
+    override var tile: CoordGrid
+        get() = CoordGrid(x, y, level)
         set(value) {}
     val width: Int
         get() = if (rotation and 0x1 == 1) def.sizeY else def.sizeX
@@ -48,7 +48,7 @@ value class GameObject(internal val packed: Long) : Entity, EventDispatcher {
     fun animate(id: String) = get<ZoneBatchUpdates>()
         .add(tile.zone, ObjectAnimation(tile.id, get<AnimationDefinitions>().get(id).id, shape, rotation))
 
-    fun nearestTo(tile: Tile) = Tile(
+    fun nearestTo(tile: CoordGrid) = CoordGrid(
         x = Distance.getNearest(x, width, tile.x),
         y = Distance.getNearest(y, height, tile.y),
         level = level
@@ -63,7 +63,7 @@ value class GameObject(internal val packed: Long) : Entity, EventDispatcher {
     }
 
     companion object {
-        operator fun invoke(id: Int, tile: Tile, shape: Int, rotation: Int): GameObject {
+        operator fun invoke(id: Int, tile: CoordGrid, shape: Int, rotation: Int): GameObject {
             return GameObject(id, tile.x, tile.y, tile.level, shape, rotation)
         }
 

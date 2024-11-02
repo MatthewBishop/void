@@ -9,7 +9,7 @@ import world.gregs.voidps.cache.definition.decoder.EnumDecoder
 import world.gregs.voidps.engine.data.definition.DefinitionsDecoder.Companion.toIdentifier
 import world.gregs.voidps.tools.wiki.model.Infobox
 import world.gregs.voidps.tools.wiki.model.Wiki
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import java.io.File
 import java.time.LocalDate
 import java.time.Month
@@ -127,11 +127,11 @@ object MusicInfoBoxDumper {
             if (text.contains("music track map", true)) {
                 val template = Infobox.getFirstList(page, listOf("music track map"))?.toMap() ?: throw IllegalArgumentException("Uh oh")
                 val coords = template[""] as? String ?: return@forEach
-                val coordinates = mutableListOf<Tile>()
+                val coordinates = mutableListOf<CoordGrid>()
                 for (coord in regex.findAll(coords)) {
                     val x = coord.groupValues[1].toInt()
                     val y = coord.groupValues[2].toInt()
-                    coordinates.add(Tile(x, y))
+                    coordinates.add(CoordGrid(x, y))
                 }
                 val name = page.title.removePrefix("Map:")
                 val index = enum.getKey(name)

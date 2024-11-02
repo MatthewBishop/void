@@ -5,11 +5,11 @@ import world.gregs.voidps.engine.data.definition.SoundDefinitions
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.network.login.protocol.encode.zone.MidiAddition
 import world.gregs.voidps.network.login.protocol.encode.zone.SoundAddition
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 fun areaMidi(
     id: String,
-    tile: Tile,
+    tile: CoordGrid,
     radius: Int,
     repeat: Int = 1,
     delay: Int = 0,
@@ -23,7 +23,7 @@ fun areaMidi(
 
 fun areaSound(
     id: String,
-    tile: Tile,
+    tile: CoordGrid,
     radius: Int = 5,
     repeat: Int = 1,
     delay: Int = 0,

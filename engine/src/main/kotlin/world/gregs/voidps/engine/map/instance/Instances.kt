@@ -1,13 +1,13 @@
 package world.gregs.voidps.engine.map.instance
 
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import java.util.*
 
 object Instances {
 
-    private var small: Deque<Region> = LinkedList()
-    private var large: Deque<Region> = LinkedList()
-    private var used: MutableSet<Region> = mutableSetOf()
+    private var small: Deque<MapSquareKey> = LinkedList()
+    private var large: Deque<MapSquareKey> = LinkedList()
+    private var used: MutableSet<MapSquareKey> = mutableSetOf()
 
     init {
         reset()
@@ -16,7 +16,7 @@ object Instances {
     /**
      * Allocates an empty 128x128 (2x2 region) area
      */
-    fun small(): Region {
+    fun small(): MapSquareKey {
         val region = small.pollFirst()
         used.add(region)
         return region
@@ -25,15 +25,15 @@ object Instances {
     /**
      * Allocates an empty 320x320 (5x5 region) area
      */
-    fun large(): Region {
+    fun large(): MapSquareKey {
         val region = large.pollFirst()
         used.add(region)
         return region
     }
 
-    fun isInstance(region: Region): Boolean = used.contains(region)
+    fun isInstance(region: MapSquareKey): Boolean = used.contains(region)
 
-    fun free(instance: Region) {
+    fun free(instance: MapSquareKey) {
         if (!used.remove(instance)) {
             return
         }
@@ -50,12 +50,12 @@ object Instances {
         large.clear()
         for (x in FREE_REGION_X until MAX_REGION - SMALL_SIZE step SMALL_SIZE) {
             for (y in FREE_REGION_Y until MID_POINT - SMALL_SIZE step SMALL_SIZE) {
-                small.add(Region(x + 1, y + 1))
+                small.add(MapSquareKey(x + 1, y + 1))
             }
         }
         for (x in FREE_REGION_X until MAX_REGION - LARGE_SIZE step LARGE_SIZE) {
             for (y in MID_POINT until MAX_REGION - LARGE_SIZE step LARGE_SIZE) {
-                large.add(Region(x + 1, y + 1))
+                large.add(MapSquareKey(x + 1, y + 1))
             }
         }
     }

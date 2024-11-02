@@ -12,10 +12,10 @@ import world.gregs.voidps.network.login.protocol.encode.encodeBatch
 import world.gregs.voidps.network.login.protocol.encode.send
 import world.gregs.voidps.network.login.protocol.encode.sendBatch
 import world.gregs.voidps.network.login.protocol.encode.zone.ZoneUpdate
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 
 /**
- * Groups messages by [Zone] to send to all subscribed [Player]s
+ * Groups messages by [ZoneKey] to send to all subscribed [Player]s
  * Batched messages are sent and cleared at the end of the tick
  * Initial messages are stored until removed and sent on subscription
  */
@@ -29,7 +29,7 @@ class ZoneBatchUpdates : Runnable {
     private val senders = mutableListOf<Sender>()
 
     interface Sender {
-        fun send(player: Player, zone: Zone)
+        fun send(player: Player, zone: ZoneKey)
     }
 
     fun register(sender: Sender) = senders.add(sender)
@@ -37,7 +37,7 @@ class ZoneBatchUpdates : Runnable {
     /**
      * Adds [update] to the batch update for [zone]
      */
-    fun add(zone: Zone, update: ZoneUpdate) {
+    fun add(zone: ZoneKey, update: ZoneUpdate) {
         batches.getOrPut(zone.id) { ObjectArrayList() }.add(update)
     }
 
@@ -48,7 +48,7 @@ class ZoneBatchUpdates : Runnable {
     }
 
     fun run(player: Player) {
-        val previousZone: Zone? = player["previous_zone"]
+        val previousZone: ZoneKey? = player["previous_zone"]
         val previous = previousZone?.toRectangle(radius = player.viewport!!.localRadius)?.toZones(player.tile.level)?.toSet()
         player["previous_zone"] = player.tile.zone
         for (zone in player.tile.zone.toRectangle(radius = player.viewport!!.localRadius).toZonesReversed(player.tile.level)) {
@@ -76,7 +76,7 @@ class ZoneBatchUpdates : Runnable {
         batches.clear()
     }
 
-    private fun Player.sendBatch(zone: Zone) {
+    private fun Player.sendBatch(zone: ZoneKey) {
         val encoded = encoded[zone.id] ?: return
         val zoneOffset = getZoneOffset(viewport!!, zone)
         client?.sendBatch(encoded, zoneOffset.x, zoneOffset.y, zone.level)
@@ -88,12 +88,12 @@ class ZoneBatchUpdates : Runnable {
         /**
          * Returns the zone offset for [zone] relative to player's [viewport]
          */
-        private fun getZoneOffset(viewport: Viewport, zone: Zone): Zone {
+        private fun getZoneOffset(viewport: Viewport, zone: ZoneKey): ZoneKey {
             val base = viewport.lastLoadZone.safeMinus(viewport.zoneRadius, viewport.zoneRadius)
             return zone.safeMinus(base)
         }
 
-        private fun Player.clearZone(zone: Zone) {
+        private fun Player.clearZone(zone: ZoneKey) {
             val zoneOffset = getZoneOffset(viewport!!, zone)
             client?.clearZone(zoneOffset.x, zoneOffset.y, zone.level)
         }

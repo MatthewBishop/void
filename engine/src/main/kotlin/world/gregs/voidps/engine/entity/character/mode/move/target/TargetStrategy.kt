@@ -6,11 +6,11 @@ import world.gregs.voidps.engine.entity.character.size
 import world.gregs.voidps.engine.entity.item.floor.FloorItem
 import world.gregs.voidps.engine.entity.obj.GameObject
 import world.gregs.voidps.engine.get
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 interface TargetStrategy {
     val bitMask: Int
-    val tile: Tile
+    val tile: CoordGrid
     /*
         Rotated values
      */
@@ -43,7 +43,7 @@ interface TargetStrategy {
 
     companion object {
         operator fun <T : Any> invoke(entity: T): TargetStrategy = when (entity) {
-            is Tile -> TileTargetStrategy(entity)
+            is CoordGrid -> TileTargetStrategy(entity)
             is GameObject -> if (entity.id == "archery_target") TileTargetStrategy(entity.tile.addX(5)) else ObjectTargetStrategy(entity)
             is FloorItem -> FloorItemTargetStrategy(entity)
             is Character -> CharacterTargetStrategy(entity)

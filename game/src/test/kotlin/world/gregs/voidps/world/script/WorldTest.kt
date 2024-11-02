@@ -49,7 +49,7 @@ import world.gregs.voidps.getTickStages
 import world.gregs.voidps.network.client.Client
 import world.gregs.voidps.network.client.ConnectionQueue
 import world.gregs.voidps.script.loadScripts
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.type.setRandom
 import world.gregs.voidps.world.interact.world.spawn.loadItemSpawns
 import world.gregs.voidps.world.interact.world.spawn.loadNpcSpawns
@@ -96,7 +96,7 @@ abstract class WorldTest : KoinTest {
         }
     }
 
-    fun createClient(name: String, tile: Tile = Tile.EMPTY): Pair<Player, Client> {
+    fun createClient(name: String, tile: CoordGrid = CoordGrid.EMPTY): Pair<Player, Client> {
         val player = createPlayer(name, tile)
         val client: Client = mockk(relaxed = true)
         player.viewport = Viewport()
@@ -104,7 +104,7 @@ abstract class WorldTest : KoinTest {
         return player to client
     }
 
-    fun createPlayer(name: String, tile: Tile = Tile.EMPTY): Player {
+    fun createPlayer(name: String, tile: CoordGrid = CoordGrid.EMPTY): Player {
         val player = Player(tile = tile, accountName = name, passwordHash = "")
         assertTrue(accounts.setup(player))
         accountDefs.add(player)
@@ -120,19 +120,19 @@ abstract class WorldTest : KoinTest {
         return player
     }
 
-    fun createNPC(id: String, tile: Tile = Tile.EMPTY, block: (NPC) -> Unit = {}): NPC {
+    fun createNPC(id: String, tile: CoordGrid = CoordGrid.EMPTY, block: (NPC) -> Unit = {}): NPC {
         val npc = npcs.add(id, tile)!!
         block.invoke(npc)
         return npc
     }
 
-    fun createObject(id: String, tile: Tile = Tile.EMPTY, shape: Int = ObjectShape.CENTRE_PIECE_STRAIGHT, rotation: Int = 0): GameObject {
+    fun createObject(id: String, tile: CoordGrid = CoordGrid.EMPTY, shape: Int = ObjectShape.CENTRE_PIECE_STRAIGHT, rotation: Int = 0): GameObject {
         return objects.add(id, tile, shape, rotation)
     }
 
     fun createFloorItem(
         id: String,
-        tile: Tile = Tile.EMPTY,
+        tile: CoordGrid = CoordGrid.EMPTY,
         amount: Int = 1,
         revealTicks: Int = FloorItems.NEVER,
         disappearTicks: Int = FloorItems.NEVER,
@@ -272,6 +272,6 @@ abstract class WorldTest : KoinTest {
         private val gameObjects: GameObjects by lazy { GameObjects(objectCollisionAdd, objectCollisionRemove, ZoneBatchUpdates(), objectDefinitions, storeUnused = true) }
         private val mapDefinitions: MapDefinitions by lazy { MapDefinitions(CollisionDecoder(collisions), objectDefinitions, gameObjects, cache).loadCache() }
         private val fontDefinitions: FontDefinitions by lazy { FontDefinitions(FontDecoder().load(cache)).load() }
-        val emptyTile = Tile(2655, 4640)
+        val emptyTile = CoordGrid(2655, 4640)
     }
 }

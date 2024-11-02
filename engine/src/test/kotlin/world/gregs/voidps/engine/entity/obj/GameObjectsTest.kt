@@ -13,7 +13,7 @@ import world.gregs.voidps.engine.entity.Spawn
 import world.gregs.voidps.engine.event.Events
 import world.gregs.voidps.network.login.protocol.encode.zone.ObjectAddition
 import world.gregs.voidps.network.login.protocol.encode.zone.ObjectRemoval
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -46,7 +46,7 @@ class GameObjectsTest {
 
         assertEquals(obj, objects.getLayer(obj.tile, ObjectLayer.GROUND))
         assertNull(objects.getLayer(obj.tile, ObjectLayer.WALL))
-        assertNull(objects.getLayer(Tile(10, 10, 1), ObjectLayer.GROUND))
+        assertNull(objects.getLayer(CoordGrid(10, 10, 1), ObjectLayer.GROUND))
         objects.clear()
         assertNull(objects.getLayer(obj.tile, ObjectLayer.GROUND))
         verify(exactly = 0) {
@@ -175,7 +175,7 @@ class GameObjectsTest {
 
     @Test
     fun `Temporary object is removed after ticks`() {
-        val obj = objects.add(id = "test", tile = Tile(100, 100), shape = ObjectShape.CENTRE_PIECE_STRAIGHT, rotation = 2, ticks = 5, collision = false)
+        val obj = objects.add(id = "test", tile = CoordGrid(100, 100), shape = ObjectShape.CENTRE_PIECE_STRAIGHT, rotation = 2, ticks = 5, collision = false)
         repeat(5) {
             assertTrue(objects.contains(obj))
             objects.timers.run()
@@ -208,7 +208,7 @@ class GameObjectsTest {
     fun `Replaced temporary object is undone after ticks`() {
         val obj = GameObject(id = 5678, x = 100, y = 100, level = 0, shape = ObjectShape.CENTRE_PIECE_STRAIGHT, rotation = 2)
         objects.add(obj, collision = false)
-        val replacement = objects.replace(obj, "test", Tile(101, 100), ObjectShape.CENTRE_PIECE_STRAIGHT, 1, ticks = 5, collision = false)
+        val replacement = objects.replace(obj, "test", CoordGrid(101, 100), ObjectShape.CENTRE_PIECE_STRAIGHT, 1, ticks = 5, collision = false)
         repeat(5) {
             assertFalse(objects.contains(obj))
             assertTrue(objects.contains(replacement))
@@ -228,7 +228,7 @@ class GameObjectsTest {
     fun `Replaced original object is undone after ticks`() {
         val original = GameObject(id = 5678, x = 100, y = 100, level = 0, shape = ObjectShape.CENTRE_PIECE_STRAIGHT, rotation = 2)
         objects.set(original.intId, original.x, original.y, original.level, original.shape, original.rotation, ObjectDefinition.EMPTY)
-        val replacement = objects.replace(original, "test", Tile(101, 100), ObjectShape.CENTRE_PIECE_STRAIGHT, 1, ticks = 5, collision = false)
+        val replacement = objects.replace(original, "test", CoordGrid(101, 100), ObjectShape.CENTRE_PIECE_STRAIGHT, 1, ticks = 5, collision = false)
         repeat(5) {
             assertFalse(objects.contains(original))
             assertTrue(objects.contains(replacement))

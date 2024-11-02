@@ -3,7 +3,7 @@ package world.gregs.voidps.engine.client.update
 import world.gregs.voidps.engine.client.update.iterator.TaskIterator
 import world.gregs.voidps.engine.entity.Entity
 import world.gregs.voidps.engine.entity.character.*
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 abstract class CharacterTask<C : Character>(
     private val iterator: TaskIterator<C>
@@ -27,7 +27,7 @@ abstract class CharacterTask<C : Character>(
                     character.clearWatch()
                 }
                 character.face(any)
-            } else if (any is Tile) {
+            } else if (any is CoordGrid) {
                 character.clearWatch()
                 character.face(any)
             }

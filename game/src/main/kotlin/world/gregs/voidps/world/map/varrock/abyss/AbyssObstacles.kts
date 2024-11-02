@@ -17,7 +17,7 @@ import world.gregs.voidps.engine.inv.inventory
 import world.gregs.voidps.engine.queue.strongQueue
 import world.gregs.voidps.engine.suspend.pause
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.world.activity.skill.mining.Pickaxe
 import world.gregs.voidps.world.activity.skill.woodcutting.Hatchet
 import world.gregs.voidps.world.interact.entity.gfx.areaGraphic
@@ -26,18 +26,18 @@ import world.gregs.voidps.world.interact.entity.sound.playSound
 // Object tile, opposite passage tile, teleport tile
 // Target tiles should be slightly randomised
 val positions = mapOf(
-    Tile(3038, 4853) to (Tile(3039, 4855) to Tile(3039, 4844)),
-    Tile(3049, 4849) to (Tile(3050, 4851) to Tile(3047, 4844)),
-    Tile(3058, 4839) to (Tile(3060, 4840) to Tile(3051, 4838)),
-    Tile(3060, 4830) to (Tile(3062, 4831) to Tile(3052, 4831)),
-    Tile(3057, 4821) to (Tile(3059, 4822) to Tile(3050, 4826)),
-    Tile(3049, 4813) to (Tile(3050, 4812) to Tile(3045, 4821)),
-    Tile(3041, 4811) to (Tile(3042, 4810) to Tile(3047, 4820)),
-    Tile(3026, 4813) to (Tile(3027, 4812) to Tile(3042, 4819)),
-    Tile(3018, 4821) to (Tile(3017, 4822) to Tile(3031, 4820)),
-    Tile(3018, 4833) to (Tile(3017, 4834) to Tile(3026, 4826)),
-    Tile(3021, 4842) to (Tile(3020, 4843) to Tile(3027, 4840)),
-    Tile(3028, 4849) to (Tile(3029, 4851) to Tile(3032, 4844)),
+    CoordGrid(3038, 4853) to (CoordGrid(3039, 4855) to CoordGrid(3039, 4844)),
+    CoordGrid(3049, 4849) to (CoordGrid(3050, 4851) to CoordGrid(3047, 4844)),
+    CoordGrid(3058, 4839) to (CoordGrid(3060, 4840) to CoordGrid(3051, 4838)),
+    CoordGrid(3060, 4830) to (CoordGrid(3062, 4831) to CoordGrid(3052, 4831)),
+    CoordGrid(3057, 4821) to (CoordGrid(3059, 4822) to CoordGrid(3050, 4826)),
+    CoordGrid(3049, 4813) to (CoordGrid(3050, 4812) to CoordGrid(3045, 4821)),
+    CoordGrid(3041, 4811) to (CoordGrid(3042, 4810) to CoordGrid(3047, 4820)),
+    CoordGrid(3026, 4813) to (CoordGrid(3027, 4812) to CoordGrid(3042, 4819)),
+    CoordGrid(3018, 4821) to (CoordGrid(3017, 4822) to CoordGrid(3031, 4820)),
+    CoordGrid(3018, 4833) to (CoordGrid(3017, 4834) to CoordGrid(3026, 4826)),
+    CoordGrid(3021, 4842) to (CoordGrid(3020, 4843) to CoordGrid(3027, 4840)),
+    CoordGrid(3028, 4849) to (CoordGrid(3029, 4851) to CoordGrid(3032, 4844)),
 )
 
 val chance = 2..100
@@ -233,7 +233,7 @@ objectOperate("Go-through", "abyss_passage") {
     player.tele(teleTile)
 }
 
-fun direction(tile: Tile): Direction {
+fun direction(tile: CoordGrid): Direction {
     val delta = tile.minus(tile.region.tile)
     return when {
         delta.x in 16..32 -> Direction.WEST

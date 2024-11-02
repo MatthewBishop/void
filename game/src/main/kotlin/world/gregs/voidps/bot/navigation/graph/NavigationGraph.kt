@@ -13,7 +13,7 @@ import world.gregs.voidps.network.client.Instruction
 import world.gregs.voidps.network.client.instruction.InteractObject
 import world.gregs.voidps.network.client.instruction.Walk
 import world.gregs.voidps.type.Distance
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.yaml.Yaml
 import world.gregs.yaml.read.YamlReaderConfiguration
 
@@ -65,7 +65,7 @@ class NavigationGraph(
                         super.set(map, key, when (key) {
                             "tile", "from", "to" -> {
                                 val list = value as List<Int>
-                                Tile(list[0], list[1], list.getOrNull(2) ?: 0)
+                                CoordGrid(list[0], list[1], list.getOrNull(2) ?: 0)
                             }
                             else -> value
                         }, indent, parentMap)
@@ -79,8 +79,8 @@ class NavigationGraph(
             flatten("", edgeMap) { path, edges ->
                 for (edge in edges) {
                     count++
-                    val start = edge["from"] as Tile
-                    val end = edge["to"] as Tile
+                    val start = edge["from"] as CoordGrid
+                    val end = edge["to"] as CoordGrid
                     var cost = edge["cost"] as? Int ?: 0
                     val steps = edge["steps"] as? List<Instruction>
                     val conditions = edge["conditions"] as? List<Map<String, Any>>
@@ -107,7 +107,7 @@ class NavigationGraph(
     private fun tagAreas() {
         adjacencyList.forEach { (node, _) ->
             val tile = when (node) {
-                is Tile -> node
+                is CoordGrid -> node
                 is GameObject -> node.tile
                 else -> return@forEach
             }
@@ -131,12 +131,12 @@ class NavigationGraph(
     private fun toInstruction(map: Map<String, Any>): Instruction? {
         when (map["type"] as? String) {
             "walk" -> {
-                val tile = map["tile"] as Tile
+                val tile = map["tile"] as CoordGrid
                 return Walk(tile.x, tile.y)
             }
             "object" -> {
                 val objectId = map["object"] as Int
-                val tile = map["tile"] as Tile
+                val tile = map["tile"] as CoordGrid
                 val option = map["option"] as String
                 var def = definitions.getOrNull(objectId) ?: return null
                 val transform = map["transform"] as? Int

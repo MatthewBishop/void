@@ -21,8 +21,8 @@ import world.gregs.voidps.engine.entity.item.floor.FloorItems
 import world.gregs.voidps.engine.entity.obj.GameObject
 import world.gregs.voidps.engine.entity.obj.GameObjects
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.CoordGrid
+import world.gregs.voidps.type.ZoneKey
 import world.gregs.voidps.type.random
 import java.util.*
 import kotlin.math.ceil
@@ -81,7 +81,7 @@ class Hunting(
     }
 
     /**
-     * Returns all the [FloorItem]s in the first [Zone] with possible targets
+     * Returns all the [FloorItem]s in the first [ZoneKey] with possible targets
      */
     private fun getItems(
         npc: NPC,
@@ -118,7 +118,7 @@ class Hunting(
         definition: HuntModeDefinition
     ): ObjectArrayList<GameObject> {
         val targets = ObjectArrayList<GameObject>()
-        val queue: Queue<Tile> = LinkedList()
+        val queue: Queue<CoordGrid> = LinkedList()
         queue.add(npc.tile)
         while (queue.isNotEmpty()) {
             val parent = queue.poll()
@@ -133,8 +133,8 @@ class Hunting(
     }
 
     private fun addTargets(
-        parent: Tile,
-        queue: Queue<Tile>,
+        parent: CoordGrid,
+        queue: Queue<CoordGrid>,
         definition: HuntModeDefinition,
         npc: NPC,
         targets: MutableList<GameObject>,
@@ -226,7 +226,7 @@ class Hunting(
 
     private fun canSee(
         npc: NPC,
-        tile: Tile,
+        tile: CoordGrid,
         width: Int,
         height: Int,
         definition: HuntModeDefinition

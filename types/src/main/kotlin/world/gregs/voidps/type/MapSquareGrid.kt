@@ -3,7 +3,7 @@ package world.gregs.voidps.type
 import world.gregs.voidps.type.area.Cuboid
 
 @JvmInline
-value class RegionLevel(val id: Int) : Coordinate3D<RegionLevel> {//MapSquareGrid
+value class MapSquareGrid(val id: Int) : Coordinate3D<MapSquareGrid> {//MapSquareGrid
 
     constructor(x: Int, y: Int, level: Int) : this(id(x, y, level))
 
@@ -13,14 +13,14 @@ value class RegionLevel(val id: Int) : Coordinate3D<RegionLevel> {//MapSquareGri
         get() = y(id)
     override val level: Int
         get() = level(id)
-    val region: Region
-        get() = Region(x, y)
-    val zone: Zone
-        get() = Zone(x shl 3, y shl 3, level)
-    val tile: Tile
-        get() = Tile(x shl 6, y shl 6, level)
+    val region: MapSquareKey
+        get() = MapSquareKey(x, y)
+    val zone: ZoneKey
+        get() = ZoneKey(x shl 3, y shl 3, level)
+    val tile: CoordGrid
+        get() = CoordGrid(x shl 6, y shl 6, level)
 
-    override fun copy(x: Int, y: Int, level: Int) = RegionLevel(x, y, level)
+    override fun copy(x: Int, y: Int, level: Int) = MapSquareGrid(x, y, level)
 
     fun toCuboid(width: Int = 1, height: Int = 1, levels: Int = 1) = Cuboid(tile, width * 64, height * 64, levels)
     fun toCuboid(radius: Int, levels: Int = 1) = Cuboid(minus(radius, radius).tile, (radius * 2 + 1) * 64, (radius * 2 + 1) * 64, levels)
@@ -30,7 +30,7 @@ value class RegionLevel(val id: Int) : Coordinate3D<RegionLevel> {//MapSquareGri
         fun x(id: Int) = id shr 8 and 0xff
         fun y(id: Int) = id and 0xff
         fun level(id: Int) = id shr 16
-        val EMPTY = RegionLevel(0, 0, 0)
+        val EMPTY = MapSquareGrid(0, 0, 0)
     }
 }
-fun RegionLevel.equals(x: Int = 0, y: Int = 0, level: Int = 0) = this.x == x && this.y == y && this.level == level
+fun MapSquareGrid.equals(x: Int = 0, y: Int = 0, level: Int = 0) = this.x == x && this.y == y && this.level == level

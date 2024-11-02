@@ -2,13 +2,13 @@ package world.gregs.voidps.engine.entity.character.mode.move
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 class StepTest {
 
     @Test
     fun `Zero values`() {
-        val tile = Tile(0, 0, 0)
+        val tile = CoordGrid(0, 0, 0)
 
         assertEquals(0, tile.id)
         assertEquals(0, tile.x)
@@ -20,7 +20,7 @@ class StepTest {
 
     @Test
     fun `Negative values safe`() {
-        val tile = Tile(-10, -50, -2).step(noCollision = false, noRun = true)
+        val tile = CoordGrid(-10, -50, -2).step(noCollision = false, noRun = true)
 
         assertEquals(16374, tile.x)
         assertEquals(16334, tile.y)
@@ -31,7 +31,7 @@ class StepTest {
 
     @Test
     fun `Maximum values`() {
-        val tile = Tile(16320, 16320, 3).step(noCollision = true, noRun = true)
+        val tile = CoordGrid(16320, 16320, 3).step(noCollision = true, noRun = true)
 
         assertEquals(16320, tile.x)
         assertEquals(16320, tile.y)

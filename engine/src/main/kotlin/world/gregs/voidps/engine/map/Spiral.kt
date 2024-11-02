@@ -2,8 +2,8 @@ package world.gregs.voidps.engine.map
 
 import world.gregs.voidps.engine.client.update.view.Viewport.Companion.VIEW_RADIUS
 import world.gregs.voidps.type.Delta
-import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.CoordGrid
+import world.gregs.voidps.type.ZoneKey
 
 object Spiral {
 
@@ -13,36 +13,36 @@ object Spiral {
         STEPS = (0..VIEW_RADIUS).map(::outwards).toTypedArray()
     }
 
-    fun spiral(tile: Tile, radius: Int): Iterator<Tile> = TileIterator(tile, STEPS[radius])
+    fun spiral(tile: CoordGrid, radius: Int): Iterator<CoordGrid> = TileIterator(tile, STEPS[radius])
 
     internal class TileIterator(
-        private val tile: Tile,
+        private val tile: CoordGrid,
         private val steps: Array<Delta>
-    ) : Iterator<Tile> {
+    ) : Iterator<CoordGrid> {
 
         private var index = 0
 
         override fun hasNext(): Boolean {
             return index < steps.size
         }
-        override fun next(): Tile {
+        override fun next(): CoordGrid {
             return tile.add(steps[index++])
         }
     }
 
-    fun spiral(zone: Zone, radius: Int): Iterator<Zone> = ZoneIterator(zone, STEPS[radius])
+    fun spiral(zone: ZoneKey, radius: Int): Iterator<ZoneKey> = ZoneIterator(zone, STEPS[radius])
 
     internal class ZoneIterator(
-        private val zone: Zone,
+        private val zone: ZoneKey,
         private val steps: Array<Delta>
-    ) : Iterator<Zone> {
+    ) : Iterator<ZoneKey> {
         private var index = 0
 
         override fun hasNext(): Boolean {
             return index < steps.size
         }
 
-        override fun next(): Zone {
+        override fun next(): ZoneKey {
             return zone.add(steps[index++])
         }
     }
@@ -89,6 +89,6 @@ object Spiral {
     }
 }
 
-fun Tile.spiral(radius: Int) = Spiral.spiral(this, radius)
+fun CoordGrid.spiral(radius: Int) = Spiral.spiral(this, radius)
 
-fun Zone.spiral(radius: Int) = Spiral.spiral(this, radius)
+fun ZoneKey.spiral(radius: Int) = Spiral.spiral(this, radius)

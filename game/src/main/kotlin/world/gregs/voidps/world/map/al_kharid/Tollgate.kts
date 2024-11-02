@@ -22,7 +22,7 @@ import world.gregs.voidps.engine.suspend.approachRange
 import world.gregs.voidps.engine.suspend.pause
 import world.gregs.voidps.type.Direction
 import world.gregs.voidps.type.Distance.nearestTo
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.type.area.Rectangle
 import world.gregs.voidps.world.interact.dialogue.Quiz
 import world.gregs.voidps.world.interact.dialogue.Talk
@@ -34,7 +34,7 @@ import world.gregs.voidps.world.interact.dialogue.type.player
 import world.gregs.voidps.world.interact.entity.obj.door.DoubleDoor
 
 val objects: GameObjects by inject()
-val southGate = Tile(3268, 3227)
+val southGate = CoordGrid(3268, 3227)
 
 objectOperate("Pay-toll(10gp)", "toll_gate_al_kharid*") {
     if (!payToll(player)) {
@@ -83,8 +83,8 @@ fun getGate(player: Player): GameObject {
     return objects[tile].first { it.id.startsWith("toll_gate_al_kharid") }
 }
 
-val rect = Rectangle(Tile(3267, 3227), 2, 2)
-val gates = Rectangle(Tile(3268, 3227), 1, 2)
+val rect = Rectangle(CoordGrid(3267, 3227), 2, 2)
+val gates = Rectangle(CoordGrid(3268, 3227), 1, 2)
 
 suspend fun CharacterContext.payToll(player: Player): Boolean {
     if (!player.inventory.remove("coins", 10)) {

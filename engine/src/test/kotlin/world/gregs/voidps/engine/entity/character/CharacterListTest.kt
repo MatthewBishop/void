@@ -4,8 +4,8 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.CoordGrid
+import world.gregs.voidps.type.ZoneKey
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -21,11 +21,11 @@ internal class CharacterListTest {
         characterMap = mockk(relaxed = true)
         list = object : CharacterList<Character>() {
             override val indexArray: Array<Character?> = arrayOfNulls(10)
-            override fun get(tile: Tile): List<Character> {
+            override fun get(tile: CoordGrid): List<Character> {
                 return emptyList()
             }
 
-            override fun get(zone: Zone): List<Character> {
+            override fun get(zone: ZoneKey): List<Character> {
                 return emptyList()
             }
 
@@ -36,7 +36,7 @@ internal class CharacterListTest {
     fun `Add character to list`() {
         val character: Character = mockk(relaxed = true)
         every { character.index } returns 1
-        every { character.tile } returns Tile(1)
+        every { character.tile } returns CoordGrid(1)
         assertTrue(list.add(character))
 
         assertEquals(character, list.indexed(1))
@@ -47,7 +47,7 @@ internal class CharacterListTest {
     fun `Remove character from list`() {
         val character: Character = mockk(relaxed = true)
         every { character.index } returns 1
-        every { character.tile } returns Tile(1)
+        every { character.tile } returns CoordGrid(1)
         assertTrue(list.add(character))
 
         assertTrue(list.remove(character))
@@ -60,7 +60,7 @@ internal class CharacterListTest {
     fun `Remove index from list`() {
         val character: Character = mockk(relaxed = true)
         every { character.index } returns 1
-        every { character.tile } returns Tile(1)
+        every { character.tile } returns CoordGrid(1)
         assertTrue(list.add(character))
 
         list.removeIndex(character)
@@ -73,7 +73,7 @@ internal class CharacterListTest {
     fun `Clear all characters in list`() {
         val character: Character = mockk(relaxed = true)
         every { character.index } returns 1
-        every { character.tile } returns Tile(1)
+        every { character.tile } returns CoordGrid(1)
         assertTrue(list.add(character))
         list.clear()
 
@@ -90,7 +90,7 @@ internal class CharacterListTest {
         }
         val character: Character = mockk(relaxed = true)
         every { character.index } returns 6
-        every { character.tile } returns Tile(1)
+        every { character.tile } returns CoordGrid(1)
         list.removeIndex(character)
         assertEquals(6, list.index())
         list.add(character)

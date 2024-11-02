@@ -14,7 +14,7 @@ import world.gregs.voidps.engine.entity.obj.GameObjects
 import world.gregs.voidps.engine.entity.obj.ObjectOption
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.network.client.instruction.InteractObject
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 class ObjectOptionHandler(
     private val objects: GameObjects,
@@ -49,7 +49,7 @@ class ObjectOptionHandler(
         player.mode = Interact(player, target, ObjectOption(player, target, definition, selectedOption))
     }
 
-    private fun getObject(tile: Tile, objectId: Int): GameObject? {
+    private fun getObject(tile: CoordGrid, objectId: Int): GameObject? {
         val obj = objects[tile, objectId]
         if (obj == null) {
             val definition = definitions.getOrNull(objectId)

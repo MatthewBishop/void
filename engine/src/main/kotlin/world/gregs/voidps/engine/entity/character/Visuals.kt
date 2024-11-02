@@ -18,7 +18,7 @@ import world.gregs.voidps.network.login.protocol.visual.update.Turn
 import world.gregs.voidps.type.Delta
 import world.gregs.voidps.type.Direction
 import world.gregs.voidps.type.Distance
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 fun Character.flagAnimation() = visuals.flag(if (this is Player) VisualMask.PLAYER_ANIMATION_MASK else VisualMask.NPC_ANIMATION_MASK)
 
@@ -194,14 +194,14 @@ fun Character.exactMove(delta: Delta, delay: Int = tile.distanceTo(tile.add(delt
     setExactMovement(Delta.EMPTY, delay, start.delta(tile), direction = direction)
 }
 
-fun Character.exactMove(target: Tile, delay: Int = tile.distanceTo(target) * 30, direction: Direction = Direction.NONE) {
+fun Character.exactMove(target: CoordGrid, delay: Int = tile.distanceTo(target) * 30, direction: Direction = Direction.NONE) {
     val start = tile
     tele(target)
     setExactMovement(Delta.EMPTY, delay, start.delta(tile), direction = direction)
 }
 
 val Character.turn: Delta
-    get() = Tile(visuals.turn.targetX, visuals.turn.targetY, tile.level).delta(tile)
+    get() = CoordGrid(visuals.turn.targetX, visuals.turn.targetY, tile.level).delta(tile)
 
 fun Character.turn(delta: Delta, update: Boolean = true): Boolean {
     if (delta == Delta.EMPTY) {
@@ -232,9 +232,9 @@ val Character.facing: Direction
 
 fun Character.face(direction: Direction, update: Boolean = true) = turn(direction.delta.x, direction.delta.y, update)
 
-fun Character.face(tile: Tile, update: Boolean = true) = turn(tile.delta(this.tile), update)
+fun Character.face(tile: CoordGrid, update: Boolean = true) = turn(tile.delta(this.tile), update)
 
-fun Character.facing(tile: Tile) = turn == tile.delta(this.tile)
+fun Character.facing(tile: CoordGrid) = turn == tile.delta(this.tile)
 
 fun Character.face(entity: Entity, update: Boolean = true) {
     val tile = nearestTile(entity)
@@ -252,7 +252,7 @@ fun Character.face(entity: Entity, update: Boolean = true) {
 
 fun Character.facing(entity: Entity) = turn == nearestTile(entity).delta(tile)
 
-fun Character.nearestTile(entity: Entity): Tile {
+fun Character.nearestTile(entity: Entity): CoordGrid {
     return when (entity) {
         is GameObject -> Distance.getNearest(entity.tile, entity.width, entity.height, this.tile)
         is NPC -> Distance.getNearest(entity.tile, entity.def.size, entity.def.size, this.tile)

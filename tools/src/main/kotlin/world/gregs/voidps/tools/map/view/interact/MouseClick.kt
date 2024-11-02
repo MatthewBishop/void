@@ -1,6 +1,6 @@
 package world.gregs.voidps.tools.map.view.interact
 
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.tools.map.view.draw.GraphDrawer
 import world.gregs.voidps.tools.map.view.draw.HighlightedArea
 import world.gregs.voidps.tools.map.view.draw.MapView
@@ -161,7 +161,7 @@ class MouseClick(
         point.y = settings.coords.yCoord.text.toIntOrNull() ?: point.y
     }
 
-    private fun showNodeSettings(node: Tile, links: List<Link>) {
+    private fun showNodeSettings(node: CoordGrid, links: List<Link>) {
         val settings = NodeSettings()
         populate(settings, node)
         val result = JOptionPane.showConfirmDialog(null, settings, "Edit node",
@@ -181,12 +181,12 @@ class MouseClick(
         }
     }
 
-    private fun populate(settings: NodeSettings, node: Tile) {
+    private fun populate(settings: NodeSettings, node: CoordGrid) {
         settings.coords.xCoord.text = node.x.toString()
         settings.coords.yCoord.text = node.y.toString()
     }
 
-    private fun populate(node: Tile, settings: NodeSettings): Tile {
+    private fun populate(node: CoordGrid, settings: NodeSettings): CoordGrid {
         val newX = settings.coords.xCoord.text.toIntOrNull() ?: node.x
         val newY = settings.coords.yCoord.text.toIntOrNull() ?: node.y
         val newZ = settings.coords.zCoord.text.toIntOrNull() ?: node.level

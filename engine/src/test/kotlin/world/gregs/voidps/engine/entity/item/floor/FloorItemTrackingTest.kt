@@ -12,7 +12,7 @@ import world.gregs.voidps.cache.definition.data.ItemDefinition
 import world.gregs.voidps.engine.client.update.batch.ZoneBatchUpdates
 import world.gregs.voidps.engine.data.definition.ItemDefinitions
 import world.gregs.voidps.engine.entity.character.player.Players
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 class FloorItemTrackingTest {
 
@@ -36,7 +36,7 @@ class FloorItemTrackingTest {
 
     @Test
     fun `Private items are revealed after timer`() {
-        val item = FloorItem(Tile.EMPTY, "item", revealTicks = 10, owner = "player")
+        val item = FloorItem(CoordGrid.EMPTY, "item", revealTicks = 10, owner = "player")
         items.add(item)
 
         repeat(10) {
@@ -51,32 +51,32 @@ class FloorItemTrackingTest {
 
     @Test
     fun `Public items are removed after timer`() {
-        val item = FloorItem(Tile.EMPTY, "item", disappearTicks = 10, owner = null)
+        val item = FloorItem(CoordGrid.EMPTY, "item", disappearTicks = 10, owner = null)
         items.add(item)
 
         repeat(10) {
             tracking.run()
         }
 
-        assertFalse(items[Tile.EMPTY].contains(item))
+        assertFalse(items[CoordGrid.EMPTY].contains(item))
     }
 
     @Test
     fun `Public items revealed and removed after timers`() {
-        val item = FloorItem(Tile.EMPTY, "item", revealTicks = 10, disappearTicks = 10, owner = "player")
+        val item = FloorItem(CoordGrid.EMPTY, "item", revealTicks = 10, disappearTicks = 10, owner = "player")
         items.add(item)
 
         repeat(10) {
             tracking.run()
         }
-        assertTrue(items[Tile.EMPTY].contains(item))
+        assertTrue(items[CoordGrid.EMPTY].contains(item))
         assertNull(item.owner)
         assertEquals(0, item.revealTicks)
         assertEquals(10, item.disappearTicks)
         repeat(10) {
             tracking.run()
         }
-        assertFalse(items[Tile.EMPTY].contains(item))
+        assertFalse(items[CoordGrid.EMPTY].contains(item))
         assertEquals(0, item.disappearTicks)
     }
 

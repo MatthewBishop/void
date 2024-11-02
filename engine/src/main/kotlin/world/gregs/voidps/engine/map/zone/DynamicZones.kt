@@ -7,8 +7,8 @@ import world.gregs.voidps.engine.entity.World
 import world.gregs.voidps.engine.entity.obj.GameObjects
 import world.gregs.voidps.engine.map.collision.Collisions
 import world.gregs.voidps.engine.map.collision.clear
-import world.gregs.voidps.type.Region
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.MapSquareKey
+import world.gregs.voidps.type.ZoneKey
 import java.util.*
 import kotlin.collections.set
 
@@ -20,15 +20,15 @@ class DynamicZones(
     private val zones: MutableMap<Int, Int> = Int2IntArrayMap()
     private val regions = IntOpenHashSet()
 
-    fun isDynamic(region: Region) = regions.contains(region.id)
+    fun isDynamic(region: MapSquareKey) = regions.contains(region.id)
 
-    fun getDynamicZone(zone: Zone) = zones[zone.id]
+    fun getDynamicZone(zone: ZoneKey) = zones[zone.id]
 
     /**
      * @param from The zone to be copied
      * @param to The zone things will be copied to
      */
-    fun copy(from: Zone, to: Zone = from, rotation: Int = 0) {
+    fun copy(from: ZoneKey, to: ZoneKey = from, rotation: Int = 0) {
         zones[to.id] = from.rotatedId(rotation)
         update(from, to, rotation, true)
     }
@@ -37,7 +37,7 @@ class DynamicZones(
      * @param from The region to be copied
      * @param to The region to be replaced
      */
-    fun copy(from: Region, to: Region) {
+    fun copy(from: MapSquareKey, to: MapSquareKey) {
         val targetZones = LinkedList(to.toCuboid().toZones())
         for (zone in from.toCuboid().toZones()) {
             copy(zone, targetZones.poll())
@@ -47,7 +47,7 @@ class DynamicZones(
     /**
      * Clear the dynamic [zone] and replace it with the original
      */
-    fun clear(zone: Zone) {
+    fun clear(zone: ZoneKey) {
         zones.remove(zone.id)
         update(zone, zone, 0, false)
     }
@@ -55,13 +55,13 @@ class DynamicZones(
     /**
      * Clear the dynamic [region] and replace it with the original
      */
-    fun clear(region: Region) {
+    fun clear(region: MapSquareKey) {
         for (zone in region.toCuboid().toZones()) {
             clear(zone)
         }
     }
 
-    private fun update(from: Zone, to: Zone, rotation: Int, set: Boolean) {
+    private fun update(from: ZoneKey, to: ZoneKey, rotation: Int, set: Boolean) {
         objects.reset(to)
         collisions.clear(to)
         extract.loadZone(from, to, rotation)
@@ -77,10 +77,10 @@ class DynamicZones(
 
     companion object {
 
-        fun Zone.dynamicId() =
+        fun ZoneKey.dynamicId() =
             toZonePosition(x, y, level)
 
-        fun Zone.rotatedId(rotation: Int) =
+        fun ZoneKey.rotatedId(rotation: Int) =
             toRotatedZonePosition(
                 x,
                 y,
@@ -88,7 +88,7 @@ class DynamicZones(
                 rotation
             )
 
-        fun getZone(id: Int) = Zone(x(id), y(id), level(id))
+        fun getZone(id: Int) = ZoneKey(x(id), y(id), level(id))
 
         private fun x(id: Int) = id shr 14 and 0x7ff
         private fun y(id: Int) = id shr 3 and 0x7ff

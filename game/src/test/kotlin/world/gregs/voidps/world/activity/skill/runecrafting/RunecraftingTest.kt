@@ -8,7 +8,7 @@ import org.koin.test.get
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.inv.add
 import world.gregs.voidps.engine.inv.inventory
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.world.interact.entity.obj.Teleports
 import world.gregs.voidps.world.script.WorldTest
 import world.gregs.voidps.world.script.itemOnObject
@@ -119,21 +119,21 @@ internal class RunecraftingTest : WorldTest() {
     }
 
     companion object {
-        internal data class Altar(val type: String, val ruinsTile: Tile, val altarTile: Tile, val pure: Boolean = false)
+        internal data class Altar(val type: String, val ruinsTile: CoordGrid, val altarTile: CoordGrid, val pure: Boolean = false)
 
         internal val altars = listOf(
-            Altar("air", Tile(3126, 3404), Tile(2843, 4833)),
-            Altar("water", Tile(3184, 3164), Tile(3483, 4835)),
-            Altar("earth", Tile(3305, 3473), Tile(2657, 4840)),
-            Altar("fire", Tile(3312, 3254), Tile(2584, 4837)),
-            Altar("mind", Tile(2981, 3513), Tile(2785, 4840)),
-            Altar("body", Tile(3052, 3444), Tile(2522, 4839)),
-            Altar("cosmic", Tile(2407, 4376), Tile(2141, 4832), pure = true),
-            Altar("law", Tile(2857, 3380), Tile(2463, 4831), pure = true),
-            Altar("nature", Tile(2868, 3018), Tile(2399, 4840), pure = true),
-            Altar("chaos", Tile(3059, 3590), Tile(2270, 4841), pure = true),
-            Altar("death", Tile(1860, 4638), Tile(2204, 4835), pure = true),
-            Altar("blood", Tile(3560, 9780), Tile(2461, 4894, 1), pure = true)
+            Altar("air", CoordGrid(3126, 3404), CoordGrid(2843, 4833)),
+            Altar("water", CoordGrid(3184, 3164), CoordGrid(3483, 4835)),
+            Altar("earth", CoordGrid(3305, 3473), CoordGrid(2657, 4840)),
+            Altar("fire", CoordGrid(3312, 3254), CoordGrid(2584, 4837)),
+            Altar("mind", CoordGrid(2981, 3513), CoordGrid(2785, 4840)),
+            Altar("body", CoordGrid(3052, 3444), CoordGrid(2522, 4839)),
+            Altar("cosmic", CoordGrid(2407, 4376), CoordGrid(2141, 4832), pure = true),
+            Altar("law", CoordGrid(2857, 3380), CoordGrid(2463, 4831), pure = true),
+            Altar("nature", CoordGrid(2868, 3018), CoordGrid(2399, 4840), pure = true),
+            Altar("chaos", CoordGrid(3059, 3590), CoordGrid(2270, 4841), pure = true),
+            Altar("death", CoordGrid(1860, 4638), CoordGrid(2204, 4835), pure = true),
+            Altar("blood", CoordGrid(3560, 9780), CoordGrid(2461, 4894, 1), pure = true)
         )
     }
 

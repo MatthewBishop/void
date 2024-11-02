@@ -50,7 +50,7 @@ import world.gregs.voidps.network.login.protocol.encode.playJingle
 import world.gregs.voidps.network.login.protocol.encode.playMIDI
 import world.gregs.voidps.network.login.protocol.encode.playSoundEffect
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import world.gregs.voidps.world.activity.quest.Books
 import world.gregs.voidps.world.interact.entity.npc.shop.OpenShop
 import world.gregs.voidps.world.interact.entity.obj.Teleports
@@ -87,7 +87,7 @@ adminCommand("tele", "tp") {
         val int = parts[0].toIntOrNull()
         when {
             int == null -> player.tele(areas[content])
-            parts.size == 1 -> player.tele(Region(int).tile.add(32, 32))
+            parts.size == 1 -> player.tele(MapSquareKey(int).tile.add(32, 32))
             else -> player.tele(int, parts[1].toInt(), if (parts.size > 2) parts[2].toInt() else 0)
         }
     }

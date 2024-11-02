@@ -33,8 +33,8 @@ import world.gregs.voidps.engine.queue.*
 import world.gregs.voidps.engine.suspend.delay
 import world.gregs.voidps.type.Delta
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Region
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.MapSquareKey
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.world.activity.quest.*
 import world.gregs.voidps.world.interact.dialogue.*
 import world.gregs.voidps.world.interact.dialogue.type.choice
@@ -55,12 +55,12 @@ val npcs: NPCs by inject()
 val areas: AreaDefinitions by inject()
 
 val area = areas["demon_slayer_stone_circle"]
-val defaultTile = Tile(3220, 3367)
+val defaultTile = CoordGrid(3220, 3367)
 val targets = listOf(
-    Tile(3227, 3369) to Tile(3224, 3366),
-    Tile(3227, 3370) to Tile(3231, 3366),
-    Tile(3228, 3369) to Tile(3224, 3373),
-    Tile(3228, 3370) to Tile(3231, 3373)
+    CoordGrid(3227, 3369) to CoordGrid(3224, 3366),
+    CoordGrid(3227, 3370) to CoordGrid(3231, 3366),
+    CoordGrid(3228, 3369) to CoordGrid(3224, 3373),
+    CoordGrid(3228, 3370) to CoordGrid(3231, 3373)
 )
 
 enterArea("demon_slayer_stone_circle") {
@@ -69,13 +69,13 @@ enterArea("demon_slayer_stone_circle") {
     }
 }
 
-fun CharacterContext.setCutsceneEnd(instance: Region) {
+fun CharacterContext.setCutsceneEnd(instance: MapSquareKey) {
     player.queue("demon_slayer_delrith_cutscene_end", 1, LogoutBehaviour.Accelerate) {
         endCutscene(instance, defaultTile)
     }
 }
 
-fun CharacterContext.endCutscene(instance: Region, tile: Tile? = null) {
+fun CharacterContext.endCutscene(instance: MapSquareKey, tile: CoordGrid? = null) {
     val offset: Delta = player["demon_slayer_offset"] ?: return
     player.tele(tile ?: player.tile.minus(offset))
     stopCutscene(instance)
@@ -93,7 +93,7 @@ playerDespawn { player ->
     }
 }
 
-fun exitArea(player: Player, to: Tile): Boolean {
+fun exitArea(player: Player, to: CoordGrid): Boolean {
     val offset: Delta = player["demon_slayer_offset"] ?: return false
     val actual = to.minus(offset)
     return !area.contains(actual) && !player.hasClock("demon_slayer_instance_exit")
@@ -104,7 +104,7 @@ fun destroyInstance(player: Player) {
     val target = if (offset != null && player.tile.minus(offset) in area) player.tile.minus(offset) else defaultTile
     player.start("demon_slayer_instance_exit", 2)
     player.tele(target)
-    val instance: Region = player.remove("demon_slayer_instance") ?: return
+    val instance: MapSquareKey = player.remove("demon_slayer_instance") ?: return
     Instances.free(instance)
     val regionLevel = instance.toLevel(0)
     npcs.clear(regionLevel)
@@ -115,18 +115,18 @@ fun destroyInstance(player: Player) {
 }
 
 suspend fun CharacterContext.cutscene() {
-    val region = Region(12852)
+    val region = MapSquareKey(12852)
     val instance = startCutscene(region)
     val offset = instance.offset(region)
     player["demon_slayer_instance"] = instance
     player["demon_slayer_offset"] = offset
     player.steps.clear()
     player.mode = EmptyMode
-    val wizard1 = npcs.add("dark_wizard_water", Tile(3226, 3371).add(offset), Direction.SOUTH_EAST) ?: return
-    val wizard2 = npcs.add("dark_wizard_water_2", Tile(3229, 3371).add(offset), Direction.SOUTH_WEST) ?: return
-    val wizard3 = npcs.add("dark_wizard_earth", Tile(3226, 3368).add(offset), Direction.NORTH_EAST) ?: return
-    val denath = npcs.add("denath", Tile(3229, 3368).add(offset), Direction.NORTH_WEST) ?: return
-    val delrith = npcs.add("delrith", Tile(3227, 3369).add(offset), Direction.SOUTH) ?: return
+    val wizard1 = npcs.add("dark_wizard_water", CoordGrid(3226, 3371).add(offset), Direction.SOUTH_EAST) ?: return
+    val wizard2 = npcs.add("dark_wizard_water_2", CoordGrid(3229, 3371).add(offset), Direction.SOUTH_WEST) ?: return
+    val wizard3 = npcs.add("dark_wizard_earth", CoordGrid(3226, 3368).add(offset), Direction.NORTH_EAST) ?: return
+    val denath = npcs.add("denath", CoordGrid(3229, 3368).add(offset), Direction.NORTH_WEST) ?: return
+    val delrith = npcs.add("delrith", CoordGrid(3227, 3369).add(offset), Direction.SOUTH) ?: return
     npcs.removeIndex(delrith)
     val wizards = listOf(wizard1, wizard2, wizard3, denath)
     for (wizard in wizards) {
@@ -136,14 +136,14 @@ suspend fun CharacterContext.cutscene() {
     spawnEnergyBarrier(offset)
     delay(1)
     setCutsceneEnd(instance)
-    player.tele(Tile(3222, 3367).add(offset))
+    player.tele(CoordGrid(3222, 3367).add(offset))
     player.face(Direction.NORTH_EAST)
     player.playTrack("delrith")
 
     if (player["demon_slayer_summoned", false]) {
         player.queue.clear("demon_slayer_delrith_cutscene_end")
-        delrith.tele(Tile(3227, 3367).add(offset))
-        denath.tele(Tile(3236, 3368).add(offset))
+        delrith.tele(CoordGrid(3227, 3367).add(offset))
+        denath.tele(CoordGrid(3236, 3368).add(offset))
         npcs.index(delrith)
         showTabs()
         return
@@ -154,9 +154,9 @@ suspend fun CharacterContext.cutscene() {
     }
 
     player.clearCamera()
-    player.moveCamera(Tile(3224, 3376).add(offset), 475, 232, 232)
-    player.turnCamera(Tile(3227, 3369).add(offset), 300, 232, 232)
-    player.moveCamera(Tile(3231, 3376).add(offset), 475, 1, 1)
+    player.moveCamera(CoordGrid(3224, 3376).add(offset), 475, 232, 232)
+    player.turnCamera(CoordGrid(3227, 3369).add(offset), 300, 232, 232)
+    player.moveCamera(CoordGrid(3231, 3376).add(offset), 475, 1, 1)
     npc<Happy>("denath", "Arise, O mighty Delrith! Bring destruction to this soft, weak city!")
     for (wizard in wizards) {
         wizard.forceChat = "Arise, Delrith!"
@@ -164,11 +164,11 @@ suspend fun CharacterContext.cutscene() {
     npc<Neutral>("dark_wizard_water", "Arise, Delrith!", title = "Dark wizards")
 
     statement("The wizards cast an evil spell", clickToContinue = false)
-    val regular = objects[Tile(3227, 3369).add(offset), "demon_slayer_stone_table"]!!
+    val regular = objects[CoordGrid(3227, 3369).add(offset), "demon_slayer_stone_table"]!!
     val table = objects.replace(regular, "demon_slayer_stone_table_summoning", ticks = 8)
     player.clearCamera()
-    player.turnCamera(Tile(3227, 3369).add(offset), 100, 232, 232)
-    player.moveCamera(Tile(3227, 3365).add(offset), 500, 232, 232)
+    player.turnCamera(CoordGrid(3227, 3369).add(offset), 100, 232, 232)
+    player.moveCamera(CoordGrid(3227, 3365).add(offset), 500, 232, 232)
     player.playSound("summon_npc")
     player.playSound("demon_slayer_table_explosion")
     delay(1)
@@ -189,14 +189,14 @@ suspend fun CharacterContext.cutscene() {
     delay(2)
     player.playSound("demon_slayer_break_table", delay = 10)
     player.playSound("demon_slayer_delrith_appear")
-    player.turnCamera(Tile(3227, 3369).add(offset), 400, 1, 1)
+    player.turnCamera(CoordGrid(3227, 3369).add(offset), 400, 1, 1)
     player["demon_slayer_summoned"] = true
     delay(5)
-    delrith.walkTo(Tile(3227, 3367).add(offset))
+    delrith.walkTo(CoordGrid(3227, 3367).add(offset))
     delay(2)
     player.clearCamera()
-    player.moveCamera(Tile(3226, 3375).add(offset), 500, 232, 232)
-    player.turnCamera(Tile(3227, 3367).add(offset), 300, 232, 232)
+    player.moveCamera(CoordGrid(3226, 3375).add(offset), 500, 232, 232)
+    player.turnCamera(CoordGrid(3227, 3367).add(offset), 300, 232, 232)
     delay(1)
     delrith.face(denath)
     for (wizard in wizards) {
@@ -214,9 +214,9 @@ suspend fun CharacterContext.cutscene() {
     delrith.face(player)
     npc<Surprised>("dark_wizard_earth", "Who's that?")
     npc<Afraid>("denath", "Noo! Not Silverlight! Delrith is not ready yet!")
-    denath.walkTo(Tile(3236, 3368).add(offset))
+    denath.walkTo(CoordGrid(3236, 3368).add(offset))
     player.clearCamera()
-    player.moveCamera(Tile(3226, 3383).add(offset), 1000, 1, 1)
+    player.moveCamera(CoordGrid(3226, 3383).add(offset), 1000, 1, 1)
     npc<Shifty>("denath", "I've got to get out of here...")
     player.queue.clear("demon_slayer_delrith_cutscene_end")
     showTabs()
@@ -306,7 +306,7 @@ fun CharacterContext.questComplete() {
 }
 
 fun spawnEnergyBarrier(offset: Delta) {
-    var tile = Tile(3221, 3367).add(offset)
+    var tile = CoordGrid(3221, 3367).add(offset)
     var rotation = 0
     var direction = Direction.NORTH
     while (rotation < 4) {

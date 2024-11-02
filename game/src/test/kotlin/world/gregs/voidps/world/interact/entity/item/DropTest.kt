@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 import world.gregs.voidps.engine.entity.item.Item
 import world.gregs.voidps.engine.inv.add
 import world.gregs.voidps.engine.inv.inventory
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.world.script.WorldTest
 import world.gregs.voidps.world.script.floorItemOption
 import world.gregs.voidps.world.script.interfaceOption
@@ -41,7 +41,7 @@ internal class DropTest : WorldTest() {
 
     @Test
     fun `Floor item respawns after delay`() {
-        val tile = Tile(3244, 3157)
+        val tile = CoordGrid(3244, 3157)
         val player = createPlayer("player", tile)
 
         val floorItem = floorItems[tile].first()
@@ -82,7 +82,7 @@ internal class DropTest : WorldTest() {
 
     @Test
     fun `Place item onto a table`() {
-        val tile = Tile(3212, 3218, 1)
+        val tile = CoordGrid(3212, 3218, 1)
         val player = createPlayer("player", tile)
         player.inventory.add("bronze_sword")
         val drawers = objects[tile.addX(1), "table_lumbridge"]!!
@@ -94,7 +94,7 @@ internal class DropTest : WorldTest() {
 
     @Test
     fun `Can't place un-tradeable item onto a table`() {
-        val tile = Tile(3212, 3218, 1)
+        val tile = CoordGrid(3212, 3218, 1)
         val player = createPlayer("player")
         player.inventory.add("toolkit")
         val drawers = objects[tile.addX(1), "table_lumbridge"]!!
@@ -107,7 +107,7 @@ internal class DropTest : WorldTest() {
 
     @Test
     fun `Pickup item up off a table`() {
-        val tile = Tile(3212, 3218, 1)
+        val tile = CoordGrid(3212, 3218, 1)
         val player = createPlayer("player", tile)
         val item = floorItems.add(tile.add(1, 0), "bronze_sword")
 

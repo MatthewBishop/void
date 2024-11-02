@@ -4,7 +4,7 @@ import world.gregs.voidps.engine.entity.obj.GameObject
 import world.gregs.voidps.type.Distance.euclidean
 import world.gregs.voidps.type.Distance.getNearest
 import world.gregs.voidps.type.Distance.levenshtein
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.tools.map.obj.GameObjectOption
 import world.gregs.voidps.tools.map.obj.ObjectIdentificationContext
 import kotlin.math.*
@@ -70,10 +70,10 @@ val objectDistance: ObjectIdentificationContext.(GameObjectOption) -> Double = {
 }
 
 private const val dungeonDifference = 6400
-private fun onSurface(tile: Tile) = tile.y < dungeonDifference
-private fun inDungeon(tile: Tile) = tile.y > dungeonDifference
+private fun onSurface(tile: CoordGrid) = tile.y < dungeonDifference
+private fun inDungeon(tile: CoordGrid) = tile.y > dungeonDifference
 
-private fun getDistance(tile: Tile, width: Int, height: Int, target: GameObject): Double {
+private fun getDistance(tile: CoordGrid, width: Int, height: Int, target: GameObject): Double {
     val nearest = getNearest(tile, width, height, target.tile)
     val nearestTarget = target.nearestTo(tile)
     return euclidean(nearest, nearestTarget, level = nearest.level == 3 || nearest.x != nearestTarget.x || nearest.y != nearestTarget.y)

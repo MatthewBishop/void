@@ -7,18 +7,18 @@ import world.gregs.voidps.type.area.Rectangle
 /**
  * Represents a tiled area of any size or shape
  */
-interface Area : Iterable<Tile> {
+interface Area : Iterable<CoordGrid> {
     val area: Double
 
-    operator fun contains(tile: Tile): Boolean = contains(tile.x, tile.y, tile.level)
+    operator fun contains(tile: CoordGrid): Boolean = contains(tile.x, tile.y, tile.level)
 
     fun contains(x: Int, y: Int, level: Int = 0): Boolean
 
-    fun random(): Tile
+    fun random(): CoordGrid
 
-    fun toRegions(): List<Region>
+    fun toRegions(): List<MapSquareKey>
 
-    fun toZones(level: Int = 0): List<Zone>
+    fun toZones(level: Int = 0): List<ZoneKey>
 
     companion object {
         @Suppress("UNCHECKED_CAST")

@@ -6,7 +6,7 @@ import world.gregs.voidps.bot.navigation.graph.NavigationGraph
 import world.gregs.voidps.bot.navigation.graph.waypoints
 import world.gregs.voidps.bot.path.DijkstraFrontier.Companion.MAX_COST
 import world.gregs.voidps.engine.entity.character.player.Player
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import java.util.*
 
 class Dijkstra(
@@ -14,7 +14,7 @@ class Dijkstra(
     private val pool: ObjectPool<DijkstraFrontier>,
 ) {
 
-    fun find(player: Player, strategy: NodeTargetStrategy, traversal: EdgeTraversal): Tile? {
+    fun find(player: Player, strategy: NodeTargetStrategy, traversal: EdgeTraversal): CoordGrid? {
         val frontier = pool.borrow()
         frontier.reset(player)
         var target: Edge? = null
@@ -39,7 +39,7 @@ class Dijkstra(
         return result
     }
 
-    private fun backtrace(frontier: DijkstraFrontier, waypoints: LinkedList<Edge>, start: Any, target: Edge?): Tile? {
+    private fun backtrace(frontier: DijkstraFrontier, waypoints: LinkedList<Edge>, start: Any, target: Edge?): CoordGrid? {
         if (target != null && frontier.cost(target) != MAX_COST) {
             var edge: Edge? = target
             waypoints.clear()
@@ -52,8 +52,8 @@ class Dijkstra(
             }
             val end = target.end
             if (end is Int) {
-                return Tile(end)
-            } else if (end is Tile) {
+                return CoordGrid(end)
+            } else if (end is CoordGrid) {
                 return end
             }
         }

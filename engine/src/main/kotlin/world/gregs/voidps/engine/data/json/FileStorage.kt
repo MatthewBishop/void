@@ -12,7 +12,7 @@ import world.gregs.voidps.engine.entity.character.player.chat.clan.ClanRank
 import world.gregs.voidps.engine.entity.character.player.skill.exp.Experience
 import world.gregs.voidps.engine.entity.character.player.skill.level.Levels
 import world.gregs.voidps.engine.entity.item.Item
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.yaml.Yaml
 import world.gregs.yaml.read.YamlReaderConfiguration
 import java.io.File
@@ -101,7 +101,7 @@ class FileStorage(
         return PlayerSave(
             name = map["accountName"] as String,
             password = map["passwordHash"] as String,
-            tile = map["tile"] as Tile,
+            tile = map["tile"] as CoordGrid,
             experience = experience.experience,
             blocked = experience.blocked.toList(),
             levels = (map["levels"] as Levels).levels,

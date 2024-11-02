@@ -6,14 +6,14 @@ import world.gregs.voidps.engine.entity.Entity
 import world.gregs.voidps.engine.entity.item.Item
 import world.gregs.voidps.engine.event.EventDispatcher
 import world.gregs.voidps.engine.get
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 /**
  * An [Item] with physical location
  * Not a data class to prevent hash conflicts in lists
  */
 class FloorItem(
-    override var tile: Tile,
+    override var tile: CoordGrid,
     val id: String,
     var amount: Int = 1,
     var revealTicks: Int = -1,

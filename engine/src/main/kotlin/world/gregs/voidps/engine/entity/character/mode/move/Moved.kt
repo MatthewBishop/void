@@ -8,15 +8,15 @@ import world.gregs.voidps.engine.event.CancellableEvent
 import world.gregs.voidps.engine.event.EventDispatcher
 import world.gregs.voidps.engine.event.Events
 import world.gregs.voidps.engine.event.SuspendableEvent
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 /**
  * Entity moved between [from] and [to] tiles
  */
 data class Moved(
     override val character: Character,
-    val from: Tile,
-    val to: Tile
+    val from: CoordGrid,
+    val to: CoordGrid
 ) : CancellableEvent(), CharacterContext, SuspendableEvent {
     override var onCancel: (() -> Unit)? = null
 
@@ -31,17 +31,17 @@ data class Moved(
     }
 }
 
-fun move(from: Tile = Tile.EMPTY, to: Tile = Tile.EMPTY, handler: suspend Moved.(Player) -> Unit) {
-    Events.handle("player_move", "player", if (from == Tile.EMPTY) "*" else from, if (to == Tile.EMPTY) "*" else to, handler = handler)
+fun move(from: CoordGrid = CoordGrid.EMPTY, to: CoordGrid = CoordGrid.EMPTY, handler: suspend Moved.(Player) -> Unit) {
+    Events.handle("player_move", "player", if (from == CoordGrid.EMPTY) "*" else from, if (to == CoordGrid.EMPTY) "*" else to, handler = handler)
 }
 
-fun npcMove(npc: String = "*", from: Tile = Tile.EMPTY, to: Tile = Tile.EMPTY, handler: suspend Moved.(NPC) -> Unit) {
-    Events.handle("npc_move", npc, if (from == Tile.EMPTY) "*" else from, if (to == Tile.EMPTY) "*" else to, handler = handler)
+fun npcMove(npc: String = "*", from: CoordGrid = CoordGrid.EMPTY, to: CoordGrid = CoordGrid.EMPTY, handler: suspend Moved.(NPC) -> Unit) {
+    Events.handle("npc_move", npc, if (from == CoordGrid.EMPTY) "*" else from, if (to == CoordGrid.EMPTY) "*" else to, handler = handler)
 }
 
-fun characterMove(from: Tile = Tile.EMPTY, to: Tile = Tile.EMPTY, handler: suspend Moved.(Character) -> Unit) {
-    val fromTile: Any = if (from == Tile.EMPTY) "*" else from
-    val toTile: Any = if (to == Tile.EMPTY) "*" else to
+fun characterMove(from: CoordGrid = CoordGrid.EMPTY, to: CoordGrid = CoordGrid.EMPTY, handler: suspend Moved.(Character) -> Unit) {
+    val fromTile: Any = if (from == CoordGrid.EMPTY) "*" else from
+    val toTile: Any = if (to == CoordGrid.EMPTY) "*" else to
     Events.handle("player_move", "player", fromTile, toTile, handler = handler)
     Events.handle("npc_move", "*", fromTile, toTile, handler = handler)
 }

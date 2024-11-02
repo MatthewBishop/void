@@ -10,7 +10,7 @@ import world.gregs.voidps.engine.entity.character.setAnimation
 import world.gregs.voidps.engine.inv.inventory
 import world.gregs.voidps.engine.inv.remove
 import world.gregs.voidps.engine.suspend.pause
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.world.interact.dialogue.type.makeAmount
 import world.gregs.voidps.world.interact.entity.gfx.areaGraphic
 
@@ -25,7 +25,7 @@ itemOnObjectOperate(obj = "altar*", itemDef = "prayer_xp") {
     }
 }
 
-suspend fun ItemOnObject.offer(amount: Int, tile: Tile) {
+suspend fun ItemOnObject.offer(amount: Int, tile: CoordGrid) {
     val xp = item.def["prayer_xp", 0.0]
     repeat(amount) {
         if (player.inventory.remove(item.id)) {

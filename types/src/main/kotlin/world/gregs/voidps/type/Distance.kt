@@ -10,12 +10,12 @@ object Distance {
     /**
      * Get the nearest point for [tile] with [width], [height] to [target]
      */
-    fun getNearest(tile: Tile, width: Int, height: Int, target: Tile) = tile.copy(
+    fun getNearest(tile: CoordGrid, width: Int, height: Int, target: CoordGrid) = tile.copy(
         x = getNearest(tile.x, width, target.x),
         y = getNearest(tile.y, height, target.y)
     )
 
-    fun Rectangle.nearestTo(tile: Tile) = Tile(
+    fun Rectangle.nearestTo(tile: CoordGrid) = CoordGrid(
         x = getNearest(minX, width, tile.x),
         y = getNearest(minY, height, tile.y)
     )
@@ -70,7 +70,7 @@ object Distance {
     /**
      * @return the length of a line between the two points [first] & [second]
      */
-    fun euclidean(first: Tile, second: Tile, level: Boolean = true): Double {
+    fun euclidean(first: CoordGrid, second: CoordGrid, level: Boolean = true): Double {
         if (!level) {
             return euclidean(first.x, first.y, second.x, second.y)
         }

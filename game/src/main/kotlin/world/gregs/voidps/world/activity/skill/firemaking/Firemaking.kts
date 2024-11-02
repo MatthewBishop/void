@@ -30,7 +30,7 @@ import world.gregs.voidps.engine.inv.remove
 import world.gregs.voidps.engine.suspend.awaitDialogues
 import world.gregs.voidps.engine.suspend.pause
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 val floorItems: FloorItems by inject()
 val objects: GameObjects by inject()
@@ -115,7 +115,7 @@ fun Player.canLight(log: String, fire: Fire, item: FloorItem): Boolean {
 
 val directions = listOf(Direction.WEST, Direction.EAST, Direction.SOUTH, Direction.NORTH)
 
-fun spawnFire(player: Player, tile: Tile, fire: Fire) {
+fun spawnFire(player: Player, tile: CoordGrid, fire: Fire) {
     val obj = objects.add("fire_${fire.colour}", tile, shape = ObjectShape.CENTRE_PIECE_STRAIGHT, rotation = 0, ticks = fire.life)
     floorItems.add(tile, "ashes", revealTicks = fire.life, disappearTicks = 60, owner = "")
     val interact = player.mode as Interact

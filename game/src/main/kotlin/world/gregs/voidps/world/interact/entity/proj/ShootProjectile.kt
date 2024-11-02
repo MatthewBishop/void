@@ -10,7 +10,7 @@ import world.gregs.voidps.engine.entity.character.size
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.network.login.protocol.encode.zone.ProjectileAddition
 import world.gregs.voidps.type.Delta
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.world.interact.entity.proj.ShootProjectile.DEFAULT_CURVE
 import world.gregs.voidps.world.interact.entity.proj.ShootProjectile.DEFAULT_DELAY
 import world.gregs.voidps.world.interact.entity.proj.ShootProjectile.DEFAULT_OFFSET
@@ -23,7 +23,7 @@ object ShootProjectile {
     const val DEFAULT_DELAY = 0
 }
 
-fun Tile.shoot(
+fun CoordGrid.shoot(
     id: String,
     target: Character,
     delay: Int? = null,
@@ -46,9 +46,9 @@ fun Tile.shoot(
     sourceTile = this,
     width = width)
 
-fun Tile.shoot(
+fun CoordGrid.shoot(
     id: String,
-    tile: Tile,
+    tile: CoordGrid,
     delay: Int? = null,
     flightTime: Int? = null,
     height: Int? = null,
@@ -91,7 +91,7 @@ fun Character.shoot(
 
 fun Character.shoot(
     id: String,
-    tile: Tile,
+    tile: CoordGrid,
     delay: Int? = null,
     flightTime: Int? = null,
     height: Int? = null,
@@ -112,14 +112,14 @@ fun Character.shoot(
 
 private fun projectile(
     id: String,
-    sourceTile: Tile,
+    sourceTile: CoordGrid,
     delay: Int?,
     flightTime: Int?,
     startHeight: Int?,
     endHeight: Int?,
     curve: Int?,
     offset: Int?,
-    targetTile: Tile,
+    targetTile: CoordGrid,
     target: Character? = null,
     width: Int = 1,
     sourceHeight: Int = 0,
@@ -149,7 +149,7 @@ private fun projectile(
 
 private fun sendProjectile(
     id: String,
-    tile: Tile,
+    tile: CoordGrid,
     direction: Delta,
     target: Character? = null,
     delay: Int = DEFAULT_DELAY,
@@ -179,7 +179,7 @@ private fun sendProjectile(
         offset = offset))
 }
 
-private fun getFlightTime(definition: GraphicDefinition, tile: Tile, target: Tile, flightTime: Int?): Int {
+private fun getFlightTime(definition: GraphicDefinition, tile: CoordGrid, target: CoordGrid, flightTime: Int?): Int {
     if (flightTime != null) {
         return flightTime
     }

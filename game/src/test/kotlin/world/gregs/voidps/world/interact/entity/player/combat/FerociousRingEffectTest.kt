@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.inv.equipment
 import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 internal class FerociousRingEffectTest : CombatFormulaTest() {
 
@@ -26,10 +26,10 @@ internal class FerociousRingEffectTest : CombatFormulaTest() {
 
     @Test
     fun `Ring against target in dungeon multiplies max hit`() {
-        val player = createPlayer("source", Tile(1660, 5257))
+        val player = createPlayer("source", CoordGrid(1660, 5257))
         player.levels.set(Skill.Strength, 99)
         player.equipment.set(EquipSlot.Ring.index, "ferocious_ring_5")
-        val target = createPlayer("target", Tile(1660, 5257))
+        val target = createPlayer("target", CoordGrid(1660, 5257))
 
         val (offensiveRating, defensiveRating, maxHit, chance) = calculate(player, target, "melee")
 

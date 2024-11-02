@@ -13,7 +13,7 @@ import world.gregs.voidps.engine.suspend.Suspension
 import world.gregs.voidps.engine.timer.TimerSlot
 import world.gregs.voidps.engine.timer.Timers
 import world.gregs.voidps.network.login.protocol.visual.NPCVisuals
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import kotlin.coroutines.Continuation
 
 /**
@@ -21,7 +21,7 @@ import kotlin.coroutines.Continuation
  */
 data class NPC(
     val id: String = "",
-    override var tile: Tile = Tile.EMPTY,
+    override var tile: CoordGrid = CoordGrid.EMPTY,
     override val levels: Levels = Levels()
 ) : Character {
 
@@ -46,7 +46,7 @@ data class NPC(
     override lateinit var collision: CollisionStrategy
     override lateinit var visuals: NPCVisuals
 
-    constructor(id: String = "", tile: Tile = Tile.EMPTY, index: Int) : this(id, tile) {
+    constructor(id: String = "", tile: CoordGrid = CoordGrid.EMPTY, index: Int) : this(id, tile) {
         this.index = index
     }
 

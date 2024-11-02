@@ -11,7 +11,7 @@ import world.gregs.voidps.engine.entity.obj.replace
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.engine.timer.toTicks
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.world.interact.entity.obj.door.Gate.isGate
 import world.gregs.voidps.world.interact.entity.sound.playSound
 import java.util.concurrent.TimeUnit
@@ -147,7 +147,7 @@ object Door {
     /**
      * Get position of tile with [rotation] after being rotated [anticlockwise]
      */
-    fun tile(tile: Tile, rotation: Int, anticlockwise: Int): Tile {
+    fun tile(tile: CoordGrid, rotation: Int, anticlockwise: Int): CoordGrid {
         val orientation = Direction.cardinal[rotate(rotation, -anticlockwise)]
         return tile.add(orientation.delta)
     }

@@ -2,7 +2,7 @@ package world.gregs.voidps.bot.path
 
 import world.gregs.voidps.bot.navigation.graph.NavigationGraph
 import world.gregs.voidps.engine.data.definition.AreaDefinition
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 class ConditionalStrategy(
     val graph: NavigationGraph,
@@ -12,7 +12,7 @@ class ConditionalStrategy(
     var area: AreaDefinition? = null
 
     override fun reached(node: Any): Boolean {
-        if (node !is Tile) {
+        if (node !is CoordGrid) {
             return false
         }
         for (area in graph.areas(node)) {

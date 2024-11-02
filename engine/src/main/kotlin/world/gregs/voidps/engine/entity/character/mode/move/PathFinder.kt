@@ -8,7 +8,7 @@ import world.gregs.voidps.engine.entity.character.Character
 import world.gregs.voidps.engine.entity.character.mode.move.target.TargetStrategy
 import world.gregs.voidps.engine.entity.character.npc.NPC
 import world.gregs.voidps.engine.entity.character.size
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 fun PathFinder.findPath(character: Character, strategy: TargetStrategy, shape: Int?) = findPath(
     srcX = character.tile.x,
@@ -49,7 +49,7 @@ fun LineValidator.hasLineOfSight(character: Character, target: Character) = hasL
     destHeight = target.size
 )
 
-fun LineValidator.hasLineOfSight(character: Character, target: Tile, width: Int, height: Int) = hasLineOfSight(
+fun LineValidator.hasLineOfSight(character: Character, target: CoordGrid, width: Int, height: Int) = hasLineOfSight(
     srcX = character.tile.x,
     srcZ = character.tile.y,
     level = character.tile.level,
@@ -60,7 +60,7 @@ fun LineValidator.hasLineOfSight(character: Character, target: Tile, width: Int,
     destHeight = height
 )
 
-fun LineValidator.hasLineOfWalk(character: Character, target: Tile, width: Int, height: Int) = hasLineOfWalk(
+fun LineValidator.hasLineOfWalk(character: Character, target: CoordGrid, width: Int, height: Int) = hasLineOfWalk(
     srcX = character.tile.x,
     srcZ = character.tile.y,
     level = character.tile.level,

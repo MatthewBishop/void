@@ -20,7 +20,7 @@ import world.gregs.voidps.engine.entity.character.watch
 import world.gregs.voidps.engine.entity.item.Item
 import world.gregs.voidps.engine.map.Overlap
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 /**
  * Keeps [character] within attack range of [target]
@@ -89,7 +89,7 @@ class CombatMovement(
 
     private fun retreat(character: NPC): Boolean {
         val wanderRadius = character.def["wander_radius", 5]
-        val spawn: Tile = character["respawn_tile"] ?: return false
+        val spawn: CoordGrid = character["respawn_tile"] ?: return false
         if (!character.tile.within(spawn, wanderRadius)) {
             character.walkTo(spawn)
             character.stop("in_combat")

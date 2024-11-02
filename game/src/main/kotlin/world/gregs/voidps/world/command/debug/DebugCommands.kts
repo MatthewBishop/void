@@ -28,8 +28,8 @@ import world.gregs.voidps.engine.timer.timerTick
 import world.gregs.voidps.network.login.protocol.encode.clearCamera
 import world.gregs.voidps.network.login.protocol.encode.npcDialogueHead
 import world.gregs.voidps.network.login.protocol.encode.playerDialogueHead
-import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.CoordGrid
+import world.gregs.voidps.type.ZoneKey
 import world.gregs.voidps.world.interact.dialogue.sendLines
 import world.gregs.voidps.world.interact.dialogue.type.npc
 import world.gregs.voidps.world.interact.entity.gfx.areaGraphic
@@ -58,7 +58,7 @@ adminCommand("move_to") {
     val test = content.split(" ")
     val viewport = player.viewport!!
     val result = viewport.lastLoadZone.safeMinus(viewport.zoneRadius, viewport.zoneRadius)
-    val local = Tile(test[0].toInt(), test[1].toInt()).minus(result.tile)
+    val local = CoordGrid(test[0].toInt(), test[1].toInt()).minus(result.tile)
     println(local)
     player.moveCamera(local, test[2].toInt(), test[3].toInt(), test[4].toInt())
 }
@@ -67,7 +67,7 @@ adminCommand("look_at") {
     val test = content.split(" ")
     val viewport = player.viewport!!
     val result = viewport.lastLoadZone.safeMinus(viewport.zoneRadius, viewport.zoneRadius)
-    val local = Tile(test[0].toInt(), test[1].toInt()).minus(result.tile)
+    val local = CoordGrid(test[0].toInt(), test[1].toInt()).minus(result.tile)
     println(local)
     player.turnCamera(local, test[2].toInt(), test[3].toInt(), test[4].toInt())
 }
@@ -107,7 +107,7 @@ modCommand("variables", "vars") {
 
 adminCommand("pf_bench") {
     val pf = PathFinder(flags = collisions, useRouteBlockerFlags = true)
-    val start = Tile(3270, 3331, 0)
+    val start = CoordGrid(3270, 3331, 0)
     val timeShort = measureTimeMillis {
         repeat(100_000) {
             pf.findPath(0, start.x, start.y, 3280, 3321)
@@ -201,17 +201,17 @@ adminCommand("col") {
 operator fun Array<IntArray?>.get(baseX: Int, baseY: Int, localX: Int, localY: Int, z: Int): Int {
     val x = baseX + localX
     val y = baseY + localY
-    val zone = this[Zone.tileIndex(x, y, z)] ?: return 0
-    return zone[Tile.index(x, y)]
+    val zone = this[ZoneKey.tileIndex(x, y, z)] ?: return 0
+    return zone[CoordGrid.index(x, y)]
 }
 
 adminCommand("walkToBank") {
-    val east = Tile(3179, 3433).toCuboid(15, 14)
-    val west = Tile(3250, 3417).toCuboid(7, 8)
+    val east = CoordGrid(3179, 3433).toCuboid(15, 14)
+    val west = CoordGrid(3250, 3417).toCuboid(7, 8)
     val dijkstra: Dijkstra = get()
     val strategy = object : NodeTargetStrategy() {
         override fun reached(node: Any): Boolean {
-            return if (node is Tile) east.contains(node) || west.contains(node) else false
+            return if (node is CoordGrid) east.contains(node) || west.contains(node) else false
         }
     }
     println("Path took ${

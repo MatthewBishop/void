@@ -7,7 +7,7 @@ import world.gregs.voidps.cache.Cache
 import world.gregs.voidps.cache.DefinitionDecoder
 import world.gregs.voidps.cache.Index.MAPS
 import world.gregs.voidps.cache.definition.data.MapDefinition
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 
 class MapDecoder(val xteas: Map<Int, IntArray>? = null) : DefinitionDecoder<MapDefinition>(MAPS) {
 
@@ -41,7 +41,7 @@ class MapDecoder(val xteas: Map<Int, IntArray>? = null) : DefinitionDecoder<MapD
                 if (archiveId == -1) {
                     continue
                 }
-                regionHashes[archiveId] = Region.id(regionX, regionY)
+                regionHashes[archiveId] = MapSquareKey.id(regionX, regionY)
             }
         }
         return super.load(cache)

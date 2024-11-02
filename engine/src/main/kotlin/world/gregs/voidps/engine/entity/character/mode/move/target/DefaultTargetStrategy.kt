@@ -1,10 +1,10 @@
 package world.gregs.voidps.engine.entity.character.mode.move.target
 
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 object DefaultTargetStrategy : TargetStrategy {
     override val bitMask = 0
-    override val tile = Tile.EMPTY
+    override val tile = CoordGrid.EMPTY
     override val width: Int = 1
     override val height: Int = 1
     override val rotation = 0

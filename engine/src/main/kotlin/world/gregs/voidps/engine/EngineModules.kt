@@ -26,7 +26,7 @@ import world.gregs.voidps.engine.map.collision.GameObjectCollisionAdd
 import world.gregs.voidps.engine.map.collision.GameObjectCollisionRemove
 import world.gregs.voidps.engine.map.zone.DynamicZones
 import world.gregs.voidps.network.client.ConnectionQueue
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.yaml.Yaml
 import world.gregs.yaml.read.YamlReaderConfiguration
 import java.io.File
@@ -43,7 +43,7 @@ val engineModule = module {
         SaveQueue(get(), SafeStorage(File(getProperty<String>("storageFailDirectory"))))
     }
     single {
-        val homeTile = Tile(
+        val homeTile = CoordGrid(
             x = getIntProperty("homeX", 0),
             y = getIntProperty("homeY", 0),
             level = getIntProperty("homeLevel", 0)

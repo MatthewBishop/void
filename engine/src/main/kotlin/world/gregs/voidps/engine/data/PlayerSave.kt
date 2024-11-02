@@ -8,12 +8,12 @@ import world.gregs.voidps.engine.entity.character.player.skill.exp.Experience
 import world.gregs.voidps.engine.entity.character.player.skill.level.Levels
 import world.gregs.voidps.engine.entity.item.Item
 import world.gregs.voidps.engine.inv.Inventories
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 data class PlayerSave(
     val name: String,
     val password: String,
-    val tile: Tile,
+    val tile: CoordGrid,
     val experience: DoubleArray,
     val blocked: List<Skill>,
     val levels: IntArray,

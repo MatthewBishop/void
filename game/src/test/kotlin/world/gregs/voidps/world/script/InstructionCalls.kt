@@ -21,7 +21,7 @@ import world.gregs.voidps.engine.get
 import world.gregs.voidps.engine.inv.Inventory
 import world.gregs.voidps.engine.inv.inventory
 import world.gregs.voidps.network.client.instruction.*
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 /**
  * Helper functions to make fake instruction calls in [WorldTest] tests
@@ -150,7 +150,7 @@ fun Player.playerOption(player: Player, option: String) = runTest {
     instructions.send(InteractPlayer(player.index, options.indexOf(option)))
 }
 
-fun Player.walk(toTile: Tile) = runTest {
+fun Player.walk(toTile: CoordGrid) = runTest {
     instructions.send(Walk(toTile.x, toTile.y))
 }
 

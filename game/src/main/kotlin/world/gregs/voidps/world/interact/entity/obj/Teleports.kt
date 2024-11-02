@@ -12,7 +12,7 @@ import world.gregs.voidps.engine.getProperty
 import world.gregs.voidps.engine.suspend.delay
 import world.gregs.voidps.engine.timedLoad
 import world.gregs.voidps.type.Delta
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.yaml.Yaml
 import world.gregs.yaml.read.YamlReaderConfiguration
 
@@ -27,7 +27,7 @@ class Teleports {
         return teleport(objectOption, objectOption.player, objectOption.def, objectOption.target.tile, option)
     }
 
-    suspend fun teleport(context: CharacterContext, player: Player, def: ObjectDefinition, targetTile: Tile, option: String): Boolean {
+    suspend fun teleport(context: CharacterContext, player: Player, def: ObjectDefinition, targetTile: CoordGrid, option: String): Boolean {
         val id = def.stringId.ifEmpty { def.id.toString() }
         val definition = teleports[option]?.get(targetTile.id) ?: return false
         if (definition.id != id) {
@@ -40,7 +40,7 @@ class Teleports {
         }
         val tile = when {
             definition.delta != Delta.EMPTY -> player.tile.add(definition.delta)
-            definition.to != Tile.EMPTY -> definition.to
+            definition.to != CoordGrid.EMPTY -> definition.to
             else -> player.tile
         }
         val delay = teleport.delay
@@ -53,7 +53,7 @@ class Teleports {
         return true
     }
 
-    fun contains(id: String, tile: Tile, option: String): Boolean {
+    fun contains(id: String, tile: CoordGrid, option: String): Boolean {
         val teleport = teleports[option]?.get(tile.id) ?: return false
         return teleport.id == id
     }
@@ -76,7 +76,7 @@ class Teleports {
             val config = object : YamlReaderConfiguration() {
                 override fun add(list: MutableList<Any>, value: Any, parentMap: String?) {
                     val map = value as Map<String, Any>
-                    val tile = map["tile"] as Tile
+                    val tile = map["tile"] as CoordGrid
                     val option = map["option"] as String
                     val id = (map["id"] as? Int)?.toString() ?: map["id"] as String
                     val definition = TeleportDefinition(
@@ -84,7 +84,7 @@ class Teleports {
                         option = option,
                         tile = tile,
                         delta = map["delta"] as? Delta ?: Delta.EMPTY,
-                        to = map["to"] as? Tile ?: Tile.EMPTY
+                        to = map["to"] as? CoordGrid ?: CoordGrid.EMPTY
                     )
                     super.add(list, definition, parentMap)
                 }
@@ -92,7 +92,7 @@ class Teleports {
                 override fun set(map: MutableMap<String, Any>, key: String, value: Any, indent: Int, parentMap: String?) {
                     super.set(map, key, when (key) {
                         "delta" -> Delta.fromMap(value as Map<String, Any>)
-                        "tile", "to" -> Tile.fromMap(value as Map<String, Any>)
+                        "tile", "to" -> CoordGrid.fromMap(value as Map<String, Any>)
                         else -> value
                     }, indent, parentMap)
                 }
@@ -111,8 +111,8 @@ class Teleports {
     data class TeleportDefinition(
         val id: String,
         val option: String,
-        val tile: Tile,
+        val tile: CoordGrid,
         val delta: Delta = Delta.EMPTY,
-        val to: Tile = Tile.EMPTY
+        val to: CoordGrid = CoordGrid.EMPTY
     )
 }

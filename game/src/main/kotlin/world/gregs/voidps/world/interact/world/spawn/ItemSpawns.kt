@@ -5,7 +5,7 @@ import world.gregs.voidps.engine.entity.World
 import world.gregs.voidps.engine.entity.item.floor.FloorItems
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.engine.getProperty
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.engine.timedLoad
 import world.gregs.yaml.Yaml
 import world.gregs.yaml.read.YamlReaderConfiguration
@@ -16,11 +16,11 @@ class ItemSpawns(
     val size: Int
         get() = zones.size
 
-    fun set(tile: Tile, spawn: ItemSpawn) {
+    fun set(tile: CoordGrid, spawn: ItemSpawn) {
         zones[tile.id] = spawn
     }
 
-    fun get(tile: Tile): ItemSpawn? = zones[tile.id]
+    fun get(tile: CoordGrid): ItemSpawn? = zones[tile.id]
 
     fun clear() {
         zones.clear()
@@ -45,7 +45,7 @@ fun loadItemSpawns(
                     return
                 }
                 val id = value["id"] as String
-                val tile = Tile.fromMap(value)
+                val tile = CoordGrid.fromMap(value)
                 val amount = value["amount"] as? Int ?: value["charges"] as? Int ?: 1
                 val delay = value["delay"] as? Int ?: 60
                 spawns.set(tile, ItemSpawn(id, amount, delay))

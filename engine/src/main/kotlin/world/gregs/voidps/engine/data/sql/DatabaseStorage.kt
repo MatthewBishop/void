@@ -13,7 +13,7 @@ import world.gregs.voidps.engine.entity.character.player.chat.clan.Clan
 import world.gregs.voidps.engine.entity.character.player.chat.clan.ClanRank
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.item.Item
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 class DatabaseStorage(
     private val definitions: (String) -> ItemDefinition = { ItemDefinition.EMPTY }
@@ -102,7 +102,7 @@ class DatabaseStorage(
         return@transaction PlayerSave(
             name = playerRow[AccountsTable.name],
             password = playerRow[AccountsTable.passwordHash],
-            tile = Tile(playerRow[AccountsTable.tile]),
+            tile = CoordGrid(playerRow[AccountsTable.tile]),
             experience = experience,
             blocked = blocked.map { Skill.entries[it] },
             levels = levels,

@@ -25,7 +25,7 @@ import world.gregs.voidps.engine.map.region.RegionRetry
 import world.gregs.voidps.network.login.protocol.visual.update.player.MoveType
 import world.gregs.voidps.type.Delta
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.type.equals
 import kotlin.math.sign
 
@@ -192,7 +192,7 @@ open class Movement(
         /**
          * Alternative comparator as an updated Step with no collision won't match a regular tile if using Tile.equals()
          */
-        fun equals(one: Tile, two: Tile) = one.level == two.level && one.x == two.x && one.y == two.y
+        fun equals(one: CoordGrid, two: CoordGrid) = one.level == two.level && one.x == two.x && one.y == two.y
 
         fun move(character: Character, delta: Delta) {
             val from = character.tile

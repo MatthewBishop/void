@@ -6,7 +6,7 @@ import world.gregs.voidps.cache.Index
 import world.gregs.voidps.cache.definition.decoder.MapObjectDecoder
 import world.gregs.voidps.engine.data.definition.ObjectDefinitions
 import world.gregs.voidps.engine.entity.obj.GameObjects
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 import world.gregs.voidps.type.area.Rectangle
 
 /**
@@ -20,7 +20,7 @@ class MapObjectsRotatedDecoder(
     internal var zoneRotation: Int = 0
     internal lateinit var zone: Rectangle
 
-    fun decode(cache: Cache, tiles: LongArray, from: Zone, to: Zone, rotation: Int, keys: IntArray?) {
+    fun decode(cache: Cache, tiles: LongArray, from: ZoneKey, to: ZoneKey, rotation: Int, keys: IntArray?) {
         val objectData = cache.data(Index.MAPS, "l${from.region.x}_${from.region.y}", xtea = keys) ?: return
         val reader = BufferReader(objectData)
         val x = from.tile.x.rem(64)

@@ -4,8 +4,8 @@ import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet
 import world.gregs.voidps.buffer.write.BufferWriter
 import world.gregs.voidps.engine.entity.MAX_PLAYERS
 import world.gregs.voidps.engine.entity.character.player.Player
-import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.CoordGrid
+import world.gregs.voidps.type.ZoneKey
 
 class Viewport {
 
@@ -19,7 +19,7 @@ class Viewport {
     val npcChanges = BufferWriter(3000)
     val npcUpdates = BufferWriter(4000)
 
-    var lastLoadZone: Zone = Zone.EMPTY
+    var lastLoadZone: ZoneKey = ZoneKey.EMPTY
     var loaded: Boolean = false
     var dynamic: Boolean = false
     var size: Int = 0
@@ -38,7 +38,7 @@ class Viewport {
         lastSeen[player.index] = player.tile.id
     }
 
-    fun lastSeen(player: Player): Tile = Tile(lastSeen[player.index])
+    fun lastSeen(player: Player): CoordGrid = CoordGrid(lastSeen[player.index])
 
     fun delta(player: Player) = player.tile.delta(lastSeen(player))
 

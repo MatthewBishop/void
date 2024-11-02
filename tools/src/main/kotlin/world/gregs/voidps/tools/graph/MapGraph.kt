@@ -8,8 +8,8 @@ import world.gregs.voidps.engine.map.collision.Collisions
 import world.gregs.voidps.tools.cache.Xteas
 import world.gregs.voidps.type.Direction
 import world.gregs.voidps.type.Distance
-import world.gregs.voidps.type.Region
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.MapSquareKey
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.type.area.Cuboid
 import world.gregs.voidps.world.interact.entity.obj.door.Door.isDoor
 import java.io.DataOutputStream
@@ -27,12 +27,12 @@ class MapGraph(
 
     fun load(regionId: Int) {
 //        216, 320 - 487, 504
-        val all = mutableSetOf<Tile>()
+        val all = mutableSetOf<CoordGrid>()
         val objs = mutableSetOf<GameObject>()
-        val links = mutableSetOf<Triple<Tile, Tile, Int>>()
+        val links = mutableSetOf<Triple<CoordGrid, CoordGrid, Int>>()
         val strategy = SmallTraversal
 
-        val reg = Region(27, 40).toLevel(0)
+        val reg = MapSquareKey(27, 40).toLevel(0)
         runBlocking {
             for (region in reg.toCuboid(width = 33, height = 23).toRegions()) {
                 // TODO better way of determining empty maps
@@ -76,11 +76,11 @@ class MapGraph(
 
     fun getFloodedTiles(
         traversal: TileTraversalStrategy,
-        start: Tile,
+        start: CoordGrid,
         area: Cuboid
-    ): Map<Tile, Int> {
-        val distances = mutableMapOf<Tile, Int>()
-        val queue = LinkedList<Tile>()
+    ): Map<CoordGrid, Int> {
+        val distances = mutableMapOf<CoordGrid, Int>()
+        val queue = LinkedList<CoordGrid>()
         queue.add(start)
         distances[start] = 0
         while (queue.isNotEmpty()) {
@@ -96,23 +96,23 @@ class MapGraph(
         return distances
     }
 
-    fun euclidean(first: Tile, second: Tile): Double {
+    fun euclidean(first: CoordGrid, second: CoordGrid): Double {
         return sqrt(((first.x - second.x) * (first.x - second.x) + (first.y - second.y) * (first.y - second.y)).toDouble())
     }
 
-    fun centroid(tiles: Set<Tile>): Tile {
+    fun centroid(tiles: Set<CoordGrid>): CoordGrid {
         var x = 0
         var y = 0
         for (tile in tiles) {
             x += tile.x
             y += tile.y
         }
-        return Tile(x / tiles.size, y / tiles.size)
+        return CoordGrid(x / tiles.size, y / tiles.size)
     }
 
-    fun getCenterPoints(traversal: TileTraversalStrategy, area: Cuboid): List<Tile> {
-        val list = mutableListOf<Tile>()
-        val visitedTiles = mutableSetOf<Tile>()
+    fun getCenterPoints(traversal: TileTraversalStrategy, area: Cuboid): List<CoordGrid> {
+        val list = mutableListOf<CoordGrid>()
+        val visitedTiles = mutableSetOf<CoordGrid>()
         for (tile in area) {
             if (!visitedTiles.contains(tile) && !traversal.blocked(collision, tile, 1, Direction.NONE)) {
                 val knots = getFloodedTiles(traversal, tile, area).keys
@@ -131,11 +131,11 @@ class MapGraph(
 
     fun getStaticLinks(
         traversal: TileTraversalStrategy,
-        points: Set<Tile>,
+        points: Set<CoordGrid>,
         clusterSize: Int
-    ): Set<Triple<Tile, Tile, Int>> {
-        val map = mutableMapOf<Tile, MutableSet<Tile>>()
-        val set = mutableSetOf<Triple<Tile, Tile, Int>>()
+    ): Set<Triple<CoordGrid, CoordGrid, Int>> {
+        val map = mutableMapOf<CoordGrid, MutableSet<CoordGrid>>()
+        val set = mutableSetOf<Triple<CoordGrid, CoordGrid, Int>>()
         val cluster = clusterSize * 3
         for (start in points) {
             val tiles = getFloodedTiles(
@@ -143,7 +143,7 @@ class MapGraph(
                 start,
                 start.zone.tile.minus(clusterSize, clusterSize).toCuboid(width = cluster, height = cluster)
             )
-            val visited = mutableSetOf<Tile>()
+            val visited = mutableSetOf<CoordGrid>()
             for ((end, distance) in tiles) {
                 if (start == end || visited.contains(end) || !points.contains(end) || distance > clusterSize * 2 /*|| outOfView(start, end)*/) {
                     continue
@@ -160,15 +160,15 @@ class MapGraph(
         return set
     }
 
-    fun outOfView(start: Tile, end: Tile) = Distance.within(start.x, start.y, end.x, end.y, 15)
+    fun outOfView(start: CoordGrid, end: CoordGrid) = Distance.within(start.x, start.y, end.x, end.y, 15)
 
     fun getUnlinkedPoints(
-        points: Set<Tile>,
-        links: Set<Triple<Tile, Tile, Int>>
-    ): Set<Tile> {
+        points: Set<CoordGrid>,
+        links: Set<Triple<CoordGrid, CoordGrid, Int>>
+    ): Set<CoordGrid> {
         val combined = links.map { it.first }.toMutableSet()
         combined.addAll(links.map { it.second })
-        val unreachable = mutableSetOf<Tile>()
+        val unreachable = mutableSetOf<CoordGrid>()
         for (point in points) {
             if (combined.contains(point)) {
                 continue
@@ -178,7 +178,7 @@ class MapGraph(
         return unreachable
     }
 
-    private fun writeToFile(path: String, points: Set<Tile>, links: Set<Triple<Tile, Tile, Int>>) {
+    private fun writeToFile(path: String, points: Set<CoordGrid>, links: Set<Triple<CoordGrid, CoordGrid, Int>>) {
         val file = File(path)
         val stream = DataOutputStream(file.outputStream())
         stream.writeInt(points.size)
@@ -194,8 +194,8 @@ class MapGraph(
         stream.close()
     }
 
-    fun getPortals(objects: Set<GameObject>): Set<Pair<Tile, Tile>> {
-        val portals = mutableSetOf<Pair<Tile, Tile>>()
+    fun getPortals(objects: Set<GameObject>): Set<Pair<CoordGrid, CoordGrid>> {
+        val portals = mutableSetOf<Pair<CoordGrid, CoordGrid>>()
         for (gameObject in objects) {
             if (gameObject.def.isDoor() && gameObject.def.options?.any { it?.contains("open", true) == true } == true) {
                 val dir = Direction.cardinal[(gameObject.rotation + 3) and 0x3]
@@ -212,9 +212,9 @@ class MapGraph(
          |  \
      d---a-/-b
      */
-    fun getDuplicatePaths(links: Set<Triple<Tile, Tile, Int>>): Set<Triple<Tile, Tile, Int>> {
-        val duplicates = mutableSetOf<Triple<Tile, Tile, Int>>()
-        val map = mutableMapOf<Tile, MutableSet<Tile>>()
+    fun getDuplicatePaths(links: Set<Triple<CoordGrid, CoordGrid, Int>>): Set<Triple<CoordGrid, CoordGrid, Int>> {
+        val duplicates = mutableSetOf<Triple<CoordGrid, CoordGrid, Int>>()
+        val map = mutableMapOf<CoordGrid, MutableSet<CoordGrid>>()
         links.forEach {
             map.getOrPut(it.first) { mutableSetOf() }.add(it.second)
             map.getOrPut(it.second) { mutableSetOf() }.add(it.first)

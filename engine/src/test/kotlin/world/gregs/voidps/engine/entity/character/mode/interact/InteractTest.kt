@@ -34,8 +34,8 @@ import world.gregs.voidps.engine.script.KoinMock
 import world.gregs.voidps.engine.suspend.TickSuspension
 import world.gregs.voidps.network.login.protocol.visual.NPCVisuals
 import world.gregs.voidps.network.login.protocol.visual.PlayerVisuals
-import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.CoordGrid
+import world.gregs.voidps.type.ZoneKey
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -71,18 +71,18 @@ internal class InteractTest : KoinMock() {
         mockkStatic("world.gregs.voidps.engine.client.ui.InterfacesKt")
         approached = false
         operated = false
-        player = spyk(Player(tile = Tile(10, 11)))
+        player = spyk(Player(tile = CoordGrid(10, 11)))
         player.interfaces = mockk(relaxed = true)
         every { player.close(null) } returns true
         every { player.interfaces.get(any()) } returns null
         player.visuals = PlayerVisuals(0, BodyParts())
         player.collision = CollisionStrategies.Normal
-        target = NPC(tile = Tile(10, 10))
+        target = NPC(tile = CoordGrid(10, 10))
         target.visuals = NPCVisuals(0)
         target.collision = CollisionStrategies.Normal
         target.def = NPCDefinition.EMPTY
         declareMock<AreaDefinitions> {
-            every { get(any<Zone>()) } returns emptySet()
+            every { get(any<ZoneKey>()) } returns emptySet()
         }
     }
 
@@ -122,7 +122,7 @@ internal class InteractTest : KoinMock() {
             interact.tick()
         }
 
-        assertEquals(Tile(9, 10), player.tile)
+        assertEquals(CoordGrid(9, 10), player.tile)
         assertTrue(operated)
     }
 
@@ -155,7 +155,7 @@ internal class InteractTest : KoinMock() {
             assertFalse(operated)
             interact.tick()
         }
-        assertEquals(Tile(10, 11), player.tile)
+        assertEquals(CoordGrid(10, 11), player.tile)
         assertTrue(operated)
     }
 
@@ -180,7 +180,7 @@ internal class InteractTest : KoinMock() {
             }
 
             assertTrue(operated)
-            assertEquals(Tile(10, 11), player.tile)
+            assertEquals(CoordGrid(10, 11), player.tile)
             interact.tick()
             assertEquals(EmptyMode, player.mode)
         }

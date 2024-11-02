@@ -1,6 +1,6 @@
 package world.gregs.voidps.tools.map.render
 
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import java.awt.image.BufferedImage
 import java.io.File
 import java.io.IOException
@@ -16,7 +16,7 @@ object Stitch {
         val images = File("./images/").listFiles()
         val regions = images?.map {
             val id = it.nameWithoutExtension.toInt()
-            Region(id) to it
+            MapSquareKey(id) to it
         } ?: return
         val minX = regions.minByOrNull { it.first.x }!!.first.x
         val maxX = regions.maxByOrNull { it.first.x }!!.first.x

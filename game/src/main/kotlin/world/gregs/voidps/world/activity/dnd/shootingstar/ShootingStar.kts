@@ -35,7 +35,7 @@ import world.gregs.voidps.engine.timer.timerStop
 import world.gregs.voidps.engine.timer.timerTick
 import world.gregs.voidps.engine.timer.toTicks
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.type.random
 import world.gregs.voidps.world.activity.dnd.shootingstar.ShootingStarHandler.currentActiveObject
 import world.gregs.voidps.world.activity.dnd.shootingstar.ShootingStarHandler.currentStarTile
@@ -63,7 +63,7 @@ worldSpawn {
 
 fun eventUpdate() {
     World.queue("shooting_star_event_timer", startEvent) {
-        if (currentStarTile != Tile.EMPTY) {
+        if (currentStarTile != CoordGrid.EMPTY) {
             cleanseEvent(true)
             logger.info { "There was already an active star, deleted it and started a new event" }
         }
@@ -77,7 +77,7 @@ fun startCrashedStarEvent() {
     currentStarTile = location.tile
     val tier = random.nextInt(1, 9)
     logger.info { "Crashed star event has started at: $location (${currentStarTile.x}, ${currentStarTile.y}) tier ${tier}." }
-    val shootingStarShadow: NPC? = npcs.add("shooting_star_shadow", Tile(currentStarTile.x, currentStarTile.y + 6), Direction.NONE)
+    val shootingStarShadow: NPC? = npcs.add("shooting_star_shadow", CoordGrid(currentStarTile.x, currentStarTile.y + 6), Direction.NONE)
     shootingStarShadow?.walkTo(currentStarTile, noCollision = true, noRun = true)
     areaSound("star_meteor_falling", currentStarTile, radius = 15, delay = 20)
     World.queue("awaiting_shadow_walk", 6) {
@@ -111,7 +111,7 @@ fun cleanseEvent(forceStopped: Boolean) {
         }
     }
     totalCollected = 0
-    currentStarTile = Tile.EMPTY
+    currentStarTile = CoordGrid.EMPTY
     currentActiveObject = null
     ShootingStarHandler.earlyBird = false
 }

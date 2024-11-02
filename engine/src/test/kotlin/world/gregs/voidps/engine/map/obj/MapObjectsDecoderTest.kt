@@ -14,7 +14,7 @@ import world.gregs.voidps.engine.entity.obj.ObjectShape
 import world.gregs.voidps.engine.map.collision.Collisions
 import world.gregs.voidps.engine.map.collision.GameObjectCollisionAdd
 import world.gregs.voidps.engine.map.collision.GameObjectCollisionRemove
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 class MapObjectsDecoderTest {
 
@@ -44,7 +44,7 @@ class MapObjectsDecoderTest {
         val reader = BufferReader(writer.toArray())
         decoder.decode(reader, tiles, 128, 256)
 
-        val tile = Tile(138, 267, 1)
+        val tile = CoordGrid(138, 267, 1)
         val gameObject = objects.getShape(tile, shape)
 
         assertNotNull(gameObject)
@@ -66,13 +66,13 @@ class MapObjectsDecoderTest {
         val reader = BufferReader(writer.toArray())
         decoder.decode(reader, tiles, 128, 256)
 
-        var tile = Tile(138, 267, 1)
+        var tile = CoordGrid(138, 267, 1)
         var gameObject = objects.getShape(tile, ObjectShape.WALL_CORNER)
         assertNotNull(gameObject)
         assertEquals(0, gameObject!!.rotation)
         assertEquals(123, gameObject.intId)
 
-        tile = Tile(142, 271, 2)
+        tile = CoordGrid(142, 271, 2)
         gameObject = objects.getShape(tile, ObjectShape.WALL_STRAIGHT)
         assertNotNull(gameObject)
         assertEquals(1, gameObject!!.rotation)
@@ -94,13 +94,13 @@ class MapObjectsDecoderTest {
         val reader = BufferReader(writer.toArray())
         decoder.decode(reader, tiles, 192, 64)
 
-        var tile = Tile(202, 75, 0)
+        var tile = CoordGrid(202, 75, 0)
         var gameObject = objects.getShape(tile, ObjectShape.GROUND_DECOR)
         assertNotNull(gameObject)
         assertEquals(3, gameObject!!.rotation)
         assertEquals(123, gameObject.intId)
 
-        tile = Tile(196, 72, 2)
+        tile = CoordGrid(196, 72, 2)
         gameObject = objects.getShape(tile, ObjectShape.ROOF_DIAGONAL)
         assertNotNull(gameObject)
         assertEquals(0, gameObject!!.rotation)

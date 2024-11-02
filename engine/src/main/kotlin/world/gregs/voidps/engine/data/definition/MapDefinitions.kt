@@ -11,8 +11,8 @@ import world.gregs.voidps.engine.entity.obj.GameObjects
 import world.gregs.voidps.engine.map.collision.CollisionDecoder
 import world.gregs.voidps.engine.map.obj.MapObjectsDecoder
 import world.gregs.voidps.engine.map.obj.MapObjectsRotatedDecoder
-import world.gregs.voidps.type.Region
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.MapSquareKey
+import world.gregs.voidps.type.ZoneKey
 
 /**
  * Loads map collision and objects directly, quicker than [MapDecoder]
@@ -37,7 +37,7 @@ class MapDefinitions(
             for (regionY in 0 until 256) {
                 val tiles = loadTiles(cache, regionX, regionY) ?: continue
                 collisions.decode(tiles, regionX shl 6, regionY shl 6)
-                val keys = if (xteas != null) xteas[Region.id(regionX, regionY)] else null
+                val keys = if (xteas != null) xteas[MapSquareKey.id(regionX, regionY)] else null
                 decoder.decode(cache, tiles, regionX, regionY, keys)
                 regions++
             }
@@ -46,7 +46,7 @@ class MapDefinitions(
         return this
     }
 
-    fun loadZone(from: Zone, to: Zone, rotation: Int, xteas: Map<Int, IntArray>? = null) {
+    fun loadZone(from: ZoneKey, to: ZoneKey, rotation: Int, xteas: Map<Int, IntArray>? = null) {
         val start = System.currentTimeMillis()
         val tiles = loadTiles(cache, from.region.x, from.region.y) ?: return
         collisions.decode(tiles, from, to, rotation)

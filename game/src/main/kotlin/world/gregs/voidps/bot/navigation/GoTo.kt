@@ -19,7 +19,7 @@ import world.gregs.voidps.network.client.instruction.InteractInterface
 import world.gregs.voidps.network.client.instruction.InteractNPC
 import world.gregs.voidps.network.client.instruction.InteractObject
 import world.gregs.voidps.network.client.instruction.Walk
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.world.interact.entity.player.energy.energyPercent
 
 private val logger = InlineLogger()
@@ -56,7 +56,7 @@ suspend fun Bot.goToArea(map: AreaDefinition) {
     }
 }
 
-private suspend fun Bot.goTo(strategy: NodeTargetStrategy): Tile? {
+private suspend fun Bot.goTo(strategy: NodeTargetStrategy): CoordGrid? {
     player.waypoints.clear()
     if (strategy.reached(player.tile)) {
         return player.tile
@@ -75,8 +75,8 @@ private fun updateGraph(bot: Bot) {
     val graph: NavigationGraph = get()
     val edges = graph.get(bot.player)
     edges.clear()
-    graph.nodes.filter { it is Tile && it.within(bot.tile, 20) }.forEach {
-        val tile = it as Tile
+    graph.nodes.filter { it is CoordGrid && it.within(bot.tile, 20) }.forEach {
+        val tile = it as CoordGrid
         val distance = tile.distanceTo(bot.tile)
         edges.add(Edge("", bot, tile, distance, listOf(Walk(tile.x, tile.y))))
     }

@@ -5,7 +5,7 @@ import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.player.equip.equipped
 import world.gregs.voidps.engine.entity.obj.GameObject
 import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 fun Smelting.exp(player: Player, bar: String): Double {
     if (bar != "gold_bar") {
@@ -29,7 +29,7 @@ fun oreToBar(ore: String): String {
     return ore.replace("_ore", "_bar")
 }
 
-internal fun furnaceSide(player: Player, target: GameObject): Tile {
+internal fun furnaceSide(player: Player, target: GameObject): CoordGrid {
     return if (player.tile.x > target.tile.x + target.width) {
         target.tile.add(target.width, target.height / 2)
     } else if (player.tile.y > target.tile.y + target.height) {

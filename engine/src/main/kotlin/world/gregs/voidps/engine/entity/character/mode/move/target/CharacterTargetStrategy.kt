@@ -2,13 +2,13 @@ package world.gregs.voidps.engine.entity.character.mode.move.target
 
 import world.gregs.voidps.engine.entity.character.Character
 import world.gregs.voidps.engine.entity.character.size
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 data class CharacterTargetStrategy(
     private val character: Character
 ) : TargetStrategy {
     override val bitMask = 0
-    override val tile: Tile
+    override val tile: CoordGrid
         get() = character.tile
     override val width: Int
         get() = character.size

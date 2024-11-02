@@ -10,13 +10,13 @@ import world.gregs.voidps.network.login.protocol.visual.update.player.MoveType
 import world.gregs.voidps.type.Area
 import world.gregs.voidps.type.Delta
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 fun Character.tele(x: Int = tile.x, y: Int = tile.y, level: Int = tile.level) = tele(Delta(x - tile.x, y - tile.y, level - tile.level))
 
 fun Character.tele(area: Area) = tele(area.random())
 
-fun Character.tele(tile: Tile, clearMode: Boolean = true, clearInterfaces: Boolean = true) = tele(tile.delta(this.tile), clearMode, clearInterfaces)
+fun Character.tele(tile: CoordGrid, clearMode: Boolean = true, clearInterfaces: Boolean = true) = tele(tile.delta(this.tile), clearMode, clearInterfaces)
 
 fun Character.tele(delta: Delta, clearMode: Boolean = true, clearInterfaces: Boolean = true) {
     if (delta == Delta.EMPTY) {

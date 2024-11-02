@@ -8,7 +8,7 @@ import world.gregs.voidps.cache.definition.decoder.MapDecoder
 import world.gregs.voidps.cache.definition.decoder.ObjectDecoderFull
 import world.gregs.voidps.tools.cache.Xteas
 import world.gregs.voidps.tools.property
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 
 object ObjectUsageFinder {
 
@@ -19,7 +19,7 @@ object ObjectUsageFinder {
         val decoder = ObjectDecoderFull(members = false, lowDetail = false).load(cache)
         val maps = MapDecoder(xteas).load(cache)
         for (map in maps) {
-            val region = Region(map.id)
+            val region = MapSquareKey(map.id)
             for (obj in map.objects) {
                 val def = decoder.getOrNull(obj.id) ?: continue
                 if (matches(obj, def)) {

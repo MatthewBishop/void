@@ -26,8 +26,8 @@ import world.gregs.voidps.engine.queue.queue
 import world.gregs.voidps.engine.queue.softQueue
 import world.gregs.voidps.engine.suspend.delay
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Region
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.MapSquareKey
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.world.activity.quest.quest
 import world.gregs.voidps.world.activity.quest.sendQuestComplete
 import world.gregs.voidps.world.activity.quest.startCutscene
@@ -66,7 +66,7 @@ suspend fun CharacterContext.recital() {
 }
 
 val npcs: NPCs by inject()
-val region = Region(12341)
+val region = MapSquareKey(12341)
 
 suspend fun CharacterContext.cutscene() {
     player.open("fade_out")
@@ -74,14 +74,14 @@ suspend fun CharacterContext.cutscene() {
     val offset = instance.offset(region)
     setCutsceneEnd(instance)
     delay(4)
-    player.tele(Tile(3078, 3435).add(offset), clearInterfaces = false)
-    val dororan = npcs.add("dororan_cutscene", Tile(3079, 3435).add(offset), Direction.SOUTH) ?: return
+    player.tele(CoordGrid(3078, 3435).add(offset), clearInterfaces = false)
+    val dororan = npcs.add("dororan_cutscene", CoordGrid(3079, 3435).add(offset), Direction.SOUTH) ?: return
     dororan.setAnimation("dororan_lean_on_door")
     player.setAnimation("player_lean_on_door")
     dororan.face(Direction.NORTH)
     player.face(Direction.NORTH)
-    player.moveCamera(Tile(3079, 3430).add(offset), 280)
-    player.turnCamera(Tile(3079, 3436).add(offset), 230)
+    player.moveCamera(CoordGrid(3079, 3430).add(offset), 280)
+    player.turnCamera(CoordGrid(3079, 3436).add(offset), 230)
     delay(2)
     player.open("fade_in")
     npc<Talk>("dororan_cutscene", "How long have they been in there?")
@@ -96,7 +96,7 @@ suspend fun CharacterContext.cutscene() {
     }
 }
 
-suspend fun CharacterContext.cutsceneMenu(instance: Region) {
+suspend fun CharacterContext.cutsceneMenu(instance: MapSquareKey) {
     npc<Sad>("dororan_cutscene", "This isn't going to work.")
     choice {
         option<Neutral>("Why's that?") {
@@ -110,7 +110,7 @@ suspend fun CharacterContext.cutsceneMenu(instance: Region) {
     }
 }
 
-suspend fun CharacterContext.cutsceneMenu2(instance: Region) {
+suspend fun CharacterContext.cutsceneMenu2(instance: MapSquareKey) {
     npc<Cry>("dororan_cutscene", "What was I thinking? You should go in there and stop them before Gudrun makes a fool of herself.")
     choice {
         option<Neutral>("Okay, I will.") {
@@ -126,7 +126,7 @@ suspend fun CharacterContext.cutsceneMenu2(instance: Region) {
     }
 }
 
-suspend fun CharacterContext.cutsceneMenu3(instance: Region) {
+suspend fun CharacterContext.cutsceneMenu3(instance: MapSquareKey) {
     npc<Sad>("dororan_cutscene", "I can't hear what's happening. Can you hear what's happening?")
     player.setAnimation("player_calm_doroan")
     player<Talk>("Gunthor is laughing at something.")
@@ -142,7 +142,7 @@ suspend fun CharacterContext.cutsceneMenu3(instance: Region) {
     }
 }
 
-suspend fun CharacterContext.cutsceneMenu4(instance: Region) {
+suspend fun CharacterContext.cutsceneMenu4(instance: MapSquareKey) {
     npc<Talk>("dororan_cutscene", "The poem says you can honour your ancestors by settling peacefully on the land they conquered.")
     npc<Sad>("dororan_cutscene", "He'll probably just find it insulting.")
     player.setAnimation("player_calm_doroan")
@@ -156,23 +156,23 @@ suspend fun CharacterContext.cutsceneMenu4(instance: Region) {
     }
 }
 
-suspend fun CharacterContext.cutscenePart2(instance: Region) {
+suspend fun CharacterContext.cutscenePart2(instance: MapSquareKey) {
     player.open("fade_out")
     delay(3)
     npcs.clear(instance.toLevel(0))
     player.clearAnimation()
     delay(1)
     val offset = instance.offset(region)
-    player.tele(Tile(3083, 3426).add(offset), clearInterfaces = false)
+    player.tele(CoordGrid(3083, 3426).add(offset), clearInterfaces = false)
     player.face(Direction.WEST)
-    val dororan = npcs.add("dororan_cutscene", Tile(3082, 3428).add(offset), Direction.SOUTH) ?: return
-    val gudrun = npcs.add("gudrun_cutscene", Tile(3080, 3426).add(offset), Direction.SOUTH) ?: return
-    val kjell = npcs.add("kjell_cutscene", Tile(3077, 3426).add(offset), Direction.SOUTH) ?: return
-    val gunthor = npcs.add("chieftain_gunthor_cutscene", Tile(3079, 3425).add(offset), Direction.SOUTH) ?: return
-    val haakon = npcs.add("haakon_the_champion_cutscene", Tile(3078, 3425).add(offset), Direction.SOUTH) ?: return
+    val dororan = npcs.add("dororan_cutscene", CoordGrid(3082, 3428).add(offset), Direction.SOUTH) ?: return
+    val gudrun = npcs.add("gudrun_cutscene", CoordGrid(3080, 3426).add(offset), Direction.SOUTH) ?: return
+    val kjell = npcs.add("kjell_cutscene", CoordGrid(3077, 3426).add(offset), Direction.SOUTH) ?: return
+    val gunthor = npcs.add("chieftain_gunthor_cutscene", CoordGrid(3079, 3425).add(offset), Direction.SOUTH) ?: return
+    val haakon = npcs.add("haakon_the_champion_cutscene", CoordGrid(3078, 3425).add(offset), Direction.SOUTH) ?: return
     dororan.face(gudrun)
-    player.moveCamera(Tile(3079, 3419).add(offset), 400)
-    player.turnCamera(Tile(3079, 3426).add(offset), 150)
+    player.moveCamera(CoordGrid(3079, 3419).add(offset), 400)
+    player.turnCamera(CoordGrid(3079, 3426).add(offset), 150)
     delay(2)
     player.open("fade_in")
     npc<Upset>("dororan_cutscene", "I hope they at least give me a decent burial.")
@@ -190,17 +190,17 @@ suspend fun CharacterContext.cutscenePart2(instance: Region) {
     npc<Mad>("haakon_the_champion_cutscene", "GUNNAR'S GROUND!")
     player.open("fade_out")
     delay(4)
-    dororan.tele(Tile(3082, 3426).add(offset))
+    dororan.tele(CoordGrid(3082, 3426).add(offset))
     dororan.face(Direction.WEST)
-    gudrun.tele(Tile(3081, 3426).add(offset))
+    gudrun.tele(CoordGrid(3081, 3426).add(offset))
     gudrun.face(Direction.EAST)
     val npc = listOf(kjell, gunthor, haakon)
     for (remove in npc) {
         npcs.remove(remove)
         npcs.removeIndex(remove)
     }
-    player.moveCamera(Tile(3084, 3421).add(offset), 350)
-    player.turnCamera(Tile(3082, 3426).add(offset), 250)
+    player.moveCamera(CoordGrid(3084, 3421).add(offset), 350)
+    player.turnCamera(CoordGrid(3082, 3426).add(offset), 250)
     player.open("fade_in")
     npc<Happy>("gudrun_cutscene", "That was brilliant! I must know who wrote that poem.")
     npc<Sad>("dororan_cutscene", "Um, that would be me. Hello")
@@ -220,7 +220,7 @@ suspend fun CharacterContext.cutscenePart2(instance: Region) {
     player["dororan_after_cutscene"] = "shown"
     player["gudrun"] = "hidden"
     player["gudrun_after_cutscene"] = "shown"
-    val gudrunAfter = npcs[Tile(3082, 3417)].firstOrNull { it.id == "gudrun_after_cutscene" }
+    val gudrunAfter = npcs[CoordGrid(3082, 3417)].firstOrNull { it.id == "gudrun_after_cutscene" }
     if (gudrunAfter != null) {
         player.mode = Interact(player, gudrunAfter, NPCOption(player, gudrunAfter, gudrunAfter.def, "Talk-to"))
     } else {
@@ -250,13 +250,13 @@ suspend fun CharacterContext.gunnarsGround() {
     }
 }
 
-fun CharacterContext.setCutsceneEnd(instance: Region) {
+fun CharacterContext.setCutsceneEnd(instance: MapSquareKey) {
     player.queue("gunnars_ground_cutscene_end", 1, LogoutBehaviour.Accelerate) {
         endCutscene(instance)
     }
 }
 
-suspend fun CharacterContext.endCutscene(instance: Region) {
+suspend fun CharacterContext.endCutscene(instance: MapSquareKey) {
     player.open("fade_out")
     delay(3)
     player.tele(3081, 3416)

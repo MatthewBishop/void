@@ -11,7 +11,7 @@ import world.gregs.voidps.engine.entity.obj.GameObjects
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.queue.queue
 import world.gregs.voidps.engine.queue.softQueue
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 val objects: GameObjects by inject()
 val patrols: PatrolDefinitions by inject()
@@ -21,8 +21,8 @@ npcSpawn("zamorak_crafter*") { npc ->
     npc.mode = Patrol(npc, patrol.waypoints)
 }
 
-npcMove("zamorak_crafter*", to = Tile(3314, 4811)) {
-    val altar = objects[Tile(3315, 4810), "ourania_altar"]
+npcMove("zamorak_crafter*", to = CoordGrid(3314, 4811)) {
+    val altar = objects[CoordGrid(3315, 4810), "ourania_altar"]
     if (altar != null) {
         npc.face(altar)
     }
@@ -36,7 +36,7 @@ npcMove("zamorak_crafter*", to = Tile(3314, 4811)) {
     }
 }
 
-npcMove("zamorak_crafter*", to = Tile(3270, 4856)) {
+npcMove("zamorak_crafter*", to = CoordGrid(3270, 4856)) {
     npc.softQueue("return_to_altar", 5) {
         val patrol = patrols.get("zamorak_crafter_to_altar")
         npc.mode = Patrol(npc, patrol.waypoints)

@@ -2,32 +2,32 @@ package world.gregs.voidps.engine.entity.character.mode.move
 
 import org.rsmod.game.pathfinder.Route
 import world.gregs.voidps.engine.entity.character.Character
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import java.util.*
 
 class Steps(
     internal val character: Character,
     private val steps: LinkedList<Step> = LinkedList<Step>()
 ) : List<Step> by steps {
-    var destination: Tile = Tile.EMPTY
+    var destination: CoordGrid = CoordGrid.EMPTY
         private set
 
     fun peek(): Step? = steps.peek()
 
     fun poll(): Step = steps.poll()
 
-    fun queueRoute(route: Route, target: Tile? = null, noCollision: Boolean = false, noRun: Boolean = false) {
+    fun queueRoute(route: Route, target: CoordGrid? = null, noCollision: Boolean = false, noRun: Boolean = false) {
         queueSteps(route.waypoints.map { character.tile.copy(it.x, it.z) }, noCollision, noRun)
         destination = (target ?: steps.lastOrNull() ?: character.tile).step(noCollision, noRun)
     }
 
-    fun queueStep(tile: Tile, noCollision: Boolean = false, noRun: Boolean = false) {
+    fun queueStep(tile: CoordGrid, noCollision: Boolean = false, noRun: Boolean = false) {
         clear()
         steps.add(tile.step(noCollision, noRun))
         destination = tile.step(noCollision, noRun)
     }
 
-    fun queueSteps(tiles: List<Tile>, noCollision: Boolean = false, noRun: Boolean = false) {
+    fun queueSteps(tiles: List<CoordGrid>, noCollision: Boolean = false, noRun: Boolean = false) {
         clear()
         steps.addAll(tiles.map { it.step(noCollision, noRun) })
         destination = steps.lastOrNull() ?: character.tile.step(noCollision, noRun)
@@ -46,7 +46,7 @@ class Steps(
     }
 
     fun clearDestination() {
-        destination = Tile.EMPTY
+        destination = CoordGrid.EMPTY
     }
 
     fun clear() {

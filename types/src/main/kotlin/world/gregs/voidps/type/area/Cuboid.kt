@@ -11,7 +11,7 @@ data class Cuboid(
     val maxLevel: Int = minLevel
 ) : Area {
 
-    constructor(tile: Tile, width: Int, height: Int, levels: Int) : this(tile.x, tile.y, tile.x + width - 1, tile.y + height - 1, tile.level, tile.level + levels - 1)
+    constructor(tile: CoordGrid, width: Int, height: Int, levels: Int) : this(tile.x, tile.y, tile.x + width - 1, tile.y + height - 1, tile.level, tile.level + levels - 1)
 
     override val area: Double
         get() = (width * height * levels).toDouble()
@@ -25,40 +25,40 @@ data class Cuboid(
     val levels: Int
         get() = maxLevel - minLevel + 1
 
-    override fun toRegions(): List<Region> {
-        val list = mutableListOf<Region>()
-        val max = Tile(maxX, maxY, maxLevel).region
-        val min = Tile(minX, minY, minLevel).region
+    override fun toRegions(): List<MapSquareKey> {
+        val list = mutableListOf<MapSquareKey>()
+        val max = CoordGrid(maxX, maxY, maxLevel).region
+        val min = CoordGrid(minX, minY, minLevel).region
         for (x in min.x..max.x) {
             for (y in min.y..max.y) {
-                list.add(Region(x, y))
+                list.add(MapSquareKey(x, y))
             }
         }
         return list
     }
 
-    override fun toZones(level: Int): List<Zone> {
-        val list = mutableListOf<Zone>()
-        val max = Tile(maxX, maxY, maxLevel).zone
-        val min = Tile(minX, minY, minLevel).zone
+    override fun toZones(level: Int): List<ZoneKey> {
+        val list = mutableListOf<ZoneKey>()
+        val max = CoordGrid(maxX, maxY, maxLevel).zone
+        val min = CoordGrid(minX, minY, minLevel).zone
         for (lvl in min.level..max.level) {
             for (x in min.x..max.x) {
                 for (y in min.y..max.y) {
-                    list.add(Zone(x, y, lvl))
+                    list.add(ZoneKey(x, y, lvl))
                 }
             }
         }
         return list
     }
 
-    fun toRegionLevels(): List<RegionLevel> {
-        val list = mutableListOf<RegionLevel>()
-        val max = Tile(maxX, maxY, maxLevel).regionLevel
-        val min = Tile(minX, minY, minLevel).regionLevel
+    fun toRegionLevels(): List<MapSquareGrid> {
+        val list = mutableListOf<MapSquareGrid>()
+        val max = CoordGrid(maxX, maxY, maxLevel).regionLevel
+        val min = CoordGrid(minX, minY, minLevel).regionLevel
         for (level in min.level..max.level) {
             for (x in min.x..max.x) {
                 for (y in min.y..max.y) {
-                    list.add(RegionLevel(x, y, level))
+                    list.add(MapSquareGrid(x, y, level))
                 }
             }
         }
@@ -71,7 +71,7 @@ data class Cuboid(
         return level in minLevel..maxLevel && x in minX..maxX && y in minY..maxY
     }
 
-    override fun random() = Tile(random(minX, maxX), random(minY, maxY), random(minLevel, maxLevel))
+    override fun random() = CoordGrid(random(minX, maxX), random(minY, maxY), random(minLevel, maxLevel))
 
     companion object {
         fun random(first: Int, second: Int) = if (first == second) first else random.nextInt(first, second + 1)
@@ -81,15 +81,15 @@ data class Cuboid(
         return "Cuboid($minX..$maxX, $minY..$maxY, $minLevel..$maxLevel)"
     }
 
-    override fun iterator(): Iterator<Tile> {
-        val tile = Tile(minX, minY, minLevel)
-        return object : Iterator<Tile> {
+    override fun iterator(): Iterator<CoordGrid> {
+        val tile = CoordGrid(minX, minY, minLevel)
+        return object : Iterator<CoordGrid> {
             private val max = area
             private var index = 0
 
             override fun hasNext() = index < max
 
-            override fun next(): Tile {
+            override fun next(): CoordGrid {
                 val coords = tile.add(
                     x = index.rem(width * height) / height,
                     y = index.rem(width * height).rem(height),

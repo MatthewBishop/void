@@ -20,7 +20,7 @@ import world.gregs.voidps.engine.inv.*
 import world.gregs.voidps.engine.map.Spiral
 import world.gregs.voidps.engine.queue.strongQueue
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.type.random
 import world.gregs.voidps.world.interact.entity.combat.*
 import world.gregs.voidps.world.interact.entity.combat.Target
@@ -47,7 +47,7 @@ val Character.damageDealers: MutableMap<Character, Int>
 val x = getIntProperty("homeX", 0)
 val y = getIntProperty("homeY", 0)
 val level = getIntProperty("homeLevel", 0)
-val respawnTile = Tile(x, y, level)
+val respawnTile = CoordGrid(x, y, level)
 
 playerDeath { player ->
     player.dead = true
@@ -80,7 +80,7 @@ playerDeath { player ->
     }
 }
 
-fun dropItems(player: Player, killer: Character?, tile: Tile, inWilderness: Boolean) {
+fun dropItems(player: Player, killer: Character?, tile: CoordGrid, inWilderness: Boolean) {
     if (player.isAdmin()) {
         return
     }
@@ -103,7 +103,7 @@ fun dropItems(player: Player, killer: Character?, tile: Tile, inWilderness: Bool
     }
 }
 
-fun drop(player: Player, inventory: Inventory, tile: Tile, inWilderness: Boolean, killer: Character?) {
+fun drop(player: Player, inventory: Inventory, tile: CoordGrid, inWilderness: Boolean, killer: Character?) {
     for (item in inventory.items) {
         if (item.isEmpty()) {
             continue
@@ -115,7 +115,7 @@ fun drop(player: Player, inventory: Inventory, tile: Tile, inWilderness: Boolean
 fun drop(
     player: Player,
     item: Item,
-    tile: Tile,
+    tile: CoordGrid,
     inWilderness: Boolean,
     killer: Character?
 ) {
@@ -176,7 +176,7 @@ fun wrath(source: Player) {
     }
 }
 
-fun hitCharacters(tile: Tile, source: Player, maxHit: Int) {
+fun hitCharacters(tile: CoordGrid, source: Player, maxHit: Int) {
     val players = players[tile]
     for (player in players) {
         if (Target.attackable(source, player)) {

@@ -1,6 +1,6 @@
 package world.gregs.voidps.bot.path
 
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.type.Area
 
 class AreaStrategy(
@@ -8,6 +8,6 @@ class AreaStrategy(
 ) : NodeTargetStrategy() {
 
     override fun reached(node: Any): Boolean {
-        return node is Tile && node in area
+        return node is CoordGrid && node in area
     }
 }

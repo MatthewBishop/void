@@ -22,7 +22,7 @@ import world.gregs.voidps.engine.script.KoinMock
 import world.gregs.voidps.network.client.Client
 import world.gregs.voidps.network.client.ConnectionQueue
 import world.gregs.voidps.network.login.protocol.encode.logout
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.type.area.Rectangle
 
 class AccountManagerTest : KoinMock() {
@@ -33,7 +33,7 @@ class AccountManagerTest : KoinMock() {
     override val modules = listOf(module {
         single { ItemDefinitions(emptyArray()) }
         single { InterfaceDefinitions(emptyArray()).apply { ids = emptyMap() } }
-        single { AreaDefinitions(areas = mapOf(0 to setOf(AreaDefinition("area", Rectangle(Tile(0), 1, 1), emptySet())))) }
+        single { AreaDefinitions(areas = mapOf(0 to setOf(AreaDefinition("area", Rectangle(CoordGrid(0), 1, 1), emptySet())))) }
     })
 
     @BeforeEach
@@ -60,7 +60,7 @@ class AccountManagerTest : KoinMock() {
             accountDefinitions = AccountDefinitions(),
             collisionStrategyProvider = CollisionStrategyProvider(),
             variableDefinitions = VariableDefinitions(),
-            homeTile = Tile(1234, 5432),
+            homeTile = CoordGrid(1234, 5432),
             saveQueue = SaveQueue(storage),
             connectionQueue = connectionQueue,
             areaDefinitions = get(),
@@ -74,7 +74,7 @@ class AccountManagerTest : KoinMock() {
         val player = manager.create("name", "hash")
         assertTrue(player["creation", 0L] >= start)
         assertTrue(player["new_player", false])
-        assertEquals(Tile(1234, 5432), player.tile)
+        assertEquals(CoordGrid(1234, 5432), player.tile)
     }
 
     @Test

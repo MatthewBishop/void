@@ -10,7 +10,7 @@ import world.gregs.voidps.engine.entity.obj.ObjectShape
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.engine.map.collision.Collisions
 import world.gregs.voidps.network.client.instruction.Walk
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.world.script.WorldTest
 import world.gregs.voidps.world.script.objectOption
 
@@ -27,34 +27,34 @@ internal class ObjectTest : WorldTest() {
 
     @Test
     fun `Can't walk through a door`() {
-        val player = createPlayer("player", Tile(3227, 3214))
+        val player = createPlayer("player", CoordGrid(3227, 3214))
         tick()
 
         handler.validate(player, Walk(3226, 3214))
         tick(1)
 
-        assertEquals(Tile(3227, 3214), player.tile)
+        assertEquals(CoordGrid(3227, 3214), player.tile)
     }
 
     @Test
     fun `Can open and walk through a door`() {
-        val player = createPlayer("player", Tile(3227, 3214))
+        val player = createPlayer("player", CoordGrid(3227, 3214))
         tick()
-        val door = objects.getLayer(Tile(3226, 3214), ObjectLayer.WALL)!!
+        val door = objects.getLayer(CoordGrid(3226, 3214), ObjectLayer.WALL)!!
 
         player.objectOption(door, "Open")
         tick()
         handler.validate(player, Walk(3226, 3214))
         tick(2)
 
-        assertEquals(Tile(3226, 3214), player.tile)
+        assertEquals(CoordGrid(3226, 3214), player.tile)
     }
 
     @Test
     fun `Ladder ascending`() {
-        val player = createPlayer("player", Tile(3229, 3214))
+        val player = createPlayer("player", CoordGrid(3229, 3214))
         tick()
-        val ladder = objects.getLayer(Tile(3229, 3213), ObjectLayer.GROUND)!!
+        val ladder = objects.getLayer(CoordGrid(3229, 3213), ObjectLayer.GROUND)!!
 
         player.objectOption(ladder, "Climb-up")
         tick(3)
@@ -64,11 +64,11 @@ internal class ObjectTest : WorldTest() {
 
     @Test
     fun `Ladder descending`() {
-        val player = createPlayer("player", Tile(3229, 3214, 1))
+        val player = createPlayer("player", CoordGrid(3229, 3214, 1))
         tick()
 
         // The one in Objects has wrong id as config replace id disabled.
-        val ladder = GameObject(id = 36769, tile = Tile(3229, 3213, 1), shape = ObjectShape.GROUND_DECOR, rotation = 3)
+        val ladder = GameObject(id = 36769, tile = CoordGrid(3229, 3213, 1), shape = ObjectShape.GROUND_DECOR, rotation = 3)
         player.objectOption(ladder, "Climb-down")
         tick(3)
 

@@ -15,7 +15,7 @@ import world.gregs.voidps.bot.navigation.graph.NavigationGraph
 import world.gregs.voidps.bot.navigation.graph.waypoints
 import world.gregs.voidps.engine.data.definition.AreaDefinitions
 import world.gregs.voidps.engine.entity.character.player.Player
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import java.util.*
 import kotlin.test.assertNotNull
 
@@ -41,10 +41,10 @@ internal class DijkstraTest {
     @Test
     fun `Find path`() {
         val player: Player = mockk()
-        val a = Tile(5, 10)
-        val b = Tile(15, 0)
-        val c = Tile(20, 0)
-        val d = Tile(25, 0)
+        val a = CoordGrid(5, 10)
+        val b = CoordGrid(15, 0)
+        val c = CoordGrid(20, 0)
+        val d = CoordGrid(25, 0)
 
         val e1 = Edge("", player, a, 0)
         val e2 = Edge("", a, b, 0)
@@ -85,8 +85,8 @@ internal class DijkstraTest {
     @Test
     fun `Find lowest cost path`() {
         val player: Player = mockk()
-        val a = Tile(5, 10)
-        val b = Tile(15, 0)
+        val a = CoordGrid(5, 10)
+        val b = CoordGrid(15, 0)
 
         val edge = Edge("", player, b, 9)
         graph.add(player, ObjectOpenHashSet.of(Edge("", player, a, 10), edge))
@@ -116,9 +116,9 @@ internal class DijkstraTest {
     @Test
     fun `Find directional twice visited node`() {
         val player: Player = mockk()
-        val a = Tile(5, 10)
-        val b = Tile(15, 0)
-        val c = Tile(0, 0)
+        val a = CoordGrid(5, 10)
+        val b = CoordGrid(15, 0)
+        val c = CoordGrid(0, 0)
 
         val e1 = Edge("", player, a, 0)
         val e2 = Edge("", a, b, 0)
@@ -162,7 +162,7 @@ internal class DijkstraTest {
     @Test
     fun `Paths can be blocked`() {
         val p: Player = mockk()
-        val a = Tile(5, 10)
+        val a = CoordGrid(5, 10)
 
         val edge = Edge("", p, a, 9, requirements = listOf(
             object : Condition {

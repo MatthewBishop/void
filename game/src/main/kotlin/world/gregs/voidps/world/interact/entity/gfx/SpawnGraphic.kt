@@ -5,11 +5,11 @@ import world.gregs.voidps.engine.data.definition.GraphicDefinitions
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.network.login.protocol.encode.zone.GraphicAddition
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 fun areaGraphic(
     id: String,
-    tile: Tile,
+    tile: CoordGrid,
     delay: Int = 0,
     height: Int = 0,
     rotation: Direction = Direction.SOUTH

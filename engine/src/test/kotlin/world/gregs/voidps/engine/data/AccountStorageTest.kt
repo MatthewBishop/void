@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test
 import world.gregs.voidps.engine.entity.character.player.chat.clan.ClanRank
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.item.Item
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import kotlin.test.*
 
 abstract class AccountStorageTest {
@@ -47,7 +47,7 @@ abstract class AccountStorageTest {
         storage.save(listOf(save))
 
         val override = save.copy(
-            tile = Tile(1234, 5432, 1),
+            tile = CoordGrid(1234, 5432, 1),
             experience = save.experience.clone().apply { this[0] = 10.0 },
             levels = save.levels.clone().apply { this[0] = 10 },
             blocked = save.blocked.toMutableList().apply { add(Skill.Attack); remove(Skill.Prayer) },
@@ -198,7 +198,7 @@ abstract class AccountStorageTest {
         val save = PlayerSave(
             name = "durial_321",
             password = "abcdefghijklmnopqrstuvwxyz0123456789",
-            tile = Tile(2967, 3383, 0),
+            tile = CoordGrid(2967, 3383, 0),
             experience = DoubleArray(25) { 14000000.0 }.apply {
                 this[0] = 8771558.75
                 this[1] = 4385776.5

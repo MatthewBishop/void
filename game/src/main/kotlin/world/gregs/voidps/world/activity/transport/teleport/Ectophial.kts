@@ -15,7 +15,7 @@ import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.inv.inventory
 import world.gregs.voidps.engine.inv.replace
 import world.gregs.voidps.engine.queue.strongQueue
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.world.interact.entity.player.equip.inventoryItem
 
 val areas: AreaDefinitions by inject()
@@ -32,7 +32,7 @@ inventoryItem("Empty", "ectophial", "inventory") {
         pause(2)
         player.message("... and the world changes around you.", ChatType.Filter)
         pause(4)
-        val ectofuntus = objects[Tile(3658, 3518), "ectofuntus"] ?: return@strongQueue
+        val ectofuntus = objects[CoordGrid(3658, 3518), "ectofuntus"] ?: return@strongQueue
         player.mode = Interact(player, ectofuntus, ItemOnObject(player, ectofuntus, inventory, inventory, Item("ectophial_empty"), slot, inventory))
     }
 }

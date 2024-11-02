@@ -9,7 +9,7 @@ import world.gregs.voidps.engine.entity.obj.replace
 import world.gregs.voidps.engine.inv.add
 import world.gregs.voidps.engine.inv.inventory
 import world.gregs.voidps.engine.timer.toTicks
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.type.random
 import world.gregs.voidps.world.interact.entity.sound.areaSound
 import java.util.concurrent.TimeUnit
@@ -19,7 +19,7 @@ object ShootingStarHandler {
 
     var earlyBird: Boolean = false
     var totalCollected: Int = 0
-    var currentStarTile = Tile.EMPTY
+    var currentStarTile = CoordGrid.EMPTY
     var currentActiveObject: GameObject? = null
     val startEvent = TimeUnit.HOURS.toTicks(random.nextInt(1, 2))
 

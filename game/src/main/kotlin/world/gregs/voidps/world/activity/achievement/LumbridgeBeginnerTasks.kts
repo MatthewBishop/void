@@ -18,7 +18,7 @@ import world.gregs.voidps.engine.inv.itemRemoved
 import world.gregs.voidps.engine.inv.itemReplaced
 import world.gregs.voidps.engine.timer.timerStop
 import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.world.interact.entity.combat.attackStyle
 import world.gregs.voidps.world.interact.entity.combat.hit.combatAttack
 import world.gregs.voidps.world.interact.entity.combat.killer
@@ -69,7 +69,7 @@ itemRemoved("logs", inventory = "inventory") { player ->
 
 timerStop("firemaking") { player ->
     val regular: Boolean = player.remove("burnt_regular_log") ?: return@timerStop
-    val tile: Tile = player.remove("fire_tile") ?: return@timerStop
+    val tile: CoordGrid = player.remove("fire_tile") ?: return@timerStop
     if (regular) {
         val fire = objects.getShape(tile, ObjectShape.CENTRE_PIECE_STRAIGHT)
         if (fire != null && fire.id.startsWith("fire_")) {

@@ -7,12 +7,12 @@ import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.event.CancellableEvent
 import world.gregs.voidps.engine.event.EventDispatcher
 import world.gregs.voidps.engine.event.Events
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 data class Teleport(
     override val character: Character,
     val id: String,
-    val tile: Tile,
+    val tile: CoordGrid,
     val obj: ObjectDefinition,
     val option: String
 ) : CancellableEvent(), CharacterContext {

@@ -11,7 +11,7 @@ import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.entity.character.watch
 import world.gregs.voidps.engine.entity.character.watching
 import world.gregs.voidps.engine.entity.distanceTo
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 class Follow(
     character: Character,
@@ -53,7 +53,7 @@ class Follow(
         return false
     }
 
-    override fun getTarget(): Tile? {
+    override fun getTarget(): CoordGrid? {
         val target = character.steps.peek()
         if (!smart && target == null) {
             recalculate()

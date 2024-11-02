@@ -11,7 +11,7 @@ import world.gregs.voidps.network.login.protocol.encode.updateNPCs
 import world.gregs.voidps.network.login.protocol.visual.NPCVisuals
 import world.gregs.voidps.network.login.protocol.visual.VisualEncoder
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.RegionLevel
+import world.gregs.voidps.type.MapSquareGrid
 
 class NPCUpdateTask(
     private val npcs: NPCs,
@@ -116,7 +116,7 @@ class NPCUpdateTask(
         updates: Writer,
         set: IntSet
     ) {
-        var region: RegionLevel
+        var region: MapSquareGrid
         var npc: NPC
         for (direction in Direction.reversed) {
             region = client.tile.regionLevel.add(direction)

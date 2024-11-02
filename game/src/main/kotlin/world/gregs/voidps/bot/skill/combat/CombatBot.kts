@@ -30,7 +30,7 @@ import world.gregs.voidps.engine.get
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.inv.inventory
 import world.gregs.voidps.network.login.protocol.visual.update.player.EquipSlot
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.type.random
 import world.gregs.voidps.world.activity.skill.slayer.race
 import world.gregs.voidps.world.interact.entity.combat.attackers
@@ -108,7 +108,7 @@ suspend fun Bot.fight(map: AreaDefinition, skill: Skill, races: Set<String>) {
         }
         npcOption(target, "Attack")
         await("combat", timeout = 30)
-        target.get<Tile>("death_tile")?.let {
+        target.get<CoordGrid>("death_tile")?.let {
             pickupItems(it, 4)
         }
         equipAmmo(skill)
@@ -131,7 +131,7 @@ fun Player.isMagicNotOutOfRunes(skill: Skill): Boolean {
     return removeSpellItems(spell)
 }
 
-suspend fun Bot.pickupItems(tile: Tile, amount: Int) {
+suspend fun Bot.pickupItems(tile: CoordGrid, amount: Int) {
     repeat(random.nextInt(2, 8)) {
         if (player.inventory.contains("bones")) {
             inventoryOption("bones", "Bury")

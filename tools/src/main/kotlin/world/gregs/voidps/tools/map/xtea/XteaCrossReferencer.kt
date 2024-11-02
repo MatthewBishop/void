@@ -3,7 +3,7 @@ package world.gregs.voidps.tools.map.xtea
 import com.displee.cache.CacheLibrary
 import world.gregs.voidps.cache.Index
 import world.gregs.voidps.tools.cache.Xteas
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import java.io.File
 import java.io.RandomAccessFile
 
@@ -53,7 +53,7 @@ object XteaCrossReferencer {
         val decrypted = mutableMapOf<Int, IntArray>()
 
         xteas.forEach { regionId, keys ->
-            val region = Region(regionId)
+            val region = MapSquareKey(regionId)
             if (library.data(Index.MAPS, "l${region.x}_${region.y}", keys) != null) {
                 decrypted[region.id] = keys
             }
@@ -63,14 +63,14 @@ object XteaCrossReferencer {
 
         val index = library.index(Index.MAPS)
         val archives = index.archiveIds()
-        val missing = mutableListOf<Region>()
+        val missing = mutableListOf<MapSquareKey>()
         for (regionX in 0 until 256) {
             for (regionY in 0 until 256) {
                 val archiveId = index.archiveId("l${regionX}_${regionY}")
                 if (!archives.contains(archiveId)) {
                     continue
                 }
-                val region = Region(regionX, regionY)
+                val region = MapSquareKey(regionX, regionY)
                 if (decrypted.containsKey(region.id)) {
                     continue
                 }

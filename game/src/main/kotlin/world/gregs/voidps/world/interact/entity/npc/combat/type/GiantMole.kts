@@ -30,7 +30,7 @@ import world.gregs.voidps.engine.inv.transact.operation.ReplaceItem.replace
 import world.gregs.voidps.engine.map.collision.random
 import world.gregs.voidps.engine.queue.queue
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.world.interact.entity.combat.attackers
 import world.gregs.voidps.world.interact.entity.combat.fightStyle
 import world.gregs.voidps.world.interact.entity.combat.hit.npcCombatHit
@@ -44,18 +44,18 @@ val areas: AreaDefinitions by inject()
 val players: Players by inject()
 
 val acceptedTiles = listOf(
-    Tile(3005, 3376, 0),
-    Tile(2999, 3375, 0),
-    Tile(2996, 3377, 0),
-    Tile(2989, 3378, 0)
+    CoordGrid(3005, 3376, 0),
+    CoordGrid(2999, 3375, 0),
+    CoordGrid(2996, 3377, 0),
+    CoordGrid(2989, 3378, 0)
 )
 
 val giantMoleLair = areas["giant_mole_lair"]
 val gianMoleSpawns = areas["giant_mole_spawn_area"]
-val initialCaveTile: Tile = Tile(1752, 5237, 0)
+val initialCaveTile: CoordGrid = CoordGrid(1752, 5237, 0)
 
 inventoryItem("Dig", "spade") {
-    val playerTile: Tile = player.tile
+    val playerTile: CoordGrid = player.tile
     player.setAnimation("dig_with_spade")
     if (!acceptedTiles.contains(playerTile)) {
         return@inventoryItem
@@ -97,7 +97,7 @@ fun giantMoleBurrow(mole: NPC) {
     mole.attackers.clear()
     var tileToDust = mole.tile.add(getRandomFacing(mole.facing).delta)
     mole.queue("await_mole_to_face", 1) {
-        if (tileToDust == Tile.EMPTY) {
+        if (tileToDust == CoordGrid.EMPTY) {
             logger.info { "failed to get facing tile for Giant Mole, using default tile." }
             tileToDust = initialCaveTile
         }
@@ -133,7 +133,7 @@ fun shouldThrowDirt(): Boolean {
     return dirtChance <= 13
 }
 
-fun handleDirtOnScreen(moleTile: Tile) {
+fun handleDirtOnScreen(moleTile: CoordGrid) {
     val nearMole = mutableListOf<Player>()
     for (tile in moleTile.toCuboid(5)) {
         for (player in players[tile]) {

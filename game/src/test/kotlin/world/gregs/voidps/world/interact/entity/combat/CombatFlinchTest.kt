@@ -6,14 +6,14 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import world.gregs.voidps.FakeRandom
 import world.gregs.voidps.engine.entity.character.move.walkTo
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.type.setRandom
 import world.gregs.voidps.world.script.WorldTest
 import world.gregs.voidps.world.script.npcOption
 
 internal class CombatFlinchTest : WorldTest() {
 
-    private val tile = Tile(3259, 3255)
+    private val tile = CoordGrid(3259, 3255)
     @BeforeEach
     fun setup() {
         setRandom(object : FakeRandom() {

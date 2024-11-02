@@ -1,6 +1,6 @@
 package world.gregs.voidps.tools.map.view.ui
 
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import world.gregs.voidps.tools.map.view.draw.MapView
 import javax.swing.*
 
@@ -14,7 +14,7 @@ class OptionsPane(private val view: MapView) : JPanel() {
         tileX.text = mapX.toString()
         tileY.text = mapY.toString()
         tileLevel.text = level.toString()
-        region.text = Region.id(mapX / 64, mapY / 64).toString()
+        region.text = MapSquareKey.id(mapX / 64, mapY / 64).toString()
     }
 
     init {

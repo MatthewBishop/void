@@ -7,7 +7,7 @@ import kotlinx.coroutines.*
 import net.pearx.kasechange.toSnakeCase
 import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.type.Area
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 /**
  * Events is a Trie used for efficient storage and retrieval of handlers based on an arbitrary list of parameters.
@@ -192,7 +192,7 @@ class Events(
             key is String && param is String -> wildcardEquals(key, param)
             param is Set<*> -> param.contains(key)
             key is Set<*> -> key.contains(param)
-            key is Area -> param is Tile && key.contains(param)
+            key is Area -> param is CoordGrid && key.contains(param)
             else -> key == param
         }
     }

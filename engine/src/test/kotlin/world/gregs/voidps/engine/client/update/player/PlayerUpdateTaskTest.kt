@@ -24,7 +24,7 @@ import world.gregs.voidps.network.login.protocol.encode.updatePlayers
 import world.gregs.voidps.network.login.protocol.visual.PlayerVisuals
 import world.gregs.voidps.network.login.protocol.visual.VisualEncoder
 import world.gregs.voidps.type.Delta
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 internal class PlayerUpdateTaskTest : KoinMock() {
 
@@ -116,7 +116,7 @@ internal class PlayerUpdateTaskTest : KoinMock() {
         every { entities.localCount } returns 1
         every { entities.locals } returns intArrayOf(1)
         every { player.client!!.disconnected } returns true
-        every { viewport.lastSeen(player) } returns value(Tile.EMPTY)
+        every { viewport.lastSeen(player) } returns value(CoordGrid.EMPTY)
         // When
         task.processLocals(player, sync, mockk(relaxed = true), entities, viewport, true)
         // Then
@@ -277,8 +277,8 @@ internal class PlayerUpdateTaskTest : KoinMock() {
         every { player.visuals.flagged(2) } returns true
         every { player.index } returns index
         every { players.indexed(index) } returns player
-        every { viewport.lastSeen(player) } returns value(Tile(64, 0))
-        every { player.tile } returns value(Tile(81, 14))
+        every { viewport.lastSeen(player) } returns value(CoordGrid(64, 0))
+        every { player.tile } returns value(CoordGrid(81, 14))
         every { entities.globalCount } returns 1
         every { entities.globals } returns intArrayOf(1)
         // When
@@ -333,8 +333,8 @@ internal class PlayerUpdateTaskTest : KoinMock() {
             val player: Player = mockk(relaxed = true)
             val viewport: Viewport = mockk(relaxed = true)
             every { player.viewport } returns viewport
-            every { player.tile } returns value(Tile(0))
-            every { viewport.lastSeen(player) } returns value(Tile.EMPTY.add(updateType))
+            every { player.tile } returns value(CoordGrid(0))
+            every { viewport.lastSeen(player) } returns value(CoordGrid.EMPTY.add(updateType))
             // When
             task.encodeRegion(writer, viewport, player)
             // Then

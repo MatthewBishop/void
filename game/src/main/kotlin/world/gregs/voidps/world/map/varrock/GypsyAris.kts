@@ -25,8 +25,8 @@ import world.gregs.voidps.engine.suspend.delay
 import world.gregs.voidps.engine.timer.npcTimerStart
 import world.gregs.voidps.engine.timer.npcTimerTick
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Region
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.MapSquareKey
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.world.activity.quest.DemonSlayerSpell.getWord
 import world.gregs.voidps.world.activity.quest.DemonSlayerSpell.randomiseOrder
 import world.gregs.voidps.world.activity.quest.quest
@@ -210,7 +210,7 @@ suspend fun ChoiceBuilder<NPCOption>.whoYouCallingYoung(): Unit = option<Frustra
 }
 
 suspend fun CharacterContext.cutscene() {
-    val region = Region(12852)
+    val region = MapSquareKey(12852)
     player.open("fade_out")
     statement("", clickToContinue = false)
     delay(2)
@@ -218,12 +218,12 @@ suspend fun CharacterContext.cutscene() {
     val offset = instance.offset(region)
     setCutsceneEnd(instance)
     delay(1)
-    player.tele(Tile(3225, 3371).add(offset), clearInterfaces = false)
+    player.tele(CoordGrid(3225, 3371).add(offset), clearInterfaces = false)
     delay(2)
     player.transform("wally")
     player.clearCamera()
-    player.moveCamera(Tile(3227, 3369).add(offset), 300)
-    player.turnCamera(Tile(3229, 3367).add(offset), 250)
+    player.moveCamera(CoordGrid(3227, 3369).add(offset), 300)
+    player.turnCamera(CoordGrid(3229, 3367).add(offset), 250)
     player.shakeCamera(type = 1, intensity = 0, movement = 10, speed = 10, cycle = 0)
     player.shakeCamera(type = 3, intensity = 0, movement = 90, speed = 1, cycle = 0)
     player.playSound("rumbling")
@@ -233,15 +233,15 @@ suspend fun CharacterContext.cutscene() {
 
     player.face(Direction.NORTH)
     player.clearCamera()
-    player.turnCamera(Tile(3227, 3367).add(offset), height = 200, constantSpeed = 2, variableSpeed = 10)
-    player.turnCamera(Tile(3227, 3367).add(offset), height = 100, constantSpeed = 1, variableSpeed = 10)
+    player.turnCamera(CoordGrid(3227, 3367).add(offset), height = 200, constantSpeed = 2, variableSpeed = 10)
+    player.turnCamera(CoordGrid(3227, 3367).add(offset), height = 100, constantSpeed = 1, variableSpeed = 10)
     player.shakeCamera(type = 3, intensity = 0, movement = 0, speed = 0, cycle = 0)
     player.playSound("rumbling")
     npc<Angry>("wally", "Die, foul demon!", clickToContinue = false)
-    player.tele(Tile(3225, 3363).add(offset), clearInterfaces = false)
+    player.tele(CoordGrid(3225, 3363).add(offset), clearInterfaces = false)
 
     delay(2)
-    player.walkTo(Tile(3227, 3367).add(offset), noCollision = true)
+    player.walkTo(CoordGrid(3227, 3367).add(offset), noCollision = true)
     player.running = true
     delay(3)
     player.face(Direction.NORTH)
@@ -250,7 +250,7 @@ suspend fun CharacterContext.cutscene() {
     delay(4)
 
     player.clearCamera()
-    player.moveCamera(Tile(3227, 3369).add(offset), height = 100, constantSpeed = 2, variableSpeed = 10)
+    player.moveCamera(CoordGrid(3227, 3369).add(offset), height = 100, constantSpeed = 2, variableSpeed = 10)
     player.shakeCamera(type = 1, intensity = 0, movement = 10, speed = 5, cycle = 0)
     player.shakeCamera(type = 3, intensity = 0, movement = 2, speed = 50, cycle = 0)
     player.playSound("rumbling")
@@ -264,8 +264,8 @@ suspend fun CharacterContext.cutscene() {
     player.shakeCamera(type = 1, intensity = 0, movement = 0, speed = 0, cycle = 0)
     player.shakeCamera(type = 3, intensity = 0, movement = 0, speed = 0, cycle = 0)
     player.playSound("rumbling")
-    player.moveCamera(Tile(3225, 3363).add(offset), height = 500)
-    player.turnCamera(Tile(3227, 3367).add(offset), height = 200)
+    player.moveCamera(CoordGrid(3225, 3363).add(offset), height = 500)
+    player.turnCamera(CoordGrid(3227, 3367).add(offset), height = 200)
     player.playSound("equip_silverlight")
     player.playJingle("quest_complete_1")
     player.face(Direction.SOUTH_WEST)
@@ -282,13 +282,13 @@ suspend fun CharacterContext.cutscene() {
     delrithWillCome()
 }
 
-fun CharacterContext.setCutsceneEnd(instance: Region) {
+fun CharacterContext.setCutsceneEnd(instance: MapSquareKey) {
     player.queue("demon_slayer_wally_cutscene_end", 1, LogoutBehaviour.Accelerate) {
         endCutscene(instance)
     }
 }
 
-suspend fun CharacterContext.endCutscene(instance: Region) {
+suspend fun CharacterContext.endCutscene(instance: MapSquareKey) {
     player.open("fade_out")
     delay(3)
     player.tele(3203, 3424)

@@ -27,7 +27,7 @@ import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.inv.charges
 import world.gregs.voidps.engine.queue.strongQueue
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.world.activity.skill.slayer.race
 import world.gregs.voidps.world.community.clan.clan
 import world.gregs.voidps.world.interact.entity.combat.*
@@ -56,7 +56,7 @@ npcDeath { npc ->
         npc.attackers.clear()
         npc.softTimers.stopAll()
         npcs.removeIndex(npc)
-        val respawn = npc.get<Tile>("respawn_tile")
+        val respawn = npc.get<CoordGrid>("respawn_tile")
         if (respawn != null) {
             npc.tele(respawn)
             pause(npc["respawn_delay", 60])
@@ -112,7 +112,7 @@ fun deathSound(npc: NPC): String {
     return ""
 }
 
-fun dropLoot(npc: NPC, killer: Character?, name: String, tile: Tile) {
+fun dropLoot(npc: NPC, killer: Character?, name: String, tile: CoordGrid) {
     var table = tables.get("${npc.def["drop_table", name]}_drop_table")
     if (table == null) {
         table = tables.get("${npc.race}_drop_table")
@@ -143,7 +143,7 @@ var Player.lootSharePotential: Int
     get() = get("loot_share_potential", 0)
     set(value) = set("loot_share_potential", value)
 
-fun shareLoot(killer: Player, npc: NPC, tile: Tile, drops: List<Item>) {
+fun shareLoot(killer: Player, npc: NPC, tile: CoordGrid, drops: List<Item>) {
     val clan = killer.clan ?: return
     val members = npc.damageDealers.keys
         .filterIsInstance<Player>()
@@ -163,7 +163,7 @@ fun shareLoot(killer: Player, npc: NPC, tile: Tile, drops: List<Item>) {
     }
 }
 
-fun shareCoin(item: Item, members: List<Player>, tile: Tile) {
+fun shareCoin(item: Item, members: List<Player>, tile: CoordGrid) {
     val total = item.def.cost * item.amount
     val split = total / members.size
     for (member in members) {

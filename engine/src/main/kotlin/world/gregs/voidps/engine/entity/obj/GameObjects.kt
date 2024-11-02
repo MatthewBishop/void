@@ -14,8 +14,8 @@ import world.gregs.voidps.engine.map.collision.GameObjectCollisionRemove
 import world.gregs.voidps.network.login.protocol.encode.send
 import world.gregs.voidps.network.login.protocol.encode.zone.ObjectAddition
 import world.gregs.voidps.network.login.protocol.encode.zone.ObjectRemoval
-import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.CoordGrid
+import world.gregs.voidps.type.ZoneKey
 
 /**
  * Stores GameObjects and modifications mainly for verifying interactions
@@ -42,7 +42,7 @@ class GameObjects(
      * Adds a temporary object with [id] [tile] [shape] and [rotation]
      * Optionally removed after [ticks]
      */
-    fun add(id: String, tile: Tile, shape: Int = ObjectShape.CENTRE_PIECE_STRAIGHT, rotation: Int = 0, ticks: Int = NEVER, collision: Boolean = true): GameObject {
+    fun add(id: String, tile: CoordGrid, shape: Int = ObjectShape.CENTRE_PIECE_STRAIGHT, rotation: Int = 0, ticks: Int = NEVER, collision: Boolean = true): GameObject {
         val obj = GameObject(definitions.get(id).id, tile, shape, rotation)
         add(obj)
         timers.add(obj, ticks) {
@@ -176,7 +176,7 @@ class GameObjects(
     fun replace(
         original: GameObject,
         id: String,
-        tile: Tile = original.tile,
+        tile: CoordGrid = original.tile,
         shape: Int = original.shape,
         rotation: Int = original.rotation,
         ticks: Int = NEVER,
@@ -202,12 +202,12 @@ class GameObjects(
     /**
      * Get object by string [id]
      */
-    operator fun get(tile: Tile, id: String) = get(tile, ObjectLayer.WALL, id)
+    operator fun get(tile: CoordGrid, id: String) = get(tile, ObjectLayer.WALL, id)
         ?: get(tile, ObjectLayer.WALL_DECORATION, id)
         ?: get(tile, ObjectLayer.GROUND, id)
         ?: get(tile, ObjectLayer.GROUND_DECORATION, id)
 
-    private fun get(tile: Tile, layer: Int, id: String): GameObject? {
+    private fun get(tile: CoordGrid, layer: Int, id: String): GameObject? {
         val obj = getLayer(tile, layer) ?: return null
         if (obj.id == id) {
             return obj
@@ -218,7 +218,7 @@ class GameObjects(
     /**
      * Get all objects on [tile]
      */
-    operator fun get(tile: Tile) = listOfNotNull(
+    operator fun get(tile: CoordGrid) = listOfNotNull(
         getLayer(tile, ObjectLayer.WALL),
         getLayer(tile, ObjectLayer.WALL_DECORATION),
         getLayer(tile, ObjectLayer.GROUND),
@@ -228,12 +228,12 @@ class GameObjects(
     /**
      * Get object by integer [id]
      */
-    operator fun get(tile: Tile, id: Int) = get(tile, ObjectLayer.WALL, id)
+    operator fun get(tile: CoordGrid, id: Int) = get(tile, ObjectLayer.WALL, id)
         ?: get(tile, ObjectLayer.WALL_DECORATION, id)
         ?: get(tile, ObjectLayer.GROUND, id)
         ?: get(tile, ObjectLayer.GROUND_DECORATION, id)
 
-    private fun get(tile: Tile, layer: Int, id: Int): GameObject? {
+    private fun get(tile: CoordGrid, layer: Int, id: Int): GameObject? {
         val obj = getLayer(tile, layer) ?: return null
         if (obj.intId == id) {
             return obj
@@ -244,7 +244,7 @@ class GameObjects(
     /**
      * Get object by [shape]
      */
-    fun getShape(tile: Tile, shape: Int): GameObject? {
+    fun getShape(tile: CoordGrid, shape: Int): GameObject? {
         val obj = getLayer(tile, ObjectLayer.layer(shape)) ?: return null
         if (obj.shape == shape) {
             return obj
@@ -255,7 +255,7 @@ class GameObjects(
     /**
      * Get object by [layer]
      */
-    fun getLayer(tile: Tile, layer: Int): GameObject? {
+    fun getLayer(tile: CoordGrid, layer: Int): GameObject? {
         val value = map[tile.x, tile.y, tile.level, layer]
         if (empty(value)) {
             return null
@@ -283,7 +283,7 @@ class GameObjects(
     /**
      * Resets all original objects in [zone]
      */
-    fun reset(zone: Zone, collision: Boolean = true) {
+    fun reset(zone: ZoneKey, collision: Boolean = true) {
         forEachReplaced(zone) { tile, layer, value ->
             if (value != 1) {
                 add(GameObject(id(value), tile, shape(value), rotation(value)), collision)
@@ -313,7 +313,7 @@ class GameObjects(
      * Clears [zone] of all original and replacement objects
      * Note: Doesn't undo collision changes
      */
-    fun clear(zone: Zone) {
+    fun clear(zone: ZoneKey) {
         map.deallocateZone(zone.tile.x, zone.tile.y, zone.level)
     }
 
@@ -326,7 +326,7 @@ class GameObjects(
         replacements.clear()
     }
 
-    override fun send(player: Player, zone: Zone) {
+    override fun send(player: Player, zone: ZoneKey) {
         forEachReplaced(zone) { tile, layer, value ->
             if (value != 1) {
                 player.client?.send(ObjectRemoval(tile.id, shape(value), rotation(value)))
@@ -338,7 +338,7 @@ class GameObjects(
         }
     }
 
-    private fun forEachReplaced(zone: Zone, block: (Tile, Int, Int) -> Unit) {
+    private fun forEachReplaced(zone: ZoneKey, block: (CoordGrid, Int, Int) -> Unit) {
         val zoneTileX = zone.tile.x
         val zoneTileY = zone.tile.y
         val level = zone.level
@@ -378,9 +378,9 @@ class GameObjects(
         }
 
         /**
-         * Index represents a [Tile] and [ObjectLayer]
+         * Index represents a [CoordGrid] and [ObjectLayer]
          */
-        private fun index(tile: Tile, layer: Int) = tile.id or (layer shl 30)
+        private fun index(tile: CoordGrid, layer: Int) = tile.id or (layer shl 30)
         private fun level(index: Int) = index shr 28 and 0x2
         private fun layer(index: Int) = index shr 30 and 0x2
         private fun x(index: Int) = index shr 14 and 0x3fff
@@ -394,7 +394,7 @@ class GameObjects(
  * Replaces an existing map objects with [id] [tile] [shape] and [rotation], modifying [collision] and
  * optionally removed after [ticks]
  */
-fun GameObject.replace(id: String, tile: Tile = this.tile, shape: Int = this.shape, rotation: Int = this.rotation, ticks: Int = -1, collision: Boolean = true): GameObject {
+fun GameObject.replace(id: String, tile: CoordGrid = this.tile, shape: Int = this.shape, rotation: Int = this.rotation, ticks: Int = -1, collision: Boolean = true): GameObject {
     return get<GameObjects>().replace(this, id, tile, shape, rotation, ticks, collision)
 }
 

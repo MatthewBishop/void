@@ -6,7 +6,7 @@ import world.gregs.voidps.engine.entity.obj.GameObject
 import world.gregs.voidps.engine.entity.obj.GameObjects
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.engine.getProperty
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.engine.timedLoad
 import world.gregs.yaml.Yaml
 import world.gregs.yaml.read.YamlReaderConfiguration
@@ -29,7 +29,7 @@ fun loadObjectSpawns(
                 return
             }
             val id = value["id"] as String
-            val tile = Tile.fromMap(value)
+            val tile = CoordGrid.fromMap(value)
             val type = value["type"] as Int
             val rotation = value["rotation"] as? Int ?: 0
             count++

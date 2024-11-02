@@ -24,7 +24,7 @@ import world.gregs.voidps.engine.timer.Timers
 import world.gregs.voidps.network.client.Client
 import world.gregs.voidps.network.client.Instruction
 import world.gregs.voidps.network.login.protocol.visual.PlayerVisuals
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import kotlin.coroutines.Continuation
 
 /**
@@ -32,7 +32,7 @@ import kotlin.coroutines.Continuation
  */
 class Player(
     override var index: Int = -1,
-    override var tile: Tile = Tile.EMPTY,
+    override var tile: CoordGrid = CoordGrid.EMPTY,
     val inventories: Inventories = Inventories(),
     variables: MutableMap<String, Any> = mutableMapOf(),
     val experience: Experience = Experience(),

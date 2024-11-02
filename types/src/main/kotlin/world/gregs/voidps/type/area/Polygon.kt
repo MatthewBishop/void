@@ -1,7 +1,7 @@
 package world.gregs.voidps.type.area
 
 import world.gregs.voidps.type.Area
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import kotlin.math.abs
 
 open class Polygon(
@@ -31,7 +31,7 @@ open class Polygon(
         return pointInPolygon(x, y, xPoints, yPoints)
     }
 
-    override fun random(): Tile {
+    override fun random(): CoordGrid {
         var tile = bounds.random()
         while (!contains(tile)) {
             tile = bounds.random()
@@ -49,10 +49,10 @@ open class Polygon(
         return area / 2.0
     }
 
-    override fun iterator(): Iterator<Tile> {
+    override fun iterator(): Iterator<CoordGrid> {
         val iterator = bounds.iterator()
-        return object : Iterator<Tile> {
-            var tile: Tile? = null
+        return object : Iterator<CoordGrid> {
+            var tile: CoordGrid? = null
             override fun hasNext(): Boolean {
                 while (iterator.hasNext()) {
                     val next = iterator.next()
@@ -65,7 +65,7 @@ open class Polygon(
                 return false
             }
 
-            override fun next(): Tile {
+            override fun next(): CoordGrid {
                 val next = tile!!
                 tile = null
                 return next

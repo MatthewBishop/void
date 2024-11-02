@@ -2,14 +2,14 @@ package world.gregs.voidps.type.zone
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 
 internal class ZoneTest {
 
     @Test
     fun `Zero values`() {
         // Given
-        val zone = Zone(0, 0, 0)
+        val zone = ZoneKey(0, 0, 0)
         // When
         val x = zone.x
         val y = zone.y
@@ -24,7 +24,7 @@ internal class ZoneTest {
     @Test
     fun `Maximum values`() {
         // Given
-        val zone = Zone(2047, 2047, 3)
+        val zone = ZoneKey(2047, 2047, 3)
         // When
         val x = zone.x
         val y = zone.y
@@ -38,7 +38,7 @@ internal class ZoneTest {
     @Test
     fun `Overflow values`() {
         // Given
-        val zone = Zone(4097, 4098, 5)
+        val zone = ZoneKey(4097, 4098, 5)
         // When
         val x = zone.x
         val y = zone.y
@@ -52,7 +52,7 @@ internal class ZoneTest {
     @Test
     fun `Tile test`() {
         // Given
-        val zone = Zone(385, 433, 2)
+        val zone = ZoneKey(385, 433, 2)
         // When
         val level = zone.tile
         // Then
@@ -64,7 +64,7 @@ internal class ZoneTest {
     @Test
     fun `Region test`() {
         // Given
-        val zone = Zone(385, 433)
+        val zone = ZoneKey(385, 433)
         // When
         val region = zone.region
         // Then
@@ -76,7 +76,7 @@ internal class ZoneTest {
     @Test
     fun `Region level test`() {
         // Given
-        val zone = Zone(385, 433, 1)
+        val zone = ZoneKey(385, 433, 1)
         // When
         val region = zone.regionLevel
         // Then
@@ -89,7 +89,7 @@ internal class ZoneTest {
     @Test
     fun `Zone area test`() {
         // Given
-        val area = Zone(0, 0, 0).toCuboid(width = 1, height = 1)
+        val area = ZoneKey(0, 0, 0).toCuboid(width = 1, height = 1)
         // When
         assertFalse(area.contains(0, 0, 1))
         assertTrue(area.contains(0, 0))
@@ -102,7 +102,7 @@ internal class ZoneTest {
     @Test
     fun `Rectangle area test`() {
         // Given
-        val area = Zone(3, 3, 1).toCuboid(width = 2, height = 3)
+        val area = ZoneKey(3, 3, 1).toCuboid(width = 2, height = 3)
         // When
         assertTrue(area.contains(24, 24, 1))
         assertFalse(area.contains(24, 24, 0))
@@ -119,7 +119,7 @@ internal class ZoneTest {
     @Test
     fun `Rectangle radius test`() {
         // Given
-        val area = Zone(3, 3, 1).toCuboid(radius = 2)
+        val area = ZoneKey(3, 3, 1).toCuboid(radius = 2)
         // When
         assertTrue(area.contains(24, 24, 1))
         assertFalse(area.contains(24, 24, 0))

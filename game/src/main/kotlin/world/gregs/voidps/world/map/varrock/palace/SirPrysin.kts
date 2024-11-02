@@ -13,7 +13,7 @@ import world.gregs.voidps.engine.inv.inventory
 import world.gregs.voidps.engine.inv.remove
 import world.gregs.voidps.engine.suspend.delay
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.world.activity.bank.ownsItem
 import world.gregs.voidps.world.activity.quest.quest
 import world.gregs.voidps.world.interact.dialogue.*
@@ -217,13 +217,13 @@ suspend fun PlayerChoice.stillLooking(): Unit = option("I'm still looking.") {
 }
 
 val objects: GameObjects by inject()
-val cupboardTile = Tile(3204, 3469)
+val cupboardTile = CoordGrid(3204, 3469)
 
 suspend fun NPCOption.giveSilverlight() {
     player<Neutral>("I've got all three keys!")
     npc<Neutral>("Excellent! Now I can give you Silverlight.")
     player.inventory.remove("silverlight_key_wizard_traiborn", "silverlight_key_captain_rovin", "silverlight_key_sir_prysin")
-    val tile = Tile(3204, 3470)
+    val tile = CoordGrid(3204, 3470)
     target.mode = PauseMode
     target.clearWatch()
     target.steps.clear()

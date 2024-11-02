@@ -2,14 +2,14 @@ package world.gregs.voidps.type
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 internal class TileTest {
 
     @Test
     fun `Zero values`() {
         // Given
-        val tile = Tile(0, 0, 0)
+        val tile = CoordGrid(0, 0, 0)
         // When
         val x = tile.x
         val y = tile.y
@@ -24,7 +24,7 @@ internal class TileTest {
     @Test
     fun `Negative values safe`() {
         // Given
-        val tile = Tile(-10, -50, -2)
+        val tile = CoordGrid(-10, -50, -2)
         // When
         val x = tile.x
         val y = tile.y
@@ -38,7 +38,7 @@ internal class TileTest {
     @Test
     fun `Maximum values`() {
         // Given
-        val tile = Tile(16320, 16320, 3)
+        val tile = CoordGrid(16320, 16320, 3)
         // When
         val x = tile.x
         val y = tile.y
@@ -52,7 +52,7 @@ internal class TileTest {
     @Test
     fun `Overflow values`() {
         // Given
-        val tile = Tile(16384, 16385, 6)
+        val tile = CoordGrid(16384, 16385, 6)
         // When
         val x = tile.x
         val y = tile.y
@@ -66,7 +66,7 @@ internal class TileTest {
     @Test
     fun `Add test`() {
         // Given
-        val tile = Tile(0, 10, 1)
+        val tile = CoordGrid(0, 10, 1)
         // When
         val result = tile.add(1, 1, 1)
         val x = result.x
@@ -84,7 +84,7 @@ internal class TileTest {
     @Test
     fun `Zone test`() {
         // Given
-        val tile = Tile(3083, 3466, 1)
+        val tile = CoordGrid(3083, 3466, 1)
         // When
         val zone = tile.zone
         // Then
@@ -95,7 +95,7 @@ internal class TileTest {
     @Test
     fun `Region test`() {
         // Given
-        val tile = Tile(3083, 3466, 1)
+        val tile = CoordGrid(3083, 3466, 1)
         // When
         val region = tile.region
         // Then
@@ -107,7 +107,7 @@ internal class TileTest {
     @Test
     fun `Tile area test`() {
         // Given
-        val area = Tile(2, 2, 2).toCuboid(width = 1, height = 1)
+        val area = CoordGrid(2, 2, 2).toCuboid(width = 1, height = 1)
         // Then
         assertTrue(area.contains(2, 2, 2))
         assertFalse(area.contains(3, 2, 2))
@@ -121,7 +121,7 @@ internal class TileTest {
     @Test
     fun `Rectangle area test`() {
         // Given
-        val area = Tile(2, 2, 1).toCuboid(width = 3, height = 6)
+        val area = CoordGrid(2, 2, 1).toCuboid(width = 3, height = 6)
         // Then
         assertTrue(area.contains(2, 2, 1))
         assertFalse(area.contains(2, 2, 0))
@@ -141,7 +141,7 @@ internal class TileTest {
     @Test
     fun `Rectangle radius test`() {
         // Given
-        val area = Tile(4, 3, 1).toCuboid(radius = 2)
+        val area = CoordGrid(4, 3, 1).toCuboid(radius = 2)
         // Then
         assertTrue(area.contains(4, 3, 1))
         assertFalse(area.contains(4, 3, 0))

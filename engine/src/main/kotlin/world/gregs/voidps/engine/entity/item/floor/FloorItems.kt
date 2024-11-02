@@ -15,8 +15,8 @@ import world.gregs.voidps.network.login.protocol.encode.send
 import world.gregs.voidps.network.login.protocol.encode.zone.FloorItemAddition
 import world.gregs.voidps.network.login.protocol.encode.zone.FloorItemRemoval
 import world.gregs.voidps.network.login.protocol.encode.zone.FloorItemUpdate
-import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.CoordGrid
+import world.gregs.voidps.type.ZoneKey
 
 /**
  * Stores up to [MAX_TILE_ITEMS] [FloorItem]s per tile
@@ -36,9 +36,9 @@ class FloorItems(
         override fun clearInstance(instance: MutableMap<Int, MutableList<FloorItem>>) = instance.apply { clear() }
     }
 
-    fun add(tile: Tile, id: String, amount: Int = 1, revealTicks: Int = NEVER, disappearTicks: Int = NEVER, charges: Int = 0, owner: Player?) = add(tile, id, amount, revealTicks, disappearTicks, charges, owner?.name)
+    fun add(tile: CoordGrid, id: String, amount: Int = 1, revealTicks: Int = NEVER, disappearTicks: Int = NEVER, charges: Int = 0, owner: Player?) = add(tile, id, amount, revealTicks, disappearTicks, charges, owner?.name)
 
-    fun add(tile: Tile, id: String, amount: Int = 1, revealTicks: Int = NEVER, disappearTicks: Int = NEVER, charges: Int = 0, owner: String? = null): FloorItem {
+    fun add(tile: CoordGrid, id: String, amount: Int = 1, revealTicks: Int = NEVER, disappearTicks: Int = NEVER, charges: Int = 0, owner: String? = null): FloorItem {
         if (!definitions.contains(id)) {
             logger.warn { "Null floor item $id $tile" }
         }
@@ -91,11 +91,11 @@ class FloorItems(
         return false
     }
 
-    operator fun get(tile: Tile): List<FloorItem> {
+    operator fun get(tile: CoordGrid): List<FloorItem> {
         return data.get(tile.zone.id)?.get(tile.id) ?: emptyList()
     }
 
-    operator fun get(zone: Zone): Collection<List<FloorItem>> {
+    operator fun get(zone: ZoneKey): Collection<List<FloorItem>> {
         return data.get(zone.id)?.values ?: emptyList()
     }
 
@@ -130,7 +130,7 @@ class FloorItems(
         data.clear()
     }
 
-    override fun send(player: Player, zone: Zone) {
+    override fun send(player: Player, zone: ZoneKey) {
         for ((_, items) in data.get(zone.id) ?: return) {
             for (floorItem in items) {
                 if (floorItem.owner != null && floorItem.owner != player.name) {

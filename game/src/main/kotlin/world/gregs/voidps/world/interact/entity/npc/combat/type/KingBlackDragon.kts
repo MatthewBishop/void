@@ -6,7 +6,7 @@ import world.gregs.voidps.engine.entity.character.mode.move.target.CharacterTarg
 import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.entity.character.setAnimation
 import world.gregs.voidps.engine.entity.character.size
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.type.random
 import world.gregs.voidps.world.interact.entity.combat.hit.hit
 import world.gregs.voidps.world.interact.entity.combat.hit.npcCombatAttack
@@ -46,7 +46,7 @@ npcCombatSwing("king_black_dragon") { npc ->
  * Tile the dragon breath originates from.
  * Looks weird imo, but it's the same as OSRS.
  */
-fun nearestTile(source: Character, target: Character): Tile {
+fun nearestTile(source: Character, target: Character): CoordGrid {
     val half = source.size / 2
     val centre = source.tile.add(half, half)
     val direction = target.tile.delta(centre).toDirection()

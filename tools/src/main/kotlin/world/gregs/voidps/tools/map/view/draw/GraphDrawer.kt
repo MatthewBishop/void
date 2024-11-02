@@ -12,7 +12,7 @@ import world.gregs.voidps.tools.map.view.graph.Area
 import world.gregs.voidps.tools.map.view.graph.AreaSet
 import world.gregs.voidps.tools.map.view.graph.Link
 import world.gregs.voidps.type.Distance
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import java.awt.*
 import kotlin.math.sqrt
 
@@ -31,8 +31,8 @@ class GraphDrawer(
     private val walkableColour = Color(0.0f, 1.0f, 0.0f, 0.3f)
     private val collisionColour = Color(1.0f, 0.0f, 0.0f, 0.3f)
     private val distances = nav?.nodes?.map { nav.get(it) }?.flatten()?.distinct()?.mapNotNull { edge ->
-        val start = edge.start as? Tile ?: return@mapNotNull null
-        val end = edge.end as? Tile ?: return@mapNotNull null
+        val start = edge.start as? CoordGrid ?: return@mapNotNull null
+        val end = edge.end as? CoordGrid ?: return@mapNotNull null
         edge to Distance.chebyshev(start.x, start.y, end.x, end.y)
     }?.toMap()
 
@@ -44,13 +44,13 @@ class GraphDrawer(
         view.repaint(view.mapToViewX(area.minX), view.mapToViewY(view.flipMapY(area.minY)), view.mapToImageX(area.maxX), view.mapToImageY(view.flipMapY(area.maxY)))
     }
 
-    fun repaint(node: Tile) {
+    fun repaint(node: CoordGrid) {
         view.repaint(view.mapToViewX(node.x), view.mapToViewY(view.flipMapY(node.y)), view.mapToImageX(1), view.mapToImageY(1))
     }
 
     fun draw(g: Graphics) {
         g.color = linkColour
-        nav?.nodes?.filterIsInstance<Tile>()?.forEach { node ->
+        nav?.nodes?.filterIsInstance<CoordGrid>()?.forEach { node ->
             if (node.level != view.level) {
                 return@forEach
             }
@@ -65,8 +65,8 @@ class GraphDrawer(
 
             val edges = nav.getAdjacent(node)
             edges.forEachIndexed { index, edge ->
-                val start = edge.start as? Tile ?: return@forEachIndexed
-                val end = edge.end as? Tile ?: return@forEachIndexed
+                val start = edge.start as? CoordGrid ?: return@forEachIndexed
+                val end = edge.end as? CoordGrid ?: return@forEachIndexed
                 if (start.level != view.level || end.level != view.level) {
                     return@forEachIndexed
                 }

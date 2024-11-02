@@ -1,7 +1,7 @@
 package world.gregs.voidps.bot
 
 import world.gregs.voidps.engine.entity.character.player.Player
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.type.Area
 
 data class Task(
@@ -13,7 +13,7 @@ data class Task(
 ) {
     fun full() = spaces <= 0
 
-    fun distanceTo(tile: Tile): Int {
+    fun distanceTo(tile: CoordGrid): Int {
         return if (area == null) 0 else tile.distanceTo(area.random())
     }
 }

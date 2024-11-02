@@ -14,7 +14,7 @@ import world.gregs.voidps.engine.entity.playerSpawn
 import world.gregs.voidps.engine.getProperty
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.engine.map.collision.Collisions
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.world.interact.entity.combat.dead
 import world.gregs.voidps.world.interact.entity.death.npcDeath
 
@@ -78,7 +78,7 @@ fun remove(char: Character) {
     }
 }
 
-fun move(character: Character, from: Tile, to: Tile) {
+fun move(character: Character, from: CoordGrid, to: CoordGrid) {
     val mask = entity(character)
     val size = character.size
     for (x in 0 until size) {

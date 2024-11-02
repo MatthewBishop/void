@@ -2,7 +2,7 @@ package world.gregs.voidps.type.area
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.type.area.Polygon.Companion.pointInPolygon
 
 internal class PolygonTest {
@@ -30,16 +30,16 @@ internal class PolygonTest {
     @Test
     fun `Level of polygon`() {
         val area = Polygon(intArrayOf(1, 6, 6, 1), intArrayOf(1, 1, 6, 6), 1)
-        assertFalse(area.contains(Tile(5, 5, 2)))
-        assertTrue(area.contains(Tile(5, 5, 1)))
-        assertFalse(area.contains(Tile(5, 5, 0)))
+        assertFalse(area.contains(CoordGrid(5, 5, 2)))
+        assertTrue(area.contains(CoordGrid(5, 5, 1)))
+        assertFalse(area.contains(CoordGrid(5, 5, 0)))
     }
 
     @Test
     fun `Levels of polygon`() {
         val area = Polygon(intArrayOf(1, 6, 6, 1), intArrayOf(1, 1, 6, 6), 0, 4)
-        assertTrue(area.contains(Tile(5, 5, 3)))
-        assertTrue(area.contains(Tile(5, 5, 0)))
+        assertTrue(area.contains(CoordGrid(5, 5, 3)))
+        assertTrue(area.contains(CoordGrid(5, 5, 0)))
     }
 
     @Test

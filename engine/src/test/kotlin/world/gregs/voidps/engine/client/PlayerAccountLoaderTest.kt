@@ -21,7 +21,7 @@ import world.gregs.voidps.network.Response
 import world.gregs.voidps.network.client.Client
 import world.gregs.voidps.network.client.ConnectionQueue
 import world.gregs.voidps.network.login.protocol.encode.login
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -72,7 +72,7 @@ internal class PlayerAccountLoaderTest : KoinMock() {
     @Test
     fun `Successful login`() = runTest {
         val client: Client = mockk(relaxed = true)
-        playerSave = PlayerSave("name", "hash", Tile.EMPTY, doubleArrayOf(), emptyList(), intArrayOf(), true, intArrayOf(), intArrayOf(), emptyMap(), emptyMap(), emptyMap(), emptyList())
+        playerSave = PlayerSave("name", "hash", CoordGrid.EMPTY, doubleArrayOf(), emptyList(), intArrayOf(), true, intArrayOf(), intArrayOf(), emptyMap(), emptyMap(), emptyMap(), emptyList())
         coEvery { queue.await() } just Runs
 
         val instructions = loader.load(client, "name", "pass", 2)

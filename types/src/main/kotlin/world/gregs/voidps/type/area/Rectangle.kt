@@ -9,7 +9,7 @@ data class Rectangle(//bounds
     val maxY: Int
 ) : Area {
 
-    constructor(tile: Tile, width: Int, height: Int) : this(tile.x, tile.y, tile.x + width - 1, tile.y + height - 1)
+    constructor(tile: CoordGrid, width: Int, height: Int) : this(tile.x, tile.y, tile.x + width - 1, tile.y + height - 1)
 
     override val area: Double
         get() = (width * height).toDouble()
@@ -18,37 +18,37 @@ data class Rectangle(//bounds
     val height: Int
         get() = maxY - minY + 1
 
-    override fun toRegions(): List<Region> {
-        val list = mutableListOf<Region>()
-        val max = Tile(maxX, maxY).region
-        val min = Tile(minX, minY).region
+    override fun toRegions(): List<MapSquareKey> {
+        val list = mutableListOf<MapSquareKey>()
+        val max = CoordGrid(maxX, maxY).region
+        val min = CoordGrid(minX, minY).region
         for (x in min.x..max.x) {
             for (y in min.y..max.y) {
-                list.add(Region(x, y))
+                list.add(MapSquareKey(x, y))
             }
         }
         return list
     }
 
-    override fun toZones(level: Int): List<Zone> {
-        val list = mutableListOf<Zone>()
-        val max = Tile(maxX, maxY).zone
-        val min = Tile(minX, minY).zone
+    override fun toZones(level: Int): List<ZoneKey> {
+        val list = mutableListOf<ZoneKey>()
+        val max = CoordGrid(maxX, maxY).zone
+        val min = CoordGrid(minX, minY).zone
         for (x in min.x..max.x) {
             for (y in min.y..max.y) {
-                list.add(Zone(x, y, level))
+                list.add(ZoneKey(x, y, level))
             }
         }
         return list
     }
 
-    fun toZonesReversed(level: Int): List<Zone> {
-        val list = mutableListOf<Zone>()
-        val max = Tile(maxX, maxY).zone
-        val min = Tile(minX, minY).zone
+    fun toZonesReversed(level: Int): List<ZoneKey> {
+        val list = mutableListOf<ZoneKey>()
+        val max = CoordGrid(maxX, maxY).zone
+        val min = CoordGrid(minX, minY).zone
         for (y in min.y..max.y) {
             for (x in min.x..max.x) {
-                list.add(Zone(x, y, level))
+                list.add(ZoneKey(x, y, level))
             }
         }
         return list
@@ -68,16 +68,16 @@ data class Rectangle(//bounds
         return x in minX..maxX && y in minY..maxY
     }
 
-    override fun random() = Tile(if (minX == maxX) minX else random.nextInt(minX, maxX + 1), if (minY == maxY) minY else random.nextInt(minY, maxY + 1), 0)
+    override fun random() = CoordGrid(if (minX == maxX) minX else random.nextInt(minX, maxX + 1), if (minY == maxY) minY else random.nextInt(minY, maxY + 1), 0)
 
 
     override fun toString(): String {
         return "Rectangle($minX..$maxX, $minY..$maxY)"
     }
 
-    override fun iterator(): Iterator<Tile> {
-        val tile = Tile(minX, minY)
-        return object : Iterator<Tile> {
+    override fun iterator(): Iterator<CoordGrid> {
+        val tile = CoordGrid(minX, minY)
+        return object : Iterator<CoordGrid> {
             private var index = 0
 
             override fun hasNext() = index < area

@@ -3,7 +3,7 @@ package world.gregs.voidps.type
 import world.gregs.voidps.type.area.Cuboid
 
 @JvmInline
-value class Tile(val id: Int) : Coordinate3D<Tile> {//coordgrid
+value class CoordGrid(val id: Int) : Coordinate3D<CoordGrid> {//coordgrid
 
     constructor(x: Int, y: Int, level: Int = 0) : this(id(x, y, level))
 
@@ -14,25 +14,25 @@ value class Tile(val id: Int) : Coordinate3D<Tile> {//coordgrid
     override val level: Int
         get() = level(id)
 
-    val zone: Zone
-        get() = Zone(x shr 3, y shr 3, level)
-    val region: Region
-        get() = Region(x shr 6, y shr 6)
-    val regionLevel: RegionLevel
-        get() = RegionLevel(x shr 6, y shr 6, level)
+    val zone: ZoneKey
+        get() = ZoneKey(x shr 3, y shr 3, level)
+    val region: MapSquareKey
+        get() = MapSquareKey(x shr 6, y shr 6)
+    val regionLevel: MapSquareGrid
+        get() = MapSquareGrid(x shr 6, y shr 6, level)
 
-    override fun copy(x: Int, y: Int, level: Int) = Tile(x, y, level)
+    override fun copy(x: Int, y: Int, level: Int) = CoordGrid(x, y, level)
 
-    fun distanceTo(other: Tile, width: Int, height: Int) = distanceTo(Distance.getNearest(other, width, height, this))
+    fun distanceTo(other: CoordGrid, width: Int, height: Int) = distanceTo(Distance.getNearest(other, width, height, this))
 
-    fun distanceTo(other: Tile): Int {
+    fun distanceTo(other: CoordGrid): Int {
         if (level != other.level) {
             return -1
         }
         return Distance.chebyshev(x, y, other.x, other.y)
     }
 
-    fun within(other: Tile, radius: Int): Boolean {
+    fun within(other: CoordGrid, radius: Int): Boolean {
         return Distance.within(x, y, level, other.x, other.y, other.level, radius)
     }
 
@@ -53,12 +53,12 @@ value class Tile(val id: Int) : Coordinate3D<Tile> {//coordgrid
         fun y(id: Int) = id and 0x3fff
         fun level(id: Int) = id shr 28 and 0x3
 
-        val EMPTY = Tile(0)
+        val EMPTY = CoordGrid(0)
 
-        fun fromMap(map: Map<String, Any>) = Tile(map["x"] as Int, map["y"] as Int, map["level"] as? Int ?: 0)
+        fun fromMap(map: Map<String, Any>) = CoordGrid(map["x"] as Int, map["y"] as Int, map["level"] as? Int ?: 0)
 
         /**
-         * Index for a tile within a [Zone]
+         * Index for a tile within a [ZoneKey]
          * Used for indexing tiles in arrays
          */
         fun index(x: Int, y: Int): Int = (x and 0x7) or ((y and 0x7) shl 3)
@@ -69,4 +69,4 @@ value class Tile(val id: Int) : Coordinate3D<Tile> {//coordgrid
     }
 }
 
-fun Tile.equals(x: Int = this.x, y: Int = this.y, level: Int = this.level) = this.x == x && this.y == y && this.level == level
+fun CoordGrid.equals(x: Int = this.x, y: Int = this.y, level: Int = this.level) = this.x == x && this.y == y && this.level == level

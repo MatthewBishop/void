@@ -27,8 +27,8 @@ import world.gregs.voidps.engine.script.KoinMock
 import world.gregs.voidps.network.login.protocol.visual.PlayerVisuals
 import world.gregs.voidps.network.login.protocol.visual.update.player.MoveType
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.CoordGrid
+import world.gregs.voidps.type.ZoneKey
 
 internal class MovementTest : KoinMock() {
 
@@ -38,11 +38,11 @@ internal class MovementTest : KoinMock() {
 
     @BeforeEach
     fun setup() {
-        player = Player(tile = Tile(5, 5))
+        player = Player(tile = CoordGrid(5, 5))
         player.visuals = PlayerVisuals(0, BodyParts())
         player.collision = CollisionStrategies.Normal
         declareMock<AreaDefinitions> {
-            every { get(any<Zone>()) } returns emptySet()
+            every { get(any<ZoneKey>()) } returns emptySet()
         }
         pathFinder = declareMock {
             every { findPath(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()) } returns Route(listOf(RouteCoordinates(10, 10)),
@@ -58,16 +58,16 @@ internal class MovementTest : KoinMock() {
 
     @Test
     fun `Player queues smart route`() {
-        player.tile = Tile(10, 10)
-        val movement = Movement(player, TileTargetStrategy(Tile.EMPTY))
+        player.tile = CoordGrid(10, 10)
+        val movement = Movement(player, TileTargetStrategy(CoordGrid.EMPTY))
         movement.calculate()
         assertTrue(player.steps.isNotEmpty())
     }
 
     @Test
     fun `Npc queues step`() {
-        val npc = NPC(tile = Tile(10, 10))
-        val movement = Movement(npc, TileTargetStrategy(Tile.EMPTY))
+        val npc = NPC(tile = CoordGrid(10, 10))
+        val movement = Movement(npc, TileTargetStrategy(CoordGrid.EMPTY))
         movement.calculate()
         assertTrue(npc.steps.isNotEmpty())
         verify(exactly = 0) {
@@ -79,7 +79,7 @@ internal class MovementTest : KoinMock() {
     fun `Delayed player processes forced movement`() {
         player.start("delay", -1)
         val movement = Movement(player)
-        player.steps.queueStep(Tile(10, 10), noCollision = true)
+        player.steps.queueStep(CoordGrid(10, 10), noCollision = true)
         movement.tick()
         assertTrue(player.visuals.moved)
         assertEquals(1, player.visuals.walkStep)
@@ -90,7 +90,7 @@ internal class MovementTest : KoinMock() {
     fun `Unloaded viewport isn't processed`() = listOf("unloaded", "frozen", "delayed").map { type ->
         dynamicTest("$type viewport isn't processed") {
             val movement = Movement(player)
-            player.steps.queueStep(Tile(10, 10), noCollision = true)
+            player.steps.queueStep(CoordGrid(10, 10), noCollision = true)
             when (type) {
                 "unloaded" -> player.viewport = Viewport()
                 "frozen" -> player.start("movement_delay", -1)
@@ -105,7 +105,7 @@ internal class MovementTest : KoinMock() {
     @Test
     fun `Walking takes one step`() {
         val movement = Movement(player)
-        player.steps.queueSteps(listOf(Tile(6, 6)))
+        player.steps.queueSteps(listOf(CoordGrid(6, 6)))
         player.running = false
         movement.tick()
         assertTrue(player.visuals.moved)
@@ -115,14 +115,14 @@ internal class MovementTest : KoinMock() {
         assertEquals(MoveType.Walk, player.temporaryMoveType)
 
         assertEquals(Direction.NORTH_EAST, player.facing)
-        assertEquals(Tile(5, 5), player.previousTile)
-        assertEquals(Tile(6, 6), player.tile)
+        assertEquals(CoordGrid(5, 5), player.previousTile)
+        assertEquals(CoordGrid(6, 6), player.tile)
     }
 
     @Test
     fun `Running takes two steps`() {
         val movement = Movement(player)
-        player.steps.queueSteps(listOf(Tile(10, 10)))
+        player.steps.queueSteps(listOf(CoordGrid(10, 10)))
         player.running = true
         movement.tick()
         assertTrue(player.visuals.moved)
@@ -130,8 +130,8 @@ internal class MovementTest : KoinMock() {
         assertEquals(1, player.visuals.runStep)
 
         assertEquals(Direction.NORTH_EAST, player.facing)
-        assertEquals(Tile(6, 6), player.previousTile)
-        assertEquals(Tile(7, 7), player.tile)
+        assertEquals(CoordGrid(6, 6), player.previousTile)
+        assertEquals(CoordGrid(7, 7), player.tile)
         assertFalse(player.steps.isEmpty())
     }
 
@@ -139,7 +139,7 @@ internal class MovementTest : KoinMock() {
     fun `Doesn't move if blocked`() {
         val movement = Movement(player)
         every { stepValidator.canTravel(any(), any(), any(), any(), any(), any(), any(), any()) } returns false
-        player.steps.queueSteps(listOf(Tile(10, 10)))
+        player.steps.queueSteps(listOf(CoordGrid(10, 10)))
         movement.tick()
         assertFalse(player.visuals.moved)
         assertEquals(-1, player.visuals.walkStep)
@@ -148,10 +148,10 @@ internal class MovementTest : KoinMock() {
 
     @Test
     fun `Check recalculate when reach waypoint and target moved`() {
-        var target = Tile(10, 10)
+        var target = CoordGrid(10, 10)
         val strategy = object : TargetStrategy {
             override val bitMask: Int = 0
-            override val tile: Tile
+            override val tile: CoordGrid
                 get() = target
             override val width: Int = 1
             override val height: Int = 1
@@ -162,23 +162,23 @@ internal class MovementTest : KoinMock() {
         }
         val movement = Movement(player, strategy)
         movement.calculate()
-        target = Tile(1, 1)
+        target = CoordGrid(1, 1)
         repeat(5) {
             movement.tick()
         }
         every { pathFinder.findPath(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()) } returns
                 Route(listOf(RouteCoordinates(1, 1)), alternative = false, success = true)
-        assertEquals(Tile(10, 10), player.tile)
+        assertEquals(CoordGrid(10, 10), player.tile)
         repeat(2) {
             movement.tick()
         }
-        assertEquals(Tile(8, 8), player.tile)
+        assertEquals(CoordGrid(8, 8), player.tile)
     }
 
     @Test
     fun `Odd number of steps when running has a step`() {
         val movement = Movement(player)
-        player.steps.queueSteps(listOf(Tile(8, 5)))
+        player.steps.queueSteps(listOf(CoordGrid(8, 5)))
         player.running = true
 
         movement.tick()

@@ -14,8 +14,8 @@ import world.gregs.voidps.tools.cache.Xteas
 import world.gregs.voidps.tools.map.view.graph.MutableNavigationGraph
 import world.gregs.voidps.tools.property
 import world.gregs.voidps.tools.propertyOrNull
-import world.gregs.voidps.type.Region
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.MapSquareKey
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.yaml.Yaml
 
 /**
@@ -37,11 +37,11 @@ object WorldMapLinkIdentifier {
         val linker = ObjectLinker(collisions)
         val clientScriptDecoder = ClientScriptDecoder().load(cache)
         val objects = GameObjects(GameObjectCollisionAdd(collisions), GameObjectCollisionRemove(collisions), ZoneBatchUpdates(), definitions)
-        val regions = mutableListOf<Region>()
+        val regions = mutableListOf<MapSquareKey>()
         for (regionX in 0 until 256) {
             for (regionY in 0 until 256) {
                 cache.data(5, "m${regionX}_${regionY}") ?: continue
-                regions.add(Region(regionX, regionY))
+                regions.add(MapSquareKey(regionX, regionY))
             }
         }
         startKoin {
@@ -55,7 +55,7 @@ object WorldMapLinkIdentifier {
         for (region in regions) {
             val def = mapDecoder.getOrNull(region.id) ?: continue
             def.objects.forEach { loc ->
-                val tile = Tile(region.tile.x + loc.x, region.tile.y + loc.y, loc.level)
+                val tile = CoordGrid(region.tile.x + loc.x, region.tile.y + loc.y, loc.level)
                 val obj = GameObject(loc.id, tile, loc.shape, loc.rotation)
                 list.add(obj)
                 objects.add(obj)
@@ -63,7 +63,7 @@ object WorldMapLinkIdentifier {
             }
             collisionDecoder.decode(region, def)
         }
-        val cacheLinks = mutableListOf<Pair<Tile, Tile>>()
+        val cacheLinks = mutableListOf<Pair<CoordGrid, CoordGrid>>()
         val dungeons = WorldMapDungeons(worldMapDetailsDecoder, worldMapIconDecoder, clientScriptDecoder, cache)
         val mapLinks = WorldMapLinks(clientScriptDecoder)
         cacheLinks.addAll(dungeons.getLinks())

@@ -23,7 +23,7 @@ import world.gregs.voidps.network.login.protocol.visual.NPCVisuals
 import world.gregs.voidps.network.login.protocol.visual.VisualEncoder
 import world.gregs.voidps.network.login.protocol.visual.update.Animation
 import world.gregs.voidps.network.login.protocol.visual.update.Turn
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 
 internal class NPCUpdateTaskTest : KoinMock() {
 
@@ -181,8 +181,8 @@ internal class NPCUpdateTaskTest : KoinMock() {
         val index = 1
         val direction = 12345
         val id = 20
-        every { player.tile } returns value(Tile(0, 0))
-        every { npc.tile } returns value(Tile(5, 3, 0))
+        every { player.tile } returns value(CoordGrid(0, 0))
+        every { npc.tile } returns value(CoordGrid(5, 3, 0))
         every { npc.index } returns index
         every { npc.def.id } returns id
         every { npc.visuals.turn } returns Turn(direction = direction)
@@ -222,8 +222,8 @@ internal class NPCUpdateTaskTest : KoinMock() {
         val npc: NPC = mockk(relaxed = true)
         val index = 1
         val id = 20
-        every { player.tile } returns value(Tile(0, 0))
-        every { npc.tile } returns value(Tile(5, 3, 0))
+        every { player.tile } returns value(CoordGrid(0, 0))
+        every { npc.tile } returns value(CoordGrid(5, 3, 0))
         every { npc.index } returns index
         every { npc.def.id } returns id
         every { npcs.getDirect(player.tile.regionLevel) } returns listOf(index)
@@ -246,8 +246,8 @@ internal class NPCUpdateTaskTest : KoinMock() {
         val updates: Writer = mockk(relaxed = true)
         val npc: NPC = mockk(relaxed = true)
         val index = 1
-        every { player.tile } returns value(Tile(0, 0))
-        every { npc.tile } returns value(Tile(15, 15, 0))
+        every { player.tile } returns value(CoordGrid(0, 0))
+        every { npc.tile } returns value(CoordGrid(15, 15, 0))
         every { npc.index } returns index
         every { npc.def.id } returns 20
         every { npcs.getDirect(player.tile.regionLevel) } returns listOf(index)
@@ -269,8 +269,8 @@ internal class NPCUpdateTaskTest : KoinMock() {
         val updates: Writer = mockk(relaxed = true)
         val npc: NPC = mockk(relaxed = true)
         val index = 1
-        every { player.tile } returns value(Tile(0, 0))
-        every { npc.tile } returns value(Tile(5, 3, 0))
+        every { player.tile } returns value(CoordGrid(0, 0))
+        every { npc.tile } returns value(CoordGrid(5, 3, 0))
         every { npc.index } returns index
         every { npc.def.id } returns 20
         every { npcs.getDirect(player.tile.regionLevel) } returns listOf(index)

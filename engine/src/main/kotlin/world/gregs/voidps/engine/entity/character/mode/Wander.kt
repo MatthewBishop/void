@@ -3,7 +3,7 @@ package world.gregs.voidps.engine.entity.character.mode
 import world.gregs.voidps.engine.entity.character.mode.move.Movement
 import world.gregs.voidps.engine.entity.character.move.tele
 import world.gregs.voidps.engine.entity.character.npc.NPC
-import world.gregs.voidps.type.Tile
+import world.gregs.voidps.type.CoordGrid
 import world.gregs.voidps.type.random
 
 /**
@@ -12,12 +12,12 @@ import world.gregs.voidps.type.random
  */
 class Wander(
     private val npc: NPC,
-    private val spawn: Tile = npc["spawn_tile"]!!,
+    private val spawn: CoordGrid = npc["spawn_tile"]!!,
     private val stuckLimit: Int = npc.def["stuck_limit", 500]
 ) : Movement(npc) {
 
     private var stuckCounter = 0
-    private var lastTile = Tile.EMPTY
+    private var lastTile = CoordGrid.EMPTY
 
     override fun tick() {
         if (npc.tile == lastTile) {

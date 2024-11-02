@@ -8,7 +8,7 @@ import world.gregs.voidps.tools.map.render.load.MapTileSettings
 import world.gregs.voidps.tools.map.render.model.TextureColours
 import world.gregs.voidps.tools.map.render.model.TileColours
 import world.gregs.voidps.tools.map.render.raster.Raster
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import kotlin.math.sqrt
 
 class TileLevel(
@@ -76,7 +76,7 @@ class TileLevel(
     fun tile(x: Int, y: Int): MapTile {
         val regionX = x / 64
         val regionY = y / 64
-        val regionId = Region.id(regionX, regionY)
+        val regionId = MapSquareKey.id(regionX, regionY)
         return tiles[regionId]?.getTile(x.rem(64), y.rem(64), level) ?: MapTile.EMPTY
     }
 

@@ -16,7 +16,7 @@ import world.gregs.voidps.tools.map.render.draw.MinimapIconPainter
 import world.gregs.voidps.tools.map.render.draw.RegionRenderer
 import world.gregs.voidps.tools.map.render.load.MapTileSettings
 import world.gregs.voidps.tools.map.render.load.RegionManager
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -62,14 +62,14 @@ object WorldMapDumper {
         val manager = RegionManager(mapDefinitions, 3)
         val settings = MapTileSettings(4, underlayDefinitions, overlayDefinitions, textureDefinitions, manager = manager)
 
-        val pipeline = Pipeline<Region>()
+        val pipeline = Pipeline<MapSquareKey>()
         pipeline.add(RegionRenderer(manager, objectDecoder, spriteDecoder, mapSceneDecoder, loader, settings))
 
-        val regions = mutableListOf<Region>()
+        val regions = mutableListOf<MapSquareKey>()
         for (regionX in 0 until 256) {
             for (regionY in 0 until 256) {
                 cache.data(5, "m${regionX}_${regionY}") ?: continue
-                regions.add(Region(regionX, regionY))
+                regions.add(MapSquareKey(regionX, regionY))
             }
         }
         val start = System.currentTimeMillis()
