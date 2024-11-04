@@ -3,15 +3,15 @@ package world.gregs.voidps.type
 import world.gregs.voidps.type.area.Cuboid
 
 @JvmInline
-value class CoordGrid(val id: Int) : Coordinate3D<CoordGrid> {//coordgrid
+value class CoordGrid(val id: Int) {//coordgrid
 
     constructor(x: Int, y: Int, level: Int = 0) : this(id(x, y, level))
 
-    override val x: Int
+    val x: Int
         get() = x(id)
-    override val y: Int
+    val y: Int
         get() = y(id)
-    override val level: Int
+    val level: Int
         get() = level(id)
 
     val zone: ZoneKey
@@ -21,7 +21,7 @@ value class CoordGrid(val id: Int) : Coordinate3D<CoordGrid> {//coordgrid
     val regionLevel: MapSquareGrid
         get() = MapSquareGrid(x shr 6, y shr 6, level)
 
-    override fun copy(x: Int, y: Int, level: Int) = CoordGrid(x, y, level)
+    fun copy(x: Int = this.x, y: Int = this.y, level: Int = this.level) = CoordGrid(x, y, level)
 
     fun distanceTo(other: CoordGrid, width: Int, height: Int) = distanceTo(Distance.getNearest(other, width, height, this))
 
@@ -67,6 +67,24 @@ value class CoordGrid(val id: Int) : Coordinate3D<CoordGrid> {//coordgrid
         fun indexY(index: Int) = index shr 3 and 0x7
         fun indexLayer(index: Int) = index shr 6 and 0x7
     }
+
+    fun add(x: Int = 0, y: Int = 0, level: Int = 0) = copy(this.x + x, this.y + y, this.level + level)
+    fun minus(x: Int = 0, y: Int = 0, level: Int = 0) = add(-x, -y, -level)
+    fun delta(x: Int = 0, y: Int = 0, level: Int = 0) = Delta(this.x - x, this.y - y, this.level - level)
+
+    fun add(value: Delta) = add(value.x, value.y, value.level)
+    fun minus(value: Delta) = minus(value.x, value.y, value.level)
+    fun add(value: CoordGrid) = add(value.x, value.y, value.level)
+
+    fun minus(value: CoordGrid) = minus(value.x, value.y, value.level)
+
+    fun delta(value: CoordGrid) = delta(value.x, value.y, value.level)
+
+    fun add(direction: Direction) = add(direction.delta)
+
+    fun addX(value: Int) = add(value, 0, 0)
+    fun addY(value: Int) = add(0, value, 0)
+    fun addLevel(value: Int) = add(0, 0, value)
 }
 
 fun CoordGrid.equals(x: Int = this.x, y: Int = this.y, level: Int = this.level) = this.x == x && this.y == y && this.level == level

@@ -7,15 +7,15 @@ import world.gregs.voidps.type.area.Rectangle
  * Represents a 8x8 tiled area
  */
 @JvmInline
-value class ZoneKey(val id: Int) : Coordinate3D<ZoneKey> {//this is a zonekey
+value class ZoneKey(val id: Int) {//this is a zonekey
 
     constructor(x: Int, y: Int, level: Int = 0) : this(id(x, y, level))
 
-    override val x: Int
+    val x: Int
         get() = x(id)
-    override val y: Int
+    val y: Int
         get() = y(id)
-    override val level: Int
+    val level: Int
         get() = level(id)
     val region: MapSquareKey
         get() = MapSquareKey(x shr 3, y shr 3)
@@ -24,7 +24,7 @@ value class ZoneKey(val id: Int) : Coordinate3D<ZoneKey> {//this is a zonekey
     val tile: CoordGrid
         get() = CoordGrid(x shl 3, y shl 3, level)
 
-    override fun copy(x: Int, y: Int, level: Int) = ZoneKey(x, y, level)
+    fun copy(x: Int = this.x, y: Int = this.y, level: Int = this.level) = ZoneKey(x, y, level)
 
     fun safeMinus(zone: ZoneKey) = safeMinus(zone.x, zone.y, zone.level)
     fun safeMinus(x: Int = 0, y: Int = 0, level: Int = 0): ZoneKey {
@@ -52,6 +52,10 @@ value class ZoneKey(val id: Int) : Coordinate3D<ZoneKey> {//this is a zonekey
          */
         fun tileIndex(tileX: Int, tileY: Int, level: Int): Int = id(tileX shr 3, tileY shr 3, level)
     }
+
+    fun add(x: Int = 0, y: Int = 0, level: Int = 0) = copy(this.x + x, this.y + y, this.level + level)
+    fun minus(x: Int = 0, y: Int = 0, level: Int = 0) = add(-x, -y, -level)
+    fun add(value: Delta) = add(value.x, value.y, value.level)
 }
 
 fun ZoneKey.equals(x: Int, y: Int, level: Int) = this.x == x && this.y == y && this.level == level

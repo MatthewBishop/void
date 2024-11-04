@@ -4,15 +4,15 @@ package world.gregs.voidps.type
  * Difference between two coordinates
  */
 @JvmInline
-value class Delta(val id: Long) : Coordinate3D<Delta> {//translation
+value class Delta(val id: Long) {//translation
 
     constructor(x: Int, y: Int, level: Int = 0) : this(id(x, y, level))
 
-    override val x: Int
+    val x: Int
         get() = x(id)
-    override val y: Int
+    val y: Int
         get() = y(id)
-    override val level: Int
+    val level: Int
         get() = level(id)
 
     fun isDiagonal() = isHorizontal() && isVertical()
@@ -23,7 +23,7 @@ value class Delta(val id: Long) : Coordinate3D<Delta> {//translation
 
     fun isVertical() = y != 0
 
-    override fun copy(x: Int, y: Int, level: Int) = Delta(x, y, level)
+    fun copy(x: Int = this.x, y: Int = this.y, level: Int = this.level) = Delta(x, y, level)
 
     fun toDirection(): Direction = when {
         x > 0 -> when {
@@ -57,6 +57,8 @@ value class Delta(val id: Long) : Coordinate3D<Delta> {//translation
 
         fun fromMap(map: Map<String, Any>) = Delta(map["x"] as? Int ?: 0, map["y"] as? Int ?: 0, map["level"] as? Int ?: 0)
     }
+
+    fun add(x: Int = 0, y: Int = 0, level: Int = 0) = copy(this.x + x, this.y + y, this.level + level)
 }
 
 fun Delta.equals(x: Int = 0, y: Int = 0, level: Int = 0) = this.x == x && this.y == y && this.level == level
