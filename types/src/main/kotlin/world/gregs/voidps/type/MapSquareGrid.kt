@@ -5,8 +5,6 @@ import world.gregs.voidps.type.area.Cuboid
 @JvmInline
 value class MapSquareGrid(val id: Int) {//MapSquareGrid
 
-    constructor(x: Int, y: Int, level: Int) : this(id(x, y, level))
-
     val x: Int
         get() = x(id)
     val y: Int
@@ -20,17 +18,20 @@ value class MapSquareGrid(val id: Int) {//MapSquareGrid
     val tile: CoordGrid
         get() = CoordGrid(x shl 6, y shl 6, level)
 
-    fun copy(x: Int = this.x, y: Int = this.y, level: Int = this.level) = MapSquareGrid(x, y, level)
+    fun copy(x: Int = this.x, y: Int = this.y, level: Int = this.level) = MapSquareGrid.fromAbsolute(x, y, level)
 
     fun toCuboid(width: Int = 1, height: Int = 1, levels: Int = 1) = Cuboid(tile, width * 64, height * 64, levels)
     fun toCuboid(radius: Int, levels: Int = 1) = Cuboid(minus(radius, radius).tile, (radius * 2 + 1) * 64, (radius * 2 + 1) * 64, levels)
 
     companion object {
+        public fun fromAbsolute(x: Int, z: Int, level: Int): MapSquareGrid =
+            MapSquareGrid(
+                id(x, z, level))
         fun id(x: Int, y: Int, level: Int) = (y and 0xff) + ((x and 0xff) shl 8) + ((level and 0x3) shl 16)
         fun x(id: Int) = id shr 8 and 0xff
         fun y(id: Int) = id and 0xff
         fun level(id: Int) = id shr 16
-        val EMPTY = MapSquareGrid(0, 0, 0)
+        val EMPTY = MapSquareGrid.fromAbsolute(0, 0, 0)
     }
 
     fun add(x: Int = 0, y: Int = 0, level: Int = 0) = copy(this.x + x, this.y + y, this.level + level)

@@ -27,7 +27,7 @@ value class MapSquareKey(val id: Int) {//MapSquareKey
     fun minus(point: MapSquareKey) = minus(point.x, point.y)
     fun delta(point: MapSquareKey) = delta(point.x, point.y)
 
-    fun toLevel(level: Int) = MapSquareGrid(x, y, level)
+    fun toLevel(level: Int) = MapSquareGrid.fromAbsolute(x, y, level)
 
     fun toRectangle(radius: Int) = Rectangle(minus(radius, radius).tile, (radius * 2 + 1) * 64, (radius * 2 + 1) * 64)
     fun toRectangle(width: Int = 1, height: Int = 1) = Rectangle(tile, width * 64, height * 64)

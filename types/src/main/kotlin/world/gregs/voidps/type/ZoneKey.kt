@@ -20,7 +20,7 @@ value class ZoneKey(val id: Int) {//this is a zonekey
     val region: MapSquareKey
         get() = MapSquareKey(x shr 3, y shr 3)
     val regionLevel: MapSquareGrid
-        get() = MapSquareGrid(x shr 3, y shr 3, level)
+        get() = MapSquareGrid.fromAbsolute(x shr 3, y shr 3, level)
     val tile: CoordGrid
         get() = CoordGrid(x shl 3, y shl 3, level)
 

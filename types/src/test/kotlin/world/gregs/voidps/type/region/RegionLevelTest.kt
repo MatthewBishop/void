@@ -10,7 +10,7 @@ internal class RegionLevelTest {
     @Test
     fun `Zero values`() {
         // Given
-        val region = MapSquareGrid(0, 0, 0)
+        val region = MapSquareGrid.fromAbsolute(0, 0, 0)
         // When
         val x = region.x
         val y = region.y
@@ -25,7 +25,7 @@ internal class RegionLevelTest {
     @Test
     fun `Negative values safe`() {
         // Given
-        val region = MapSquareGrid(-10, -50, -2)
+        val region = MapSquareGrid.fromAbsolute(-10, -50, -2)
         // When
         val x = region.x
         val y = region.y
@@ -39,7 +39,7 @@ internal class RegionLevelTest {
     @Test
     fun `Maximum values`() {
         // Given
-        val region = MapSquareGrid(255, 255, 3)
+        val region = MapSquareGrid.fromAbsolute(255, 255, 3)
         // When
         val x = region.x
         val y = region.y
@@ -54,7 +54,7 @@ internal class RegionLevelTest {
     @Test
     fun `Overflow values`() {
         // Given
-        val region = MapSquareGrid(257, 258, 5)
+        val region = MapSquareGrid.fromAbsolute(257, 258, 5)
         // When
         val x = region.x
         val y = region.y
@@ -68,7 +68,7 @@ internal class RegionLevelTest {
     @Test
     fun `Region id smoke test`() {
         // Given
-        val region = MapSquareGrid(48, 54, 1)
+        val region = MapSquareGrid.fromAbsolute(48, 54, 1)
         // When
         val id = region.id
         // Then
@@ -78,7 +78,7 @@ internal class RegionLevelTest {
     @Test
     fun `Tile test`() {
         // Given
-        val region = MapSquareGrid(48, 54, 1)
+        val region = MapSquareGrid.fromAbsolute(48, 54, 1)
         // When
         val tile = region.tile
         // Then
@@ -90,7 +90,7 @@ internal class RegionLevelTest {
     @Test
     fun `Region test`() {
         // Given
-        val regionLevel = MapSquareGrid(48, 54, 1)
+        val regionLevel = MapSquareGrid.fromAbsolute(48, 54, 1)
         // When
         val region = regionLevel.region
         // Then
@@ -101,7 +101,7 @@ internal class RegionLevelTest {
     @Test
     fun `Zone test`() {
         // Given
-        val region = MapSquareGrid(48, 54, 1)
+        val region = MapSquareGrid.fromAbsolute(48, 54, 1)
         // When
         val zone = region.zone
         // Then
@@ -112,7 +112,7 @@ internal class RegionLevelTest {
 
     @Test
     fun `Cuboid test`() {
-        val cuboid = MapSquareGrid(2, 2, 1).toCuboid(width = 1, height = 1, levels = 1)
+        val cuboid = MapSquareGrid.fromAbsolute(2, 2, 1).toCuboid(width = 1, height = 1, levels = 1)
         val m = 160
         assertFalse(cuboid.contains(CoordGrid(134, m, 0)))
         assertTrue(cuboid.contains(CoordGrid(134, m, 1)))
@@ -129,7 +129,7 @@ internal class RegionLevelTest {
 
     @Test
     fun `Cuboid area test`() {
-        val cuboid = MapSquareGrid(1, 1, 1).toCuboid(width = 2, height = 3, levels = 2)
+        val cuboid = MapSquareGrid.fromAbsolute(1, 1, 1).toCuboid(width = 2, height = 3, levels = 2)
         assertEquals(64, cuboid.minX)
         assertEquals(64, cuboid.minY)
         assertEquals(1, cuboid.minLevel)
@@ -140,7 +140,7 @@ internal class RegionLevelTest {
 
     @Test
     fun `Cuboid radius test`() {
-        val cuboid = MapSquareGrid(2, 3, 1).toCuboid(radius = 2, levels = 2)
+        val cuboid = MapSquareGrid.fromAbsolute(2, 3, 1).toCuboid(radius = 2, levels = 2)
         assertEquals(0, cuboid.minX)
         assertEquals(64, cuboid.minY)
         assertEquals(1, cuboid.minLevel)

@@ -58,7 +58,7 @@ data class Cuboid(
         for (level in min.level..max.level) {
             for (x in min.x..max.x) {
                 for (y in min.y..max.y) {
-                    list.add(MapSquareGrid(x, y, level))
+                    list.add(MapSquareGrid.fromAbsolute(x, y, level))
                 }
             }
         }

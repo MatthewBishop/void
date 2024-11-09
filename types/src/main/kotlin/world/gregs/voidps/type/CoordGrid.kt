@@ -19,7 +19,7 @@ value class CoordGrid(val id: Int) {//coordgrid
     val region: MapSquareKey
         get() = MapSquareKey(x shr 6, y shr 6)
     val regionLevel: MapSquareGrid
-        get() = MapSquareGrid(x shr 6, y shr 6, level)
+        get() = MapSquareGrid.fromAbsolute(x shr 6, y shr 6, level)
 
     fun copy(x: Int = this.x, y: Int = this.y, level: Int = this.level) = CoordGrid(x, y, level)
 
