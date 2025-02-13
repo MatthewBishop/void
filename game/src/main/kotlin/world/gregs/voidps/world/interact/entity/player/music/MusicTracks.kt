@@ -8,6 +8,7 @@ import world.gregs.voidps.engine.getProperty
 import world.gregs.voidps.engine.timedLoad
 import world.gregs.voidps.type.Area
 import world.gregs.voidps.type.MapSquareKey
+import world.gregs.voidps.type.toCuboid
 import world.gregs.yaml.Yaml
 import world.gregs.yaml.read.YamlReaderConfiguration
 import kotlin.collections.set

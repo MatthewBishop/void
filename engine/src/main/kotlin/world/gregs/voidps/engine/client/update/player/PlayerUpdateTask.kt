@@ -10,6 +10,7 @@ import world.gregs.voidps.network.login.protocol.visual.PlayerVisuals
 import world.gregs.voidps.network.login.protocol.visual.VisualEncoder
 import world.gregs.voidps.network.login.protocol.visual.VisualMask.APPEARANCE_MASK
 import world.gregs.voidps.type.Delta
+import world.gregs.voidps.type.delta
 import kotlin.math.abs
 
 class PlayerUpdateTask(

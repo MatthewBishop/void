@@ -2,8 +2,7 @@ package world.gregs.voidps.type.region
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import world.gregs.voidps.type.CoordGrid
-import world.gregs.voidps.type.MapSquareGrid
+import world.gregs.voidps.type.*
 
 internal class RegionLevelTest {
 
@@ -13,7 +12,7 @@ internal class RegionLevelTest {
         val region = MapSquareGrid.fromAbsolute(0, 0, 0)
         // When
         val x = region.x
-        val y = region.y
+        val y = region.z
         val level = region.level
         // Then
         assertEquals(0, region.id)
@@ -28,7 +27,7 @@ internal class RegionLevelTest {
         val region = MapSquareGrid.fromAbsolute(-10, -50, -2)
         // When
         val x = region.x
-        val y = region.y
+        val y = region.z
         val level = region.level
         // Then
         assertEquals(246, x)
@@ -42,7 +41,7 @@ internal class RegionLevelTest {
         val region = MapSquareGrid.fromAbsolute(255, 255, 3)
         // When
         val x = region.x
-        val y = region.y
+        val y = region.z
         val level = region.level
         // Then
         assertEquals(262143, region.id)
@@ -57,7 +56,7 @@ internal class RegionLevelTest {
         val region = MapSquareGrid.fromAbsolute(257, 258, 5)
         // When
         val x = region.x
-        val y = region.y
+        val y = region.z
         val level = region.level
         // Then
         assertEquals(1, x)

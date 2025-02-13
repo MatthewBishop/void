@@ -57,7 +57,7 @@ data class Cuboid(
         val min = CoordGrid(minX, minY, minLevel).regionLevel
         for (level in min.level..max.level) {
             for (x in min.x..max.x) {
-                for (y in min.y..max.y) {
+                for (y in min.z..max.z) {
                     list.add(MapSquareGrid.fromAbsolute(x, y, level))
                 }
             }

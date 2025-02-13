@@ -12,6 +12,7 @@ import world.gregs.voidps.network.login.protocol.visual.NPCVisuals
 import world.gregs.voidps.network.login.protocol.visual.VisualEncoder
 import world.gregs.voidps.type.Direction
 import world.gregs.voidps.type.MapSquareGrid
+import world.gregs.voidps.type.plus
 
 class NPCUpdateTask(
     private val npcs: NPCs,
@@ -119,7 +120,7 @@ class NPCUpdateTask(
         var region: MapSquareGrid
         var npc: NPC
         for (direction in Direction.reversed) {
-            region = client.tile.regionLevel.add(direction)
+            region = client.tile.regionLevel.plus(direction)
             for (index in npcs.getDirect(region) ?: continue) {
                 npc = npcs.indexed(index) ?: continue
                 if (!add(updates, sync, npc, client, viewport, set, index)) {

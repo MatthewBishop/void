@@ -31,10 +31,7 @@ import world.gregs.voidps.engine.map.collision.clear
 import world.gregs.voidps.engine.map.instance.Instances
 import world.gregs.voidps.engine.queue.*
 import world.gregs.voidps.engine.suspend.delay
-import world.gregs.voidps.type.Delta
-import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.MapSquareKey
-import world.gregs.voidps.type.CoordGrid
+import world.gregs.voidps.type.*
 import world.gregs.voidps.world.activity.quest.*
 import world.gregs.voidps.world.interact.dialogue.*
 import world.gregs.voidps.world.interact.dialogue.type.choice

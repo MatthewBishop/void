@@ -6,10 +6,7 @@ import world.gregs.voidps.engine.entity.obj.GameObject
 import world.gregs.voidps.engine.entity.obj.GameObjects
 import world.gregs.voidps.engine.map.collision.Collisions
 import world.gregs.voidps.tools.cache.Xteas
-import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Distance
-import world.gregs.voidps.type.MapSquareKey
-import world.gregs.voidps.type.CoordGrid
+import world.gregs.voidps.type.*
 import world.gregs.voidps.type.area.Cuboid
 import world.gregs.voidps.world.interact.entity.obj.door.Door.isDoor
 import java.io.DataOutputStream

@@ -82,7 +82,7 @@ internal class ZoneTest {
         // Then
         assertEquals(77878, region.id)
         assertEquals(48, region.x)
-        assertEquals(54, region.y)
+        assertEquals(54, region.z)
         assertEquals(1, region.level)
     }
 
