@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.rsmod.game.pathfinder.collision.CollisionFlagMap
 import org.rsmod.game.pathfinder.flag.CollisionFlag
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 
 internal class CollisionsTest {
 
@@ -26,14 +26,14 @@ internal class CollisionsTest {
             set(i, i, 0, CollisionFlag.BLOCK_NORTH)
         }
         // When
-        collisions.clear(Zone(0, 0))
+        collisions.clear(ZoneKey(0, 0))
         // Then
         for (i in 0 until 8) {
             assertEquals(-1, i, i, 0)
         }
     }
 
-    private fun print(zone: Zone) {
+    private fun print(zone: ZoneKey) {
         val data = collisions.allocateIfAbsent(zone.tile.x, zone.tile.y, zone.level)
         for (y in 7 downTo 0) {
             for (x in 0 until 8) {

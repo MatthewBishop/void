@@ -16,7 +16,7 @@ import world.gregs.voidps.tools.map.render.load.MapConstants.tileXOffsets
 import world.gregs.voidps.tools.map.render.load.MapConstants.tileYOffsets
 import world.gregs.voidps.tools.map.render.load.MapConstants.underlaySizes
 import world.gregs.voidps.tools.map.render.raster.ColourPalette
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 
 class MapTileSettings(
     private val levelCount: Int,
@@ -42,7 +42,7 @@ class MapTileSettings(
     fun tile(level: Int, localX: Int, localY: Int): MapTile {
         val regionX = this.regionX + (localX / 64)
         val regionY = this.regionY + (localY / 64)
-        val regionId = Region.id(regionX, regionY)
+        val regionId = MapSquareKey.id(regionX, regionY)
         return manager.tiles[regionId]?.getTile(localX.rem(64), localY.rem(64), level) ?: MapTile.EMPTY
     }
 

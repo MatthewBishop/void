@@ -5,7 +5,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import world.gregs.voidps.tools.map.view.draw.MapView
 import world.gregs.voidps.tools.map.view.draw.WorldMap.Companion.flipRegionY
 import java.awt.geom.AffineTransform
@@ -75,7 +75,7 @@ class RegionLoader(private val grid: MapView) {
     }
 
     private fun loadRegionImage(regionX: Int, regionY: Int, level: Int): BufferedImage? {
-        val id = Region.id(regionX, regionY)
+        val id = MapSquareKey.id(regionX, regionY)
         val file = File("./images/$level/$id.png")
         return if (file.exists()) ImageIO.read(file) else null
     }
@@ -87,7 +87,7 @@ class RegionLoader(private val grid: MapView) {
     fun remove(rangeX: IntRange, rangeY: IntRange) {
         for (regionX in rangeX) {
             for (regionY in rangeY) {
-                val id = Region.id(regionX, flipRegionY(regionY))
+                val id = MapSquareKey.id(regionX, flipRegionY(regionY))
                 loadQueue.remove(id)
                 if (regions[id] != null) {
                     regions.remove(id)

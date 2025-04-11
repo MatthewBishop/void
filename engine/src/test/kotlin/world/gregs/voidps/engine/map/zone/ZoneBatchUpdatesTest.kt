@@ -26,7 +26,7 @@ import world.gregs.voidps.network.login.protocol.encode.zone.ObjectAddition
 import world.gregs.voidps.network.login.protocol.encode.zone.ObjectRemoval
 import world.gregs.voidps.network.login.protocol.encode.zone.ZoneUpdate
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 
 internal class ZoneBatchUpdatesTest : KoinMock() {
 
@@ -54,7 +54,7 @@ internal class ZoneBatchUpdatesTest : KoinMock() {
     @Test
     fun `Entering zone sends clear and initial updates`() {
         // Given
-        val zone = Zone(2, 2)
+        val zone = ZoneKey(2, 2)
         batches.add(zone, update)
         player.tile = Tile(20, 20)
         val collisions = Collisions()
@@ -79,8 +79,8 @@ internal class ZoneBatchUpdatesTest : KoinMock() {
     @Test
     fun `Staying in zone sends batched updates`() {
         // Given
-        val zone = Zone(11, 11, 1)
-        val lastZone = Zone(10, 10)
+        val zone = ZoneKey(11, 11, 1)
+        val lastZone = ZoneKey(10, 10)
         player["previous_zone"] = zone
         player.tile = zone.tile
         player.viewport!!.lastLoadZone = lastZone
@@ -98,8 +98,8 @@ internal class ZoneBatchUpdatesTest : KoinMock() {
     @Test
     fun `Staying in zone sends individual private updates`() {
         // Given
-        val zone = Zone(11, 11, 1)
-        val lastZone = Zone(10, 10, 1)
+        val zone = ZoneKey(11, 11, 1)
+        val lastZone = ZoneKey(10, 10, 1)
         player.tile = zone.tile
         player["previous_zone"] = lastZone
         every { update.private } returns true
@@ -120,8 +120,8 @@ internal class ZoneBatchUpdatesTest : KoinMock() {
     @Test
     fun `External private updates are ignored`() {
         // Given
-        val zone = Zone(11, 11, 1)
-        val lastZone = Zone(10, 10, 1)
+        val zone = ZoneKey(11, 11, 1)
+        val lastZone = ZoneKey(10, 10, 1)
         player.tile = zone.tile
         player["previous_zone"] = lastZone
         every { update.private } returns true

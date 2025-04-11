@@ -19,7 +19,7 @@ import world.gregs.voidps.engine.inv.remove
 import world.gregs.voidps.engine.suspend.SuspendableContext
 import world.gregs.voidps.type.Distance.nearestTo
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.area.Rectangle
+import world.gregs.voidps.type.area.Bounds
 import content.entity.player.dialogue.Quiz
 import content.entity.player.dialogue.Talk
 import content.entity.player.dialogue.Uncertain
@@ -77,7 +77,7 @@ suspend fun SuspendableContext<Player>.dialogue(player: Player, npc: NPC? = getG
     }
 }
 
-val gates = Rectangle(Tile(3268, 3227), 1, 2)
+val gates = Bounds(Tile(3268, 3227), 1, 2)
 
 fun getGate(player: Player): GameObject {
     val tile = gates.nearestTo(player.tile)

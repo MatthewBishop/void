@@ -21,7 +21,7 @@ import world.gregs.voidps.engine.entity.obj.GameObject
 import world.gregs.voidps.engine.entity.obj.GameObjects
 import world.gregs.voidps.type.Direction
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 import world.gregs.voidps.type.random
 import java.util.*
 import kotlin.math.ceil
@@ -80,7 +80,7 @@ class Hunting(
     }
 
     /**
-     * Returns all the [FloorItem]s in the first [Zone] with possible targets
+     * Returns all the [FloorItem]s in the first [ZoneKey] with possible targets
      */
     private fun getItems(
         npc: NPC,

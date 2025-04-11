@@ -8,7 +8,7 @@ import world.gregs.voidps.cache.definition.decoder.ObjectDecoder
 import world.gregs.voidps.cache.definition.encoder.MapObjectEncoder
 import world.gregs.voidps.engine.client.ui.chat.plural
 import world.gregs.voidps.tools.map.MapDecoder
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 
 /**
  * Checks that all map objects are within the [ObjectDecoder]'s value
@@ -27,7 +27,7 @@ object ValidateMapObjects {
         var removed = 0
         var rewrote = 0
         for (definition in definitions) {
-            val region = Region(definition.id)
+            val region = MapSquareKey(definition.id)
 
             var write = false
             val it = definition.objects.iterator()

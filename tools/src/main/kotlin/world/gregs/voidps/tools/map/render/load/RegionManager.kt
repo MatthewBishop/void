@@ -3,7 +3,7 @@ package world.gregs.voidps.tools.map.render.load
 import world.gregs.voidps.cache.definition.data.MapDefinition
 import world.gregs.voidps.cache.definition.data.MapObject
 import world.gregs.voidps.tools.map.render.raster.Raster
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import java.awt.image.BufferedImage
 
 class RegionManager(
@@ -28,12 +28,12 @@ class RegionManager(
     fun loadTiles(regionX: Int, regionY: Int) {
         for (rX in regionX until regionX + regionRenderSize) {
             for (rY in regionY until regionY + regionRenderSize) {
-                setOrLoadTiles(Region.id(rX, rY))
+                setOrLoadTiles(MapSquareKey.id(rX, rY))
             }
         }
     }
 
-    private fun setOrLoadTiles(region: Region): MapDefinition? {
+    private fun setOrLoadTiles(region: MapSquareKey): MapDefinition? {
         return setOrLoadTiles(region.id)
     }
 
@@ -41,7 +41,7 @@ class RegionManager(
         return tiles[regionId]
     }
 
-    fun loadObjects(region: Region): MutableList<MapObject>? {
+    fun loadObjects(region: MapSquareKey): MutableList<MapObject>? {
         val def = setOrLoadTiles(region) ?: return null
         return def.objects
     }

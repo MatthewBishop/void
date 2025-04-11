@@ -4,7 +4,7 @@ import world.gregs.voidps.engine.entity.Despawn
 import world.gregs.voidps.engine.entity.MAX_PLAYERS
 import world.gregs.voidps.engine.entity.character.CharacterList
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 
 class Players : CharacterList<Player>() {
 
@@ -16,7 +16,7 @@ class Players : CharacterList<Player>() {
         return filter { it.tile == tile }
     }
 
-    override operator fun get(zone: Zone): List<Player> {
+    override operator fun get(zone: ZoneKey): List<Player> {
         return filter { it.tile.zone == zone }
     }
 

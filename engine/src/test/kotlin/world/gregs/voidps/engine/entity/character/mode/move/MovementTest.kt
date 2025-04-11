@@ -25,7 +25,7 @@ import world.gregs.voidps.engine.script.KoinMock
 import world.gregs.voidps.network.login.protocol.visual.update.player.MoveType
 import world.gregs.voidps.type.Direction
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 
 internal class MovementTest : KoinMock() {
 
@@ -38,7 +38,7 @@ internal class MovementTest : KoinMock() {
         player = Player(tile = Tile(5, 5))
         player.collision = CollisionStrategies.Normal
         declareMock<AreaDefinitions> {
-            every { get(any<Zone>()) } returns emptySet()
+            every { get(any<ZoneKey>()) } returns emptySet()
         }
         pathFinder = declareMock {
             every { findPath(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()) } returns Route(listOf(RouteCoordinates(10, 10)),

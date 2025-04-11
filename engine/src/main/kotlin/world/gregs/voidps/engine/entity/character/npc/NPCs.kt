@@ -14,9 +14,9 @@ import world.gregs.voidps.engine.entity.character.player.skill.Skill
 import world.gregs.voidps.engine.map.collision.CollisionStrategyProvider
 import world.gregs.voidps.engine.map.collision.Collisions
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.RegionLevel
+import world.gregs.voidps.type.MapSquareGrid
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 
 data class NPCs(
     private val definitions: NPCDefinitions,
@@ -32,11 +32,11 @@ data class NPCs(
         return get(tile.regionLevel).filter { it.tile == tile }
     }
 
-    override operator fun get(zone: Zone): List<NPC> {
+    override operator fun get(zone: ZoneKey): List<NPC> {
         return get(zone.regionLevel).filter { it.tile.zone == zone }
     }
 
-    operator fun get(region: RegionLevel): List<NPC> {
+    operator fun get(region: MapSquareGrid): List<NPC> {
         val list = mutableListOf<NPC>()
         for (index in map[region] ?: return list) {
             list.add(indexed(index) ?: continue)
@@ -59,7 +59,7 @@ data class NPCs(
         }
     }
 
-    fun clear(region: RegionLevel) {
+    fun clear(region: MapSquareGrid) {
         for (index in map[region] ?: return) {
             val element = indexed(index) ?: continue
             super.remove(element)
@@ -72,7 +72,7 @@ data class NPCs(
         return super.remove(element)
     }
 
-    fun getDirect(region: RegionLevel): List<Int>? = this.map[region]
+    fun getDirect(region: MapSquareGrid): List<Int>? = this.map[region]
 
     fun add(id: String, tile: Tile, direction: Direction = Direction.NONE, delay: Int? = null): NPC? {
         val npc = add(id, tile, direction) ?: return null

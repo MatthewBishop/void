@@ -22,7 +22,7 @@ import world.gregs.voidps.engine.queue.queue
 import world.gregs.voidps.engine.queue.softQueue
 import world.gregs.voidps.engine.timer.toTicks
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import world.gregs.voidps.type.Tile
 import content.entity.player.dialogue.Happy
 import content.entity.player.dialogue.type.npc
@@ -76,7 +76,7 @@ val ghostSpawn = Tile(3250, 3195)
 
 suspend fun Interaction<Player>.returnSkull() {
     player.message("You put the skull in the coffin.")
-    val region = Region(12849)
+    val region = MapSquareKey(12849)
     val instance = startCutscene(region)
     val offset = instance.offset(region)
     setCutsceneEnd(instance)
@@ -178,13 +178,13 @@ playerSpawn { player ->
     player.sendVariable("restless_ghost_coffin")
 }
 
-fun Context<Player>.setCutsceneEnd(instance: Region) {
+fun Context<Player>.setCutsceneEnd(instance: MapSquareKey) {
     player.queue("restless_ghost_cutscene_end", 1, LogoutBehaviour.Accelerate) {
         endCutscene(instance)
     }
 }
 
-fun Context<Player>.endCutscene(instance: Region) {
+fun Context<Player>.endCutscene(instance: MapSquareKey) {
     npcs.clear(instance.toLevel(0))
     player.clearCamera()
     player.tele(3247, 3193)

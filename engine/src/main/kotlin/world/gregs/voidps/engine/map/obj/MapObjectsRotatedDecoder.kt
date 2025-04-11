@@ -5,8 +5,8 @@ import world.gregs.voidps.cache.Index
 import world.gregs.voidps.cache.definition.decoder.MapObjectDecoder
 import world.gregs.voidps.engine.data.definition.ObjectDefinitions
 import world.gregs.voidps.engine.entity.obj.GameObjects
-import world.gregs.voidps.type.Zone
-import world.gregs.voidps.type.area.Rectangle
+import world.gregs.voidps.type.ZoneKey
+import world.gregs.voidps.type.area.Bounds
 
 /**
  * Adds all objects except bridges from a single [zone], into a different zone, with [zoneRotation] applied.
@@ -17,13 +17,13 @@ class MapObjectsRotatedDecoder(
 ) : MapObjectDecoder() {
 
     internal var zoneRotation: Int = 0
-    internal lateinit var zone: Rectangle
+    internal lateinit var zone: Bounds
 
-    fun decode(cache: Cache, settings: ByteArray, from: Zone, to: Zone, rotation: Int, keys: IntArray?) {
+    fun decode(cache: Cache, settings: ByteArray, from: ZoneKey, to: ZoneKey, rotation: Int, keys: IntArray?) {
         val objectData = cache.data(Index.MAPS, "l${from.region.x}_${from.region.y}", xtea = keys) ?: return
         val x = from.tile.x.rem(64)
         val y = from.tile.y.rem(64)
-        zone = Rectangle(x, y, x + 8, y + 8)
+        zone = Bounds(x, y, x + 8, y + 8)
         zoneRotation = rotation
         super.decode(objectData, settings, to.tile.x, to.tile.y)
     }

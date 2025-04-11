@@ -33,7 +33,7 @@ import world.gregs.voidps.network.login.protocol.encode.clearCamera
 import world.gregs.voidps.network.login.protocol.encode.npcDialogueHead
 import world.gregs.voidps.network.login.protocol.encode.playerDialogueHead
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 import content.entity.player.dialogue.sendLines
 import content.entity.player.dialogue.type.npc
 import content.entity.gfx.areaGraphic
@@ -248,7 +248,7 @@ adminCommand("col") {
 operator fun Array<IntArray?>.get(baseX: Int, baseY: Int, localX: Int, localY: Int, z: Int): Int {
     val x = baseX + localX
     val y = baseY + localY
-    val zone = this[Zone.tileIndex(x, y, z)] ?: return 0
+    val zone = this[ZoneKey.tileIndex(x, y, z)] ?: return 0
     return zone[Tile.index(x, y)]
 }
 

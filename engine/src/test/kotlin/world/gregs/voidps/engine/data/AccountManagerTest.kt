@@ -24,7 +24,7 @@ import world.gregs.voidps.network.client.Client
 import world.gregs.voidps.network.client.ConnectionQueue
 import world.gregs.voidps.network.login.protocol.encode.logout
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.area.Rectangle
+import world.gregs.voidps.type.area.Bounds
 
 class AccountManagerTest : KoinMock() {
 
@@ -34,7 +34,7 @@ class AccountManagerTest : KoinMock() {
     override val modules = listOf(module {
         single { ItemDefinitions(emptyArray()) }
         single { InterfaceDefinitions(emptyArray()).apply { ids = emptyMap() } }
-        single { AreaDefinitions(areas = mapOf(0 to setOf(AreaDefinition("area", Rectangle(Tile(0), 1, 1), emptySet())))) }
+        single { AreaDefinitions(areas = mapOf(0 to setOf(AreaDefinition("area", Bounds(Tile(0), 1, 1), emptySet())))) }
     })
 
     @BeforeEach

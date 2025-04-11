@@ -2,12 +2,11 @@ package world.gregs.voidps.tools.map
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import org.jsoup.Jsoup
 import world.gregs.voidps.cache.CacheDelegate
 import world.gregs.voidps.cache.Index
 import world.gregs.voidps.tools.cache.OpenRS2
 import world.gregs.voidps.tools.cache.Xteas
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import java.io.File
 
 /**
@@ -33,8 +32,8 @@ object MapPacker {
         pack634(target, xteas, cache727, Xteas(), cache681, xteas681, cache537)
     }
 
-    private fun packMissingMaps(target: CacheDelegate, sourceXteas: Xteas, source: CacheDelegate, targetXteas: Xteas, regions: List<Region>) {
-        val invalid = mutableSetOf<Region>()
+    private fun packMissingMaps(target: CacheDelegate, sourceXteas: Xteas, source: CacheDelegate, targetXteas: Xteas, regions: List<MapSquareKey>) {
+        val invalid = mutableSetOf<MapSquareKey>()
         runBlocking {
             val archives = target.archives(Index.MAPS).toSet()
             for (region in regions) {
@@ -62,13 +61,13 @@ object MapPacker {
     }
 
     private fun packEaster08Map(target: CacheDelegate, source: CacheDelegate) {
-        val region = Region(9811)
+        val region = MapSquareKey(9811)
         val objData = source.data(Index.MAPS, "l${region.x}_${region.y}", intArrayOf(-929935426, 1005492936, -2143736251, 386758357))
         val tileData = source.data(Index.MAPS, "m${region.x}_${region.y}")
         if (objData == null || tileData == null) {
             println("Can't find map $region")
         } else {
-            val newRegion = Region(9555)
+            val newRegion = MapSquareKey(9555)
             println("Written missing map $newRegion")
             target.write(Index.MAPS, "m${newRegion.x}_${newRegion.y}", tileData)
             target.write(Index.MAPS, "l${newRegion.x}_${newRegion.y}", objData)
@@ -76,11 +75,11 @@ object MapPacker {
         target.update()
     }
 
-    private fun all(): List<Region> {
-        val list = mutableListOf<Region>()
+    private fun all(): List<MapSquareKey> {
+        val list = mutableListOf<MapSquareKey>()
         for (regionX in 0 until 256) {
             for (regionY in 0 until 256) {
-                list.add(Region(regionX, regionY))
+                list.add(MapSquareKey(regionX, regionY))
             }
         }
         return list

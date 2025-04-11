@@ -25,7 +25,7 @@ import world.gregs.voidps.engine.queue.queue
 import world.gregs.voidps.engine.queue.softQueue
 import world.gregs.voidps.engine.suspend.SuspendableContext
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import world.gregs.voidps.type.Tile
 import content.quest.quest
 import content.quest.questComplete
@@ -67,7 +67,7 @@ suspend fun SuspendableContext<Player>.recital() {
 }
 
 val npcs: NPCs by inject()
-val region = Region(12341)
+val region = MapSquareKey(12341)
 
 suspend fun SuspendableContext<Player>.cutscene() {
     player.open("fade_out")
@@ -97,7 +97,7 @@ suspend fun SuspendableContext<Player>.cutscene() {
     }
 }
 
-suspend fun SuspendableContext<Player>.cutsceneMenu(instance: Region) {
+suspend fun SuspendableContext<Player>.cutsceneMenu(instance: MapSquareKey) {
     npc<Sad>("dororan_cutscene", "This isn't going to work.")
     choice {
         option<Neutral>("Why's that?") {
@@ -111,7 +111,7 @@ suspend fun SuspendableContext<Player>.cutsceneMenu(instance: Region) {
     }
 }
 
-suspend fun SuspendableContext<Player>.cutsceneMenu2(instance: Region) {
+suspend fun SuspendableContext<Player>.cutsceneMenu2(instance: MapSquareKey) {
     npc<Cry>("dororan_cutscene", "What was I thinking? You should go in there and stop them before Gudrun makes a fool of herself.")
     choice {
         option<Neutral>("Okay, I will.") {
@@ -127,7 +127,7 @@ suspend fun SuspendableContext<Player>.cutsceneMenu2(instance: Region) {
     }
 }
 
-suspend fun SuspendableContext<Player>.cutsceneMenu3(instance: Region) {
+suspend fun SuspendableContext<Player>.cutsceneMenu3(instance: MapSquareKey) {
     npc<Sad>("dororan_cutscene", "I can't hear what's happening. Can you hear what's happening?")
     player.anim("player_calm_doroan")
     player<Talk>("Gunthor is laughing at something.")
@@ -143,7 +143,7 @@ suspend fun SuspendableContext<Player>.cutsceneMenu3(instance: Region) {
     }
 }
 
-suspend fun SuspendableContext<Player>.cutsceneMenu4(instance: Region) {
+suspend fun SuspendableContext<Player>.cutsceneMenu4(instance: MapSquareKey) {
     npc<Talk>("dororan_cutscene", "The poem says you can honour your ancestors by settling peacefully on the land they conquered.")
     npc<Sad>("dororan_cutscene", "He'll probably just find it insulting.")
     player.anim("player_calm_doroan")
@@ -157,7 +157,7 @@ suspend fun SuspendableContext<Player>.cutsceneMenu4(instance: Region) {
     }
 }
 
-suspend fun SuspendableContext<Player>.cutscenePart2(instance: Region) {
+suspend fun SuspendableContext<Player>.cutscenePart2(instance: MapSquareKey) {
     player.open("fade_out")
     delay(3)
     npcs.clear(instance.toLevel(0))
@@ -248,13 +248,13 @@ suspend fun SuspendableContext<Player>.gunnarsGround() {
     }
 }
 
-fun Context<Player>.setCutsceneEnd(instance: Region) {
+fun Context<Player>.setCutsceneEnd(instance: MapSquareKey) {
     player.queue("gunnars_ground_cutscene_end", 1, LogoutBehaviour.Accelerate) {
         endCutscene(instance)
     }
 }
 
-suspend fun SuspendableContext<Player>.endCutscene(instance: Region) {
+suspend fun SuspendableContext<Player>.endCutscene(instance: MapSquareKey) {
     player.open("fade_out")
     delay(3)
     player.tele(3081, 3416)

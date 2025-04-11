@@ -2,7 +2,7 @@ package world.gregs.voidps.type
 
 import world.gregs.voidps.type.area.Cuboid
 import world.gregs.voidps.type.area.Polygon
-import world.gregs.voidps.type.area.Rectangle
+import world.gregs.voidps.type.area.Bounds
 
 /**
  * Represents a tiled area of any size or shape
@@ -16,9 +16,9 @@ interface Area : Iterable<Tile> {
 
     fun random(): Tile
 
-    fun toRegions(): List<Region>
+    fun toRegions(): List<MapSquareKey>
 
-    fun toZones(level: Int = 0): List<Zone>
+    fun toZones(level: Int = 0): List<ZoneKey>
 
     companion object {
         @Suppress("UNCHECKED_CAST")
@@ -28,7 +28,7 @@ interface Area : Iterable<Tile> {
             val level = map["level"] as? Int
             return if (x.size <= 2) {
                 if (level == null) {
-                    Rectangle(x.first(), y.first(), x.last(), y.last())
+                    Bounds(x.first(), y.first(), x.last(), y.last())
                 } else {
                     Cuboid(x.first(), y.first(), x.last(), y.last(), level, level)
                 }

@@ -4,7 +4,7 @@ import kotlinx.coroutines.runBlocking
 import world.gregs.voidps.cache.CacheDelegate
 import world.gregs.voidps.cache.Index
 import world.gregs.voidps.tools.cache.Xteas
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 
 object XteaValidator {
     @JvmStatic
@@ -15,10 +15,10 @@ object XteaValidator {
         val archives = cache.archives(Index.MAPS).toSet()
         var total = 0
         var valid = 0
-        val invalid = mutableSetOf<Region>()
+        val invalid = mutableSetOf<MapSquareKey>()
         for (regionX in 0 until 256) {
             for (regionY in 0 until 256) {
-                val region = Region(regionX, regionY)
+                val region = MapSquareKey(regionX, regionY)
                 val archive = cache.archiveId(Index.MAPS, "l${regionX}_${regionY}")
                 if (!archives.contains(archive)) {
                     continue

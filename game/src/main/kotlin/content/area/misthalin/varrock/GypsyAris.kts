@@ -22,7 +22,7 @@ import world.gregs.voidps.engine.suspend.SuspendableContext
 import world.gregs.voidps.engine.timer.npcTimerStart
 import world.gregs.voidps.engine.timer.npcTimerTick
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import world.gregs.voidps.type.Tile
 import content.quest.free.demon_slayer.DemonSlayerSpell.getWord
 import content.quest.free.demon_slayer.DemonSlayerSpell.randomiseOrder
@@ -207,7 +207,7 @@ suspend fun ChoiceBuilder<NPCOption<Player>>.whoYouCallingYoung(): Unit = option
 }
 
 suspend fun SuspendableContext<Player>.cutscene() {
-    val region = Region(12852)
+    val region = MapSquareKey(12852)
     player.open("fade_out")
     statement("", clickToContinue = false)
     delay(2)
@@ -278,13 +278,13 @@ suspend fun SuspendableContext<Player>.cutscene() {
     delrithWillCome()
 }
 
-fun Context<Player>.setCutsceneEnd(instance: Region) {
+fun Context<Player>.setCutsceneEnd(instance: MapSquareKey) {
     player.queue("demon_slayer_wally_cutscene_end", 1, LogoutBehaviour.Accelerate) {
         endCutscene(instance)
     }
 }
 
-suspend fun SuspendableContext<Player>.endCutscene(instance: Region) {
+suspend fun SuspendableContext<Player>.endCutscene(instance: MapSquareKey) {
     player.open("fade_out")
     delay(3)
     player.tele(3203, 3424)

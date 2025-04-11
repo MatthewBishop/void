@@ -3,7 +3,7 @@ package world.gregs.voidps.engine.map.collision
 import org.rsmod.game.pathfinder.flag.CollisionFlag
 import world.gregs.voidps.cache.definition.data.MapDefinition
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 
 /**
  * Adds collision for all blocked tiles except bridges
@@ -36,7 +36,7 @@ class CollisionDecoder(private val collisions: Collisions) {
     }
 
     private fun Collisions.setUnsafe(x: Int, y: Int, level: Int, mask: Int) {
-        val flags = flags[Zone.tileIndex(x, y, level)]!!
+        val flags = flags[ZoneKey.tileIndex(x, y, level)]!!
         val tile = Tile.index(x, y)
         flags[tile] = flags[tile] or mask
     }
@@ -44,7 +44,7 @@ class CollisionDecoder(private val collisions: Collisions) {
     /**
      * Decode [from] Zone [settings] into [Collisions] [to] with applied [zoneRotation]
      */
-    fun decode(settings: ByteArray, from: Zone, to: Zone, zoneRotation: Int) {
+    fun decode(settings: ByteArray, from: ZoneKey, to: ZoneKey, zoneRotation: Int) {
         val x = from.tile.x.rem(64)
         val y = from.tile.y.rem(64)
         val targetX = to.tile.x

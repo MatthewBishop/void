@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test
 import world.gregs.voidps.engine.data.definition.MapDefinitions
 import world.gregs.voidps.engine.entity.obj.GameObjects
 import world.gregs.voidps.engine.map.collision.Collisions
-import world.gregs.voidps.type.Region
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.MapSquareKey
+import world.gregs.voidps.type.ZoneKey
 
 internal class DynamicZonesTest {
 
@@ -27,8 +27,8 @@ internal class DynamicZonesTest {
 
     @Test
     fun `Copy one zone to another`() {
-        val to = Zone(8, 8)
-        zones.copy(Zone(4, 4), to)
+        val to = ZoneKey(8, 8)
+        zones.copy(ZoneKey(4, 4), to)
 
         assertTrue(zones.isDynamic(to.region))
         assertEquals(65568, zones.getDynamicZone(to))
@@ -36,7 +36,7 @@ internal class DynamicZonesTest {
 
     @Test
     fun `Copy one zone to itself with rotation`() {
-        val zone = Zone(8, 8)
+        val zone = ZoneKey(8, 8)
         zones.copy(zone, zone, rotation = 2)
 
         assertTrue(zones.isDynamic(zone.region))
@@ -45,8 +45,8 @@ internal class DynamicZonesTest {
 
     @Test
     fun `Copy one region to another`() {
-        val from = Region(8, 8)
-        val to = Region(42, 42)
+        val from = MapSquareKey(8, 8)
+        val to = MapSquareKey(42, 42)
         zones.copy(from, to)
 
         assertFalse(zones.isDynamic(from))
@@ -57,7 +57,7 @@ internal class DynamicZonesTest {
 
     @Test
     fun `Reset a zone`() {
-        val zone = Zone(4, 4)
+        val zone = ZoneKey(4, 4)
         zones.copy(zone, zone, 2)
         assertTrue(zones.isDynamic(zone.region))
         zones.clear(zone)
@@ -68,7 +68,7 @@ internal class DynamicZonesTest {
 
     @Test
     fun `Reset a region`() {
-        val region = Region(8, 8)
+        val region = MapSquareKey(8, 8)
         zones.copy(region, region)
         assertTrue(zones.isDynamic(region))
         zones.clear(region)

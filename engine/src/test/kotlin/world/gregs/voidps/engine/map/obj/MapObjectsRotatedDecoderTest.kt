@@ -13,7 +13,7 @@ import world.gregs.voidps.engine.map.collision.Collisions
 import world.gregs.voidps.engine.map.collision.GameObjectCollisionAdd
 import world.gregs.voidps.engine.map.collision.GameObjectCollisionRemove
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.area.Rectangle
+import world.gregs.voidps.type.area.Bounds
 
 class MapObjectsRotatedDecoderTest {
 
@@ -43,7 +43,7 @@ class MapObjectsRotatedDecoderTest {
         val array = writer.toArray()
 
         decoder.zoneRotation = 2
-        decoder.zone = Rectangle(8, 8, 16, 16)
+        decoder.zone = Bounds(8, 8, 16, 16)
         decoder.decode(array, settings, 960, 896)
 
         val tile = Tile(965, 900, 1) // local 5, 4
@@ -67,7 +67,7 @@ class MapObjectsRotatedDecoderTest {
         val array = writer.toArray()
 
         decoder.zoneRotation = 3
-        decoder.zone = Rectangle(0, 0, 8, 8)
+        decoder.zone = Bounds(0, 0, 8, 8)
         decoder.decode(array, settings, 0, 0)
 
         val tile = Tile(4, 2, 0)
@@ -91,7 +91,7 @@ class MapObjectsRotatedDecoderTest {
         val array = writer.toArray()
 
         decoder.zoneRotation = 0
-        decoder.zone = Rectangle(8, 8, 16, 16)
+        decoder.zone = Bounds(8, 8, 16, 16)
         decoder.decode(array, settings, 64, 64)
 
         val tile = Tile(82, 84, 0)

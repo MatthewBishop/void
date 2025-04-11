@@ -5,7 +5,7 @@ import world.gregs.voidps.cache.definition.data.IndexedSprite
 import world.gregs.voidps.cache.definition.data.MapObject
 import world.gregs.voidps.cache.definition.data.ObjectDefinitionFull
 import world.gregs.voidps.cache.definition.data.SpriteDefinition
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import java.awt.Color
 import java.awt.Graphics2D
 import kotlin.math.ceil
@@ -178,15 +178,15 @@ class ObjectPainter(
         return image
     }
 
-    fun drawObject(g: Graphics2D, region: Region, regionId: Int, obj: MapObject, definition: ObjectDefinitionFull) {
+    fun drawObject(g: Graphics2D, region: MapSquareKey, regionId: Int, obj: MapObject, definition: ObjectDefinitionFull) {
         if (definition.hideMinimap) {
             return
         }
         if (obj.level != level) {//FIXME should render more than one level at once
             return
         }
-        offsetX = Region.x(regionId) - region.x + 1
-        offsetY = Region.y(regionId) - region.y + 1
+        offsetX = MapSquareKey.x(regionId) - region.x + 1
+        offsetY = MapSquareKey.y(regionId) - region.y + 1
         val localX = obj.x
         val localY = obj.y
         val rotation = obj.rotation
@@ -218,7 +218,7 @@ class ObjectPainter(
         }
     }
 
-    fun paint(g: Graphics2D, region: Region, objects: Map<Int, List<MapObject>?>) {
+    fun paint(g: Graphics2D, region: MapSquareKey, objects: Map<Int, List<MapObject>?>) {
         objects.forEach { (regionId, list) ->
             list?.forEach { obj ->
                 val definition = objectDefinitions.getOrNull(obj.id)

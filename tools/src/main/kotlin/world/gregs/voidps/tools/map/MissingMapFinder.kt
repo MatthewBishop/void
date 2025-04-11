@@ -9,7 +9,7 @@ import org.jsoup.Jsoup
 import world.gregs.voidps.cache.CacheDelegate
 import world.gregs.voidps.cache.Index
 import world.gregs.voidps.tools.cache.Xteas
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import java.io.File
 
 private data class Cache(
@@ -93,7 +93,7 @@ object MissingMapFinder {
 
     private val found = mutableMapOf<Int, MutableList<Pair<Cache, IntArray>>>()
 
-    private fun search(caches: List<Cache>, index: Int, invalids: MutableSet<Region>) {
+    private fun search(caches: List<Cache>, index: Int, invalids: MutableSet<MapSquareKey>) {
         val cache = caches.getOrNull(index) ?: return
         if (majorVersion(cache) !in revisionRange) {
             return
@@ -118,17 +118,17 @@ object MissingMapFinder {
         return json.readValue<Array<Cache>>(content)
     }
 
-    private fun getInvalidKeys(cache: CacheDelegate, xteas: Xteas): Set<Region> {
+    private fun getInvalidKeys(cache: CacheDelegate, xteas: Xteas): Set<MapSquareKey> {
         val file = temp.resolve("invalid.maps")
         if (file.exists()) {
-            return file.readLines().map { Region(it.toInt()) }.toSet()
+            return file.readLines().map { MapSquareKey(it.toInt()) }.toSet()
         }
-        val invalid = mutableSetOf<Region>()
+        val invalid = mutableSetOf<MapSquareKey>()
         runBlocking {
             val archives = cache.archives(Index.MAPS).toSet()
             for (regionX in 0 until 256) {
                 for (regionY in 0 until 256) {
-                    val region = Region(regionX, regionY)
+                    val region = MapSquareKey(regionX, regionY)
                     val archive = cache.archiveId(Index.MAPS, "l${regionX}_${regionY}")
                     if (!archives.contains(archive)) {
                         continue

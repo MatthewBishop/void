@@ -52,7 +52,7 @@ import world.gregs.voidps.network.login.protocol.encode.playJingle
 import world.gregs.voidps.network.login.protocol.encode.playMIDI
 import world.gregs.voidps.network.login.protocol.encode.playSoundEffect
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import content.entity.player.modal.book.Books
 import content.quest.quests
 import content.quest.refreshQuestJournal
@@ -100,7 +100,7 @@ adminCommand("tele (x) (y) [level]", "teleport to given coordinates or area name
                 "lumbridge" -> player.tele(3222, 3219, 0)
                 else -> player.tele(areas[content])
             }
-            parts.size == 1 -> player.tele(Region(int).tile.add(32, 32))
+            parts.size == 1 -> player.tele(MapSquareKey(int).tile.add(32, 32))
             else -> player.tele(int, parts[1].toInt(), if (parts.size > 2) parts[2].toInt() else 0)
         }
     }

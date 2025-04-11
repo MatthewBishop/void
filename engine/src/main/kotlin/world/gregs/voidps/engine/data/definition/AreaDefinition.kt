@@ -2,7 +2,7 @@ package world.gregs.voidps.engine.data.definition
 
 import world.gregs.voidps.cache.definition.Extra
 import world.gregs.voidps.type.Area
-import world.gregs.voidps.type.area.Rectangle
+import world.gregs.voidps.type.area.Bounds
 
 data class AreaDefinition(
     val name: String,
@@ -12,7 +12,7 @@ data class AreaDefinition(
     override var extras: Map<String, Any>? = null
 ) : Extra {
     companion object {
-        val EMPTY = AreaDefinition("", Rectangle(0, 0, 0, 0), emptySet())
+        val EMPTY = AreaDefinition("", Bounds(0, 0, 0, 0), emptySet())
 
         @Suppress("UNCHECKED_CAST")
         fun fromMap(name: String, map: MutableMap<String, Any>): AreaDefinition {

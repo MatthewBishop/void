@@ -14,7 +14,7 @@ import world.gregs.voidps.engine.entity.obj.objectOperate
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.type.Direction
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 import content.entity.player.dialogue.HappyOld
 import content.entity.player.dialogue.type.npc
 import content.entity.combat.hit.damage
@@ -26,7 +26,7 @@ objectOperate("Climb-up", "gnome_tree_branch_advanced") {
         npc<HappyOld>("gnome_trainer", "Sorry mate, you're not experienced enough to try that route. I suggest you carry on over the balancing rope instead.")
         return@objectOperate
     }
-    npcs.gnomeTrainer("Terrorbirds could climb faster than that!", Zone(9263413))
+    npcs.gnomeTrainer("Terrorbirds could climb faster than that!", ZoneKey(9263413))
     player.message("You climb the tree...", ChatType.Filter)
     player.anim("climb_up")
     delay(2)
@@ -37,7 +37,7 @@ objectOperate("Climb-up", "gnome_tree_branch_advanced") {
 }
 
 objectApproach("Run-across", "gnome_sign_post_advanced") {
-    npcs.gnomeTrainer("Come on! I'd be over there by now.", Zone(13457717))
+    npcs.gnomeTrainer("Come on! I'd be over there by now.", ZoneKey(13457717))
     approachRange(1)
     arriveDelay()
     val disable = Settings["agility.disableCourseFailure", false]

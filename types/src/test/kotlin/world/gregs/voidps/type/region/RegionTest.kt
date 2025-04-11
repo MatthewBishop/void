@@ -4,14 +4,14 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 
 internal class RegionTest {
 
     @Test
     fun `Zero values`() {
         // Given
-        val region = Region(0, 0)
+        val region = MapSquareKey(0, 0)
         // When
         val x = region.x
         val y = region.y
@@ -24,7 +24,7 @@ internal class RegionTest {
     @Test
     fun `Negative values safe`() {
         // Given
-        val region = Region(-10, -50)
+        val region = MapSquareKey(-10, -50)
         // When
         val x = region.x
         val y = region.y
@@ -36,7 +36,7 @@ internal class RegionTest {
     @Test
     fun `Maximum values`() {
         // Given
-        val region = Region(255, 255)
+        val region = MapSquareKey(255, 255)
         // When
         val x = region.x
         val y = region.y
@@ -49,7 +49,7 @@ internal class RegionTest {
     @Test
     fun `Overflow values`() {
         // Given
-        val region = Region(257, 258)
+        val region = MapSquareKey(257, 258)
         // When
         val x = region.x
         val y = region.y
@@ -61,7 +61,7 @@ internal class RegionTest {
     @Test
     fun `Region id smoke test`() {
         // Given
-        val region = Region(48, 54)
+        val region = MapSquareKey(48, 54)
         // When
         val id = region.id
         // Then
@@ -71,7 +71,7 @@ internal class RegionTest {
     @Test
     fun `Tile test`() {
         // Given
-        val region = Region(48, 54)
+        val region = MapSquareKey(48, 54)
         // When
         val tile = region.tile
         // Then
@@ -84,9 +84,9 @@ internal class RegionTest {
     fun `Region area test`(cuboid: Boolean) {
         // Given
         val area = if (cuboid) {
-            Region(0, 0).toCuboid(width = 1, height = 1)
+            MapSquareKey(0, 0).toCuboid(width = 1, height = 1)
         } else {
-            Region(0, 0).toRectangle(width = 1, height = 1)
+            MapSquareKey(0, 0).toRectangle(width = 1, height = 1)
         }
         // When
         assertTrue(area.contains(0, 0))
@@ -101,9 +101,9 @@ internal class RegionTest {
     fun `Rectangle area test`(cuboid: Boolean) {
         // Given
         val area = if (cuboid) {
-            Region(1, 1).toCuboid(width = 2, height = 3)
+            MapSquareKey(1, 1).toCuboid(width = 2, height = 3)
         } else {
-            Region(1, 1).toRectangle(width = 2, height = 3)
+            MapSquareKey(1, 1).toRectangle(width = 2, height = 3)
         }
         // When
         assertTrue(area.contains(64, 64))
@@ -121,9 +121,9 @@ internal class RegionTest {
     fun `Radius test`(cuboid: Boolean) {
         // Given
         val area = if (cuboid) {
-            Region(3, 3).toCuboid(radius = 2)
+            MapSquareKey(3, 3).toCuboid(radius = 2)
         } else {
-            Region(3, 3).toRectangle(radius = 2)
+            MapSquareKey(3, 3).toRectangle(radius = 2)
         }
         // When
         assertTrue(area.contains(64, 64))
@@ -138,7 +138,7 @@ internal class RegionTest {
     @Test
     fun `Cuboid test`() {
         // Given
-        val cuboid = Region(0, 0).toCuboid(width = 1, height = 1)
+        val cuboid = MapSquareKey(0, 0).toCuboid(width = 1, height = 1)
         // When
         assertFalse(cuboid.contains(0, 0, -1))
         assertTrue(cuboid.contains(0, 0, 0))

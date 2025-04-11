@@ -6,7 +6,7 @@ import world.gregs.voidps.cache.Index.DEFAULTS
 import world.gregs.voidps.cache.Index.WORLD_MAP
 import world.gregs.voidps.cache.config.data.WorldMapInfoDefinition
 import world.gregs.voidps.cache.definition.data.*
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import world.gregs.voidps.type.Tile
 import java.awt.Graphics
 import java.awt.image.BufferedImage
@@ -74,11 +74,11 @@ class MinimapIconPainter(
         }
     }
 
-    fun paint(g: Graphics, region: Region, level: Int, objects: Map<Int, List<MapObject>?>) {
+    fun paint(g: Graphics, region: MapSquareKey, level: Int, objects: Map<Int, List<MapObject>?>) {
         val iconScale = 2
         for (regionX in region.x - 1..region.x + 1) {
             for (regionY in region.y - 1..region.y + 1) {
-                val id = Region.id(regionX, regionY)
+                val id = MapSquareKey.id(regionX, regionY)
                 val images = loadIcons(regionX, regionY, objects[id] ?: continue)
                 for (x in 0..64) {
                     for (y in 0..64) {

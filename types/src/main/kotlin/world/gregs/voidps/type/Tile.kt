@@ -14,12 +14,12 @@ value class Tile(val id: Int) : Coordinate3D<Tile> {//coordgrid
     override val level: Int
         get() = level(id)
 
-    val zone: Zone
-        get() = Zone(x shr 3, y shr 3, level)
-    val region: Region
-        get() = Region(x shr 6, y shr 6)
-    val regionLevel: RegionLevel
-        get() = RegionLevel(x shr 6, y shr 6, level)
+    val zone: ZoneKey
+        get() = ZoneKey(x shr 3, y shr 3, level)
+    val region: MapSquareKey
+        get() = MapSquareKey(x shr 6, y shr 6)
+    val regionLevel: MapSquareGrid
+        get() = MapSquareGrid(x shr 6, y shr 6, level)
 
     override fun copy(x: Int, y: Int, level: Int) = Tile(x, y, level)
 
@@ -60,7 +60,7 @@ value class Tile(val id: Int) : Coordinate3D<Tile> {//coordgrid
         fun fromArray(array: List<Int>) = Tile(array[0], array[1], array.getOrNull(2) ?: 0)
 
         /**
-         * Index for a tile within a [Zone]
+         * Index for a tile within a [ZoneKey]
          * Used for indexing tiles in arrays
          */
         fun index(x: Int, y: Int): Int = (x and 0x7) or ((y and 0x7) shl 3)

@@ -2,7 +2,7 @@ package world.gregs.voidps.type.area
 
 import world.gregs.voidps.type.*
 
-data class Rectangle(//bounds
+data class Bounds(//bounds
     val minX: Int,
     val minY: Int,
     val maxX: Int,
@@ -18,43 +18,43 @@ data class Rectangle(//bounds
     val height: Int
         get() = maxY - minY + 1
 
-    override fun toRegions(): List<Region> {
-        val list = mutableListOf<Region>()
+    override fun toRegions(): List<MapSquareKey> {
+        val list = mutableListOf<MapSquareKey>()
         val max = Tile(maxX, maxY).region
         val min = Tile(minX, minY).region
         for (x in min.x..max.x) {
             for (y in min.y..max.y) {
-                list.add(Region(x, y))
+                list.add(MapSquareKey(x, y))
             }
         }
         return list
     }
 
-    override fun toZones(level: Int): List<Zone> {
-        val list = mutableListOf<Zone>()
+    override fun toZones(level: Int): List<ZoneKey> {
+        val list = mutableListOf<ZoneKey>()
         val max = Tile(maxX, maxY).zone
         val min = Tile(minX, minY).zone
         for (x in min.x..max.x) {
             for (y in min.y..max.y) {
-                list.add(Zone(x, y, level))
+                list.add(ZoneKey(x, y, level))
             }
         }
         return list
     }
 
-    fun toZonesReversed(level: Int): List<Zone> {
-        val list = mutableListOf<Zone>()
+    fun toZonesReversed(level: Int): List<ZoneKey> {
+        val list = mutableListOf<ZoneKey>()
         val max = Tile(maxX, maxY).zone
         val min = Tile(minX, minY).zone
         for (y in min.y..max.y) {
             for (x in min.x..max.x) {
-                list.add(Zone(x, y, level))
+                list.add(ZoneKey(x, y, level))
             }
         }
         return list
     }
 
-    fun intersects(other: Rectangle): Boolean {
+    fun intersects(other: Bounds): Boolean {
         if (other.width <= 0 || other.height <= 0 || width <= 0 || height <= 0) {
             return false
         }

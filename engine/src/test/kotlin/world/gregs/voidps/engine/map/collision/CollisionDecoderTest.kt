@@ -6,8 +6,8 @@ import org.rsmod.game.pathfinder.flag.CollisionFlag
 import world.gregs.voidps.cache.definition.data.MapDefinition
 import world.gregs.voidps.engine.map.collision.CollisionDecoder.Companion.BLOCKED_TILE
 import world.gregs.voidps.engine.map.collision.CollisionDecoder.Companion.BRIDGE_TILE
-import world.gregs.voidps.type.Region
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.MapSquareKey
+import world.gregs.voidps.type.ZoneKey
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -26,7 +26,7 @@ internal class CollisionDecoderTest {
     @Test
     fun `Load blocked`() {
         // Given
-        val region = Region(1, 1)
+        val region = MapSquareKey(1, 1)
         settings[MapDefinition.index(1, 1, 0)] = BLOCKED_TILE.toByte()
         // When
         decoder.decode(settings, region.tile.x, region.tile.y)
@@ -37,7 +37,7 @@ internal class CollisionDecoderTest {
     @Test
     fun `Ignore blocked bridge`() {
         // Given
-        val region = Region(1, 1)
+        val region = MapSquareKey(1, 1)
         settings[MapDefinition.index(1, 1, 0)] = BLOCKED_TILE.toByte()
         settings[MapDefinition.index(1, 1, 1)] = BRIDGE_TILE.toByte()
         // When
@@ -51,7 +51,7 @@ internal class CollisionDecoderTest {
     @Test
     fun `Add suspended bridge`() {
         // Given
-        val region = Region(1, 1).tile.zone
+        val region = MapSquareKey(1, 1).tile.zone
         settings[MapDefinition.index(1, 1, 1)] = BLOCKED_TILE.toByte()
         settings[MapDefinition.index(1, 1, 2)] = BRIDGE_TILE.toByte()
         // When
@@ -63,8 +63,8 @@ internal class CollisionDecoderTest {
     @Test
     fun `Load rotated and moved blocked`() {
         // Given
-        val source = Zone(9, 9)
-        val target = Zone(18, 10)
+        val source = ZoneKey(9, 9)
+        val target = ZoneKey(18, 10)
         settings[MapDefinition.index(10, 12, 0)] = BLOCKED_TILE.toByte()
         // When
         decoder.decode(settings, source, target, 1)
@@ -75,7 +75,7 @@ internal class CollisionDecoderTest {
     @Test
     fun `Load rotated blocked`() {
         // Given
-        val source = Zone(1, 1)
+        val source = ZoneKey(1, 1)
         settings[MapDefinition.index(10, 12, 0)] = BLOCKED_TILE.toByte()
         // When
         decoder.decode(settings, source, source, 1)

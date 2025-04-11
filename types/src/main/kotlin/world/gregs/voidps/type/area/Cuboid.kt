@@ -25,47 +25,47 @@ data class Cuboid(
     val levels: Int
         get() = maxLevel - minLevel + 1
 
-    override fun toRegions(): List<Region> {
-        val list = mutableListOf<Region>()
+    override fun toRegions(): List<MapSquareKey> {
+        val list = mutableListOf<MapSquareKey>()
         val max = Tile(maxX, maxY, maxLevel).region
         val min = Tile(minX, minY, minLevel).region
         for (x in min.x..max.x) {
             for (y in min.y..max.y) {
-                list.add(Region(x, y))
+                list.add(MapSquareKey(x, y))
             }
         }
         return list
     }
 
-    override fun toZones(level: Int): List<Zone> {
-        val list = mutableListOf<Zone>()
+    override fun toZones(level: Int): List<ZoneKey> {
+        val list = mutableListOf<ZoneKey>()
         val max = Tile(maxX, maxY, maxLevel).zone
         val min = Tile(minX, minY, minLevel).zone
         for (lvl in min.level..max.level) {
             for (x in min.x..max.x) {
                 for (y in min.y..max.y) {
-                    list.add(Zone(x, y, lvl))
+                    list.add(ZoneKey(x, y, lvl))
                 }
             }
         }
         return list
     }
 
-    fun toRegionLevels(): List<RegionLevel> {
-        val list = mutableListOf<RegionLevel>()
+    fun toRegionLevels(): List<MapSquareGrid> {
+        val list = mutableListOf<MapSquareGrid>()
         val max = Tile(maxX, maxY, maxLevel).regionLevel
         val min = Tile(minX, minY, minLevel).regionLevel
         for (level in min.level..max.level) {
             for (x in min.x..max.x) {
                 for (y in min.y..max.y) {
-                    list.add(RegionLevel(x, y, level))
+                    list.add(MapSquareGrid(x, y, level))
                 }
             }
         }
         return list
     }
 
-    fun toRectangles(): List<Rectangle> = (minLevel..maxLevel).map { Rectangle(minX, minY, maxX, maxY) }
+    fun toRectangles(): List<Bounds> = (minLevel..maxLevel).map { Bounds(minX, minY, maxX, maxY) }
 
     override fun contains(x: Int, y: Int, level: Int): Boolean {
         return level in minLevel..maxLevel && x in minX..maxX && y in minY..maxY

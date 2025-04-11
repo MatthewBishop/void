@@ -15,7 +15,7 @@ import world.gregs.voidps.network.login.protocol.encode.send
 import world.gregs.voidps.network.login.protocol.encode.zone.ObjectAddition
 import world.gregs.voidps.network.login.protocol.encode.zone.ObjectRemoval
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 
 /**
  * Stores GameObjects and modifications mainly for verifying interactions
@@ -283,7 +283,7 @@ class GameObjects(
     /**
      * Resets all original objects in [zone]
      */
-    fun reset(zone: Zone, collision: Boolean = true) {
+    fun reset(zone: ZoneKey, collision: Boolean = true) {
         forEachReplaced(zone) { tile, layer, value ->
             if (value != 1) {
                 add(GameObject(id(value), tile, shape(value), rotation(value)), collision)
@@ -313,7 +313,7 @@ class GameObjects(
      * Clears [zone] of all original and replacement objects
      * Note: Doesn't undo collision changes
      */
-    fun clear(zone: Zone) {
+    fun clear(zone: ZoneKey) {
         map.deallocateZone(zone.tile.x, zone.tile.y, zone.level)
     }
 
@@ -326,7 +326,7 @@ class GameObjects(
         replacements.clear()
     }
 
-    override fun send(player: Player, zone: Zone) {
+    override fun send(player: Player, zone: ZoneKey) {
         forEachReplaced(zone) { tile, layer, value ->
             if (value != 1) {
                 player.client?.send(ObjectRemoval(tile.id, shape(value), rotation(value)))
@@ -338,7 +338,7 @@ class GameObjects(
         }
     }
 
-    private fun forEachReplaced(zone: Zone, block: (Tile, Int, Int) -> Unit) {
+    private fun forEachReplaced(zone: ZoneKey, block: (Tile, Int, Int) -> Unit) {
         val zoneTileX = zone.tile.x
         val zoneTileY = zone.tile.y
         val level = zone.level

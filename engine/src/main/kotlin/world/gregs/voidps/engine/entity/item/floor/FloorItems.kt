@@ -16,7 +16,7 @@ import world.gregs.voidps.network.login.protocol.encode.zone.FloorItemAddition
 import world.gregs.voidps.network.login.protocol.encode.zone.FloorItemRemoval
 import world.gregs.voidps.network.login.protocol.encode.zone.FloorItemUpdate
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 
 /**
  * Stores up to [MAX_TILE_ITEMS] [FloorItem]s per tile
@@ -95,7 +95,7 @@ class FloorItems(
         return data.get(tile.zone.id)?.get(tile.id) ?: emptyList()
     }
 
-    operator fun get(zone: Zone): Collection<List<FloorItem>> {
+    operator fun get(zone: ZoneKey): Collection<List<FloorItem>> {
         return data.get(zone.id)?.values ?: emptyList()
     }
 
@@ -130,7 +130,7 @@ class FloorItems(
         data.clear()
     }
 
-    override fun send(player: Player, zone: Zone) {
+    override fun send(player: Player, zone: ZoneKey) {
         for ((_, items) in data.get(zone.id) ?: return) {
             for (floorItem in items) {
                 if (floorItem.owner != null && floorItem.owner != player.name) {

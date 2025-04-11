@@ -7,7 +7,7 @@ import world.gregs.voidps.engine.data.Settings
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.engine.timedLoad
 import world.gregs.voidps.type.Area
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 import world.gregs.yaml.Yaml
 import world.gregs.yaml.read.YamlReaderConfiguration
 
@@ -25,7 +25,7 @@ class AreaDefinitions(
         return named[name]?.area ?: AreaDefinition.EMPTY.area
     }
 
-    fun get(zone: Zone): Set<AreaDefinition> {
+    fun get(zone: ZoneKey): Set<AreaDefinition> {
         return areas[zone.id] ?: emptySet()
     }
 

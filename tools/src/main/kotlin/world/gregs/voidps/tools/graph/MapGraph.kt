@@ -8,7 +8,7 @@ import world.gregs.voidps.engine.map.collision.Collisions
 import world.gregs.voidps.tools.cache.Xteas
 import world.gregs.voidps.type.Direction
 import world.gregs.voidps.type.Distance
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import world.gregs.voidps.type.Tile
 import world.gregs.voidps.type.area.Cuboid
 import content.entity.obj.door.Door.isDoor
@@ -32,7 +32,7 @@ class MapGraph(
         val links = mutableSetOf<Triple<Tile, Tile, Int>>()
         val strategy = SmallTraversal
 
-        val reg = Region(27, 40).toLevel(0)
+        val reg = MapSquareKey(27, 40).toLevel(0)
         runBlocking {
             for (region in reg.toCuboid(width = 33, height = 23).toRegions()) {
                 // TODO better way of determining empty maps

@@ -12,13 +12,13 @@ import world.gregs.voidps.engine.entity.obj.objectOperate
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.type.Direction
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 
 val npcs: NPCs by inject()
 
 objectOperate("Walk-across", "gnome_log_balance") {
     player.agilityCourse("gnome")
-    npcs.gnomeTrainer("Okay get over that log, quick quick!", listOf(Zone(878901), Zone(878900), Zone(876852)))
+    npcs.gnomeTrainer("Okay get over that log, quick quick!", listOf(ZoneKey(878901), ZoneKey(878900), ZoneKey(876852)))
     player.renderEmote("rope_balance")
     player.message("You walk carefully across the slippery log...", ChatType.Filter)
     player.walkOverDelay(Tile(2474, 3429))
@@ -31,7 +31,7 @@ objectOperate("Walk-across", "gnome_log_balance") {
 objectOperate("Climb-over", "gnome_obstacle_net") {
     arriveDelay()
     player.agilityCourse("gnome")
-    npcs.gnomeTrainer("Move it, move it, move it!", listOf(Zone(8768252), Zone(876853)))
+    npcs.gnomeTrainer("Move it, move it, move it!", listOf(ZoneKey(8768252), ZoneKey(876853)))
     player.message("You climb the netting...", ChatType.Filter)
     player.anim("climb_up")
     delay(2)
@@ -41,7 +41,7 @@ objectOperate("Climb-over", "gnome_obstacle_net") {
 }
 
 objectOperate("Climb", "gnome_tree_branch_up") {
-    npcs.gnomeTrainer("That's it - straight up", listOf(Zone(5069109), Zone(5071157)))
+    npcs.gnomeTrainer("That's it - straight up", listOf(ZoneKey(5069109), ZoneKey(5071157)))
     player.message("You climb the tree...", ChatType.Filter)
     player.anim("climb_up")
     delay(2)
@@ -52,7 +52,7 @@ objectOperate("Climb", "gnome_tree_branch_up") {
 }
 
 objectOperate("Walk-on", "gnome_balancing_rope") {
-    npcs.gnomeTrainer("Come on scaredy cat, get across that rope!", Zone(9263413))
+    npcs.gnomeTrainer("Come on scaredy cat, get across that rope!", ZoneKey(9263413))
     player.renderEmote("rope_balance")
     player.walkOverDelay(Tile(2483, 3420, 2))
     player.agilityStage(4)
@@ -80,7 +80,7 @@ objectOperate("Climb-down", "gnome_tree_branch_down") {
 
 objectOperate("Climb-over", "gnome_obstacle_net_free_standing") {
     player.agilityCourse("gnome")
-    npcs.gnomeTrainer("My Granny can move faster than you.", Zone(876854))
+    npcs.gnomeTrainer("My Granny can move faster than you.", ZoneKey(876854))
     player.message("You climb the netting.", ChatType.Filter)
     player.anim("climb_up")
     delay(2)

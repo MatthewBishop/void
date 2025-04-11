@@ -5,7 +5,7 @@ import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -25,7 +25,7 @@ internal class CharacterListTest {
                 return emptyList()
             }
 
-            override fun get(zone: Zone): List<Character> {
+            override fun get(zone: ZoneKey): List<Character> {
                 return emptyList()
             }
 

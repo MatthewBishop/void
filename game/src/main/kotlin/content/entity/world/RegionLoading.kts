@@ -17,7 +17,7 @@ import world.gregs.voidps.engine.map.zone.ReloadZone
 import world.gregs.voidps.network.login.protocol.encode.dynamicMapRegion
 import world.gregs.voidps.network.login.protocol.encode.mapRegion
 import world.gregs.voidps.type.Distance
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 
 /**
  * Keeps track of when players enter and move between regions
@@ -80,7 +80,7 @@ onEvent<ReloadZone> {
 
 fun needsRegionChange(player: Player) = !inViewOfZone(player, player.viewport!!.lastLoadZone) || crossedDynamicBoarder(player)
 
-fun inViewOfZone(player: Player, zone: Zone): Boolean {
+fun inViewOfZone(player: Player, zone: ZoneKey): Boolean {
     val viewport = player.viewport!!
     val radius: Int = viewport.zoneRadius - 2
     return Distance.within(player.tile.zone.x, player.tile.zone.y, zone.x, zone.y, radius)

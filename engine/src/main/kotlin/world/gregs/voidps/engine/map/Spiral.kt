@@ -3,7 +3,7 @@ package world.gregs.voidps.engine.map
 import world.gregs.voidps.engine.client.update.view.Viewport.Companion.VIEW_RADIUS
 import world.gregs.voidps.type.Delta
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 
 object Spiral {
 
@@ -30,19 +30,19 @@ object Spiral {
         }
     }
 
-    fun spiral(zone: Zone, radius: Int): Iterator<Zone> = ZoneIterator(zone, STEPS[radius])
+    fun spiral(zone: ZoneKey, radius: Int): Iterator<ZoneKey> = ZoneIterator(zone, STEPS[radius])
 
     internal class ZoneIterator(
-        private val zone: Zone,
+        private val zone: ZoneKey,
         private val steps: Array<Delta>
-    ) : Iterator<Zone> {
+    ) : Iterator<ZoneKey> {
         private var index = 0
 
         override fun hasNext(): Boolean {
             return index < steps.size
         }
 
-        override fun next(): Zone {
+        override fun next(): ZoneKey {
             return zone.add(steps[index++])
         }
     }
@@ -91,4 +91,4 @@ object Spiral {
 
 fun Tile.spiral(radius: Int) = Spiral.spiral(this, radius)
 
-fun Zone.spiral(radius: Int) = Spiral.spiral(this, radius)
+fun ZoneKey.spiral(radius: Int) = Spiral.spiral(this, radius)

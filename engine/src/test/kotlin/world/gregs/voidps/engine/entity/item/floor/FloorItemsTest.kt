@@ -16,7 +16,7 @@ import world.gregs.voidps.network.login.protocol.encode.zone.FloorItemAddition
 import world.gregs.voidps.network.login.protocol.encode.zone.FloorItemRemoval
 import world.gregs.voidps.network.login.protocol.encode.zone.FloorItemUpdate
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 
 class FloorItemsTest {
 
@@ -56,8 +56,8 @@ class FloorItemsTest {
         assertEquals(items[Tile(10, 10, 1)].first(), second)
         assertTrue(items[Tile(100, 100)].isEmpty())
         verify {
-            batches.add(Zone.EMPTY, FloorItemAddition(tile = 0, id = 1, amount = 1, owner = null))
-            batches.add(Zone(1, 1, 1), FloorItemAddition(tile = 268599306, id = 1, amount = 1, owner = "player"))
+            batches.add(ZoneKey.EMPTY, FloorItemAddition(tile = 0, id = 1, amount = 1, owner = null))
+            batches.add(ZoneKey(1, 1, 1), FloorItemAddition(tile = 268599306, id = 1, amount = 1, owner = "player"))
         }
     }
 
@@ -87,7 +87,7 @@ class FloorItemsTest {
         assertEquals(floorItem.revealTicks, 5)
         assertEquals(floorItem.owner, "player")
         verify {
-            batches.add(Zone.EMPTY, FloorItemUpdate(
+            batches.add(ZoneKey.EMPTY, FloorItemUpdate(
                 tile = 0,
                 id = 2,
                 stack = 1,
@@ -144,7 +144,7 @@ class FloorItemsTest {
         assertFalse(items.contains(first))
         assertTrue(items.contains(second))
         verify {
-            batches.add(Zone.EMPTY, FloorItemRemoval(tile = 0, id = -1, owner = null))
+            batches.add(ZoneKey.EMPTY, FloorItemRemoval(tile = 0, id = -1, owner = null))
         }
     }
 
@@ -184,7 +184,7 @@ class FloorItemsTest {
         val items = items[Tile.EMPTY]
         assertTrue(items.isEmpty())
         verify {
-            batches.add(Zone.EMPTY, FloorItemRemoval(tile = 0, id = 1, owner = null))
+            batches.add(ZoneKey.EMPTY, FloorItemRemoval(tile = 0, id = 1, owner = null))
         }
     }
 

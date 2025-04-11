@@ -1,13 +1,13 @@
 package world.gregs.voidps.type
 
 import world.gregs.voidps.type.area.Cuboid
-import world.gregs.voidps.type.area.Rectangle
+import world.gregs.voidps.type.area.Bounds
 
 /**
  * Represents a 8x8 tiled area
  */
 @JvmInline
-value class Zone(val id: Int) : Coordinate3D<Zone> {//this is a zonekey
+value class ZoneKey(val id: Int) : Coordinate3D<ZoneKey> {//this is a zonekey
 
     constructor(x: Int, y: Int, level: Int = 0) : this(id(x, y, level))
 
@@ -17,22 +17,22 @@ value class Zone(val id: Int) : Coordinate3D<Zone> {//this is a zonekey
         get() = y(id)
     override val level: Int
         get() = level(id)
-    val region: Region
-        get() = Region(x shr 3, y shr 3)
-    val regionLevel: RegionLevel
-        get() = RegionLevel(x shr 3, y shr 3, level)
+    val region: MapSquareKey
+        get() = MapSquareKey(x shr 3, y shr 3)
+    val regionLevel: MapSquareGrid
+        get() = MapSquareGrid(x shr 3, y shr 3, level)
     val tile: Tile
         get() = Tile(x shl 3, y shl 3, level)
 
-    override fun copy(x: Int, y: Int, level: Int) = Zone(x, y, level)
+    override fun copy(x: Int, y: Int, level: Int) = ZoneKey(x, y, level)
 
-    fun safeMinus(zone: Zone) = safeMinus(zone.x, zone.y, zone.level)
-    fun safeMinus(x: Int = 0, y: Int = 0, level: Int = 0): Zone {
-        return Zone((this.x - x).coerceAtLeast(0), (this.y - y).coerceAtLeast(0), (this.level - level).coerceAtLeast(0))
+    fun safeMinus(zone: ZoneKey) = safeMinus(zone.x, zone.y, zone.level)
+    fun safeMinus(x: Int = 0, y: Int = 0, level: Int = 0): ZoneKey {
+        return ZoneKey((this.x - x).coerceAtLeast(0), (this.y - y).coerceAtLeast(0), (this.level - level).coerceAtLeast(0))
     }
 
-    fun toRectangle(radius: Int) = Rectangle(safeMinus(radius, radius).tile, (radius * 2 + 1) * 8, (radius * 2 + 1) * 8)
-    fun toRectangle(width: Int = 1, height: Int = 1) = Rectangle(tile, width * 8, height * 8)
+    fun toRectangle(radius: Int) = Bounds(safeMinus(radius, radius).tile, (radius * 2 + 1) * 8, (radius * 2 + 1) * 8)
+    fun toRectangle(width: Int = 1, height: Int = 1) = Bounds(tile, width * 8, height * 8)
     fun toCuboid(width: Int = 1, height: Int = 1) = Cuboid(tile, width * 8, height * 8, 1)
     fun toCuboid(radius: Int) = Cuboid(safeMinus(radius, radius).tile, (radius * 2 + 1) * 8, (radius * 2 + 1) * 8, 1)
 
@@ -45,7 +45,7 @@ value class Zone(val id: Int) : Coordinate3D<Zone> {//this is a zonekey
         fun x(id: Int) = id and 0x7ff
         fun y(id: Int) = id shr 11 and 0x7ff
         fun level(id: Int) = id shr 22 and 0x3
-        val EMPTY = Zone(0, 0, 0)
+        val EMPTY = ZoneKey(0, 0, 0)
 
         /**
          * Index of a local tile within a zone
@@ -54,4 +54,4 @@ value class Zone(val id: Int) : Coordinate3D<Zone> {//this is a zonekey
     }
 }
 
-fun Zone.equals(x: Int, y: Int, level: Int) = this.x == x && this.y == y && this.level == level
+fun ZoneKey.equals(x: Int, y: Int, level: Int) = this.x == x && this.y == y && this.level == level

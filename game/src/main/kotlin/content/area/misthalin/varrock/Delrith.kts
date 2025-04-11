@@ -31,7 +31,7 @@ import world.gregs.voidps.engine.queue.*
 import world.gregs.voidps.engine.suspend.SuspendableContext
 import world.gregs.voidps.type.Delta
 import world.gregs.voidps.type.Direction
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import world.gregs.voidps.type.Tile
 import content.entity.player.dialogue.*
 import content.entity.player.dialogue.type.choice
@@ -68,13 +68,13 @@ enterArea("demon_slayer_stone_circle") {
     }
 }
 
-fun Context<Player>.setCutsceneEnd(instance: Region) {
+fun Context<Player>.setCutsceneEnd(instance: MapSquareKey) {
     player.queue("demon_slayer_delrith_cutscene_end", 1, LogoutBehaviour.Accelerate) {
         endCutscene(instance, defaultTile)
     }
 }
 
-fun Context<Player>.endCutscene(instance: Region, tile: Tile? = null) {
+fun Context<Player>.endCutscene(instance: MapSquareKey, tile: Tile? = null) {
     val offset: Delta = player["demon_slayer_offset"] ?: return
     player.tele(tile ?: player.tile.minus(offset))
     stopCutscene(instance)
@@ -103,7 +103,7 @@ fun destroyInstance(player: Player) {
     val target = if (offset != null && player.tile.minus(offset) in area) player.tile.minus(offset) else defaultTile
     player.start("demon_slayer_instance_exit", 2)
     player.tele(target)
-    val instance: Region = player.remove("demon_slayer_instance") ?: return
+    val instance: MapSquareKey = player.remove("demon_slayer_instance") ?: return
     Instances.free(instance)
     val regionLevel = instance.toLevel(0)
     npcs.clear(regionLevel)
@@ -114,7 +114,7 @@ fun destroyInstance(player: Player) {
 }
 
 suspend fun SuspendableContext<Player>.cutscene() {
-    val region = Region(12852)
+    val region = MapSquareKey(12852)
     val instance = startCutscene(region)
     val offset = instance.offset(region)
     player["demon_slayer_instance"] = instance

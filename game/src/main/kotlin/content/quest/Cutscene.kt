@@ -10,7 +10,7 @@ import world.gregs.voidps.engine.entity.character.player.Player
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.engine.map.instance.Instances
 import world.gregs.voidps.engine.map.zone.DynamicZones
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 
 private val tabs = listOf(
     "combat_styles",
@@ -25,7 +25,7 @@ private val tabs = listOf(
     "notes"
 )
 
-fun Context<Player>.startCutscene(region: Region): Region {
+fun Context<Player>.startCutscene(region: MapSquareKey): MapSquareKey {
     val instance = Instances.small()
     get<DynamicZones>().copy(region, instance)
     hideTabs()
@@ -39,7 +39,7 @@ fun Context<Player>.hideTabs() {
     player.minimap(Minimap.HideMap)
 }
 
-fun Context<Player>.stopCutscene(instance: Region) {
+fun Context<Player>.stopCutscene(instance: MapSquareKey) {
     Instances.free(instance)
     get<DynamicZones>().clear(instance)
     player.open("fade_in")

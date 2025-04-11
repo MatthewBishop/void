@@ -8,7 +8,7 @@ import world.gregs.voidps.tools.Pipeline
 import world.gregs.voidps.tools.map.render.WorldMapDumper
 import world.gregs.voidps.tools.map.render.load.MapTileSettings
 import world.gregs.voidps.tools.map.render.load.RegionManager
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 import java.io.File
@@ -22,9 +22,9 @@ class RegionRenderer(
     private val mapSceneDecoder: Array<MapSceneDefinition>,
     private val loader: MinimapIconPainter,
     private val settings: MapTileSettings
-) : Pipeline.Modifier<Region> {
+) : Pipeline.Modifier<MapSquareKey> {
 
-    override fun process(content: Region) {
+    override fun process(content: MapSquareKey) {
         val start = System.currentTimeMillis()
         val regionX = content.x - 1
         val regionY = content.y - 1
@@ -34,7 +34,7 @@ class RegionRenderer(
         val objects = mutableMapOf<Int, List<MapObject>?>()
         for (rX in content.x - 1..content.x + 1) {
             for (rY in content.y - 1..content.y + 1) {
-                val region = Region(rX, rY)
+                val region = MapSquareKey(rX, rY)
                 objects[region.id] = manager.loadObjects(region)
             }
         }
@@ -47,7 +47,7 @@ class RegionRenderer(
 
             val painter = ObjectPainter(objectDecoder, spriteDecoder, mapSceneDecoder)
             painter.level = level
-            painter.paint(o, Region(content.x, content.y), objects)
+            painter.paint(o, MapSquareKey(content.x, content.y), objects)
 
             if (WorldMapDumper.minimapIcons) {
                 loader.paint(o, content, level, objects)

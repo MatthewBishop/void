@@ -8,7 +8,7 @@ import world.gregs.voidps.engine.entity.character.Character
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.type.Area
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 
 typealias Collisions = CollisionFlagMap
 
@@ -18,7 +18,7 @@ fun Collisions.check(x: Int, y: Int, level: Int, flag: Int): Boolean {
 
 fun Collisions.check(tile: Tile, flag: Int) = check(tile.x, tile.y, tile.level, flag)
 
-fun Collisions.print(zone: Zone) {
+fun Collisions.print(zone: ZoneKey) {
     for (y in 7 downTo 0) {
         for (x in 0 until 8) {
             val value = get(zone.tile.x + x, zone.tile.y + y, zone.level)
@@ -29,7 +29,7 @@ fun Collisions.print(zone: Zone) {
     println()
 }
 
-fun Collisions.clear(zone: Zone) {
+fun Collisions.clear(zone: ZoneKey) {
     deallocateIfPresent(zone.tile.x, zone.tile.y, zone.level)
 }
 

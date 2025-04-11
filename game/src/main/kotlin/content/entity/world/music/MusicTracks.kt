@@ -7,7 +7,7 @@ import world.gregs.voidps.engine.data.Settings
 import world.gregs.voidps.engine.get
 import world.gregs.voidps.engine.timedLoad
 import world.gregs.voidps.type.Area
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import world.gregs.yaml.Yaml
 import world.gregs.yaml.read.YamlReaderConfiguration
 import kotlin.collections.set
@@ -19,7 +19,7 @@ class MusicTracks {
 
     fun get(name: String): Int = trackNames.getOrDefault(name, -1)
 
-    operator fun get(region: Region): List<Track> {
+    operator fun get(region: MapSquareKey): List<Track> {
         return tracks[region.id] ?: emptyList()
     }
 
@@ -39,7 +39,7 @@ class MusicTracks {
                         for (element in value["areas"] as? List<Map<String, Any>> ?: return) {
                             val area = if (element.containsKey("region")) {
                                 val level = element["level"] as? Int ?: -1
-                                val region = Region(element["region"] as Int)
+                                val region = MapSquareKey(element["region"] as Int)
                                 if (level != -1) {
                                     region.toLevel(level).toCuboid()
                                 } else {

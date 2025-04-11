@@ -4,7 +4,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import world.gregs.voidps.buffer.read.BufferReader
 import world.gregs.voidps.engine.data.Settings
 import world.gregs.voidps.engine.timedLoad
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import world.gregs.yaml.Yaml
 import java.io.File
 
@@ -12,7 +12,7 @@ data class Xteas(
     val delegate: MutableMap<Int, IntArray> = Int2ObjectOpenHashMap()
 ) : Map<Int, IntArray> by delegate {
 
-    operator fun get(region: Region): IntArray? {
+    operator fun get(region: MapSquareKey): IntArray? {
         return this[region.id]
     }
 

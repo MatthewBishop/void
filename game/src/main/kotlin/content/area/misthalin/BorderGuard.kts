@@ -10,19 +10,19 @@ import world.gregs.voidps.engine.entity.worldSpawn
 import world.gregs.voidps.engine.inject
 import world.gregs.voidps.type.Distance.nearestTo
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
-import world.gregs.voidps.type.area.Rectangle
+import world.gregs.voidps.type.ZoneKey
+import world.gregs.voidps.type.area.Bounds
 import kotlin.collections.set
 
 val objects: GameObjects by inject()
 val areas: AreaDefinitions by inject()
 
-val borders = mutableMapOf<Zone, Rectangle>()
-val guards = mutableMapOf<Rectangle, List<GameObject>>()
+val borders = mutableMapOf<ZoneKey, Bounds>()
+val guards = mutableMapOf<Bounds, List<GameObject>>()
 
 worldSpawn {
     for (border in areas.getTagged("border")) {
-        val passage = border.area as Rectangle
+        val passage = border.area as Bounds
         for (zone in passage.toZones()) {
             borders[zone] = passage
             guards[passage] = zone.toRectangle().mapNotNull {
@@ -34,7 +34,7 @@ worldSpawn {
 }
 
 enterArea("border_guard*") {
-    val border = area as Rectangle
+    val border = area as Bounds
     if (player.steps.destination in border) {
         val tile = border.nearestTo(player.tile)
         val endSide = getOppositeSide(border, tile)
@@ -47,7 +47,7 @@ enterArea("border_guard*") {
 }
 
 exitArea("border_guard*") {
-    val border = area as Rectangle
+    val border = area as Bounds
     val guards = guards[border] ?: return@exitArea
     player.steps.update(noCollision = false, noRun = false)
     changeGuardState(guards, false)
@@ -65,7 +65,7 @@ fun changeGuardState(guards: List<GameObject>, raise: Boolean) {
 }
 
 // Longest axis determines direction, current location above is underside else above
-fun getOppositeSide(border: Rectangle, tile: Tile) = if (border.height > border.width) {
+fun getOppositeSide(border: Bounds, tile: Tile) = if (border.height > border.width) {
     tile.copy(y = if (tile.y > border.minY) border.minY - 1 else border.maxY + 1)
 } else {
     tile.copy(x = if (tile.x > border.minX) border.minX - 1 else border.maxX + 1)

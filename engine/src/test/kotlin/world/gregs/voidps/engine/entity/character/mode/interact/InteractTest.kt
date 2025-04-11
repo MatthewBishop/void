@@ -29,7 +29,7 @@ import world.gregs.voidps.engine.map.collision.Collisions
 import world.gregs.voidps.engine.script.KoinMock
 import world.gregs.voidps.engine.suspend.Suspension
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -76,7 +76,7 @@ internal class InteractTest : KoinMock() {
         target = NPC(tile = Tile(10, 10))
         target.collision = CollisionStrategies.Normal
         declareMock<AreaDefinitions> {
-            every { get(any<Zone>()) } returns emptySet()
+            every { get(any<ZoneKey>()) } returns emptySet()
         }
     }
 

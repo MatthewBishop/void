@@ -16,7 +16,7 @@ import world.gregs.voidps.tools.map.MapDecoder
 import world.gregs.voidps.tools.map.view.graph.MutableNavigationGraph
 import world.gregs.voidps.tools.property
 import world.gregs.voidps.tools.propertyOrNull
-import world.gregs.voidps.type.Region
+import world.gregs.voidps.type.MapSquareKey
 import world.gregs.voidps.type.Tile
 import world.gregs.yaml.Yaml
 
@@ -39,11 +39,11 @@ object WorldMapLinkIdentifier {
         val linker = ObjectLinker(collisions)
         val clientScriptDecoder = ClientScriptDecoder().load(cache)
         val objects = GameObjects(GameObjectCollisionAdd(collisions), GameObjectCollisionRemove(collisions), ZoneBatchUpdates(), definitions)
-        val regions = mutableListOf<Region>()
+        val regions = mutableListOf<MapSquareKey>()
         for (regionX in 0 until 256) {
             for (regionY in 0 until 256) {
                 cache.data(5, "m${regionX}_${regionY}") ?: continue
-                regions.add(Region(regionX, regionY))
+                regions.add(MapSquareKey(regionX, regionY))
             }
         }
         startKoin {

@@ -16,8 +16,8 @@ import world.gregs.voidps.engine.map.collision.GameObjectCollisionAdd
 import world.gregs.voidps.engine.map.collision.GameObjectCollisionRemove
 import world.gregs.voidps.engine.map.obj.MapObjectsDecoder
 import world.gregs.voidps.engine.map.obj.MapObjectsRotatedDecoder
-import world.gregs.voidps.type.Region
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.MapSquareKey
+import world.gregs.voidps.type.ZoneKey
 import world.gregs.yaml.Yaml
 import java.io.File
 import kotlin.system.exitProcess
@@ -50,7 +50,7 @@ class MapDefinitions(
                         continue
                     }
                     collisions.decode(settings, regionX shl 6, regionY shl 6)
-                    val keys = if (xteas != null) xteas[Region.id(regionX, regionY)] else null
+                    val keys = if (xteas != null) xteas[MapSquareKey.id(regionX, regionY)] else null
                     decoder.decode(cache, settings, regionX, regionY, keys)
                     regions++
                 }
@@ -63,7 +63,7 @@ class MapDefinitions(
         }
     }
 
-    fun loadZone(from: Zone, to: Zone, rotation: Int, xteas: Map<Int, IntArray>? = null) {
+    fun loadZone(from: ZoneKey, to: ZoneKey, rotation: Int, xteas: Map<Int, IntArray>? = null) {
         val start = System.currentTimeMillis()
         val settings = loadSettings(cache, from.region.x, from.region.y) ?: return
         collisions.decode(settings, from, to, rotation)

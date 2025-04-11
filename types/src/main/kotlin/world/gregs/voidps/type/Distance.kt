@@ -1,6 +1,6 @@
 package world.gregs.voidps.type
 
-import world.gregs.voidps.type.area.Rectangle
+import world.gregs.voidps.type.area.Bounds
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.sqrt
@@ -15,7 +15,7 @@ object Distance {
         y = getNearest(tile.y, height, target.y)
     )
 
-    fun Rectangle.nearestTo(tile: Tile) = Tile(
+    fun Bounds.nearestTo(tile: Tile) = Tile(
         x = getNearest(minX, width, tile.x),
         y = getNearest(minY, height, tile.y)
     )

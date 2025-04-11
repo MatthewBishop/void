@@ -1,7 +1,7 @@
 package world.gregs.voidps.engine.entity.character
 
 import world.gregs.voidps.type.Tile
-import world.gregs.voidps.type.Zone
+import world.gregs.voidps.type.ZoneKey
 
 abstract class CharacterList<C : Character>(
     private val delegate: MutableList<C> = mutableListOf()
@@ -44,7 +44,7 @@ abstract class CharacterList<C : Character>(
 
     abstract operator fun get(tile: Tile): List<C>
 
-    abstract operator fun get(zone: Zone): List<C>
+    abstract operator fun get(zone: ZoneKey): List<C>
 
     fun indexed(index: Int): C? = indexArray[index]
 
