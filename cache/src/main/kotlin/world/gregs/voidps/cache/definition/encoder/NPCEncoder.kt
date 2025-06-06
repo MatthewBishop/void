@@ -3,6 +3,8 @@ package world.gregs.voidps.cache.definition.encoder
 import world.gregs.voidps.buffer.write.Writer
 import world.gregs.voidps.cache.DefinitionEncoder
 import world.gregs.voidps.cache.definition.data.NPCDefinitionFull
+import world.gregs.voidps.cache.definition.data.NPCDefinitionFull.Companion.toRespawnDirectionInt
+import world.gregs.voidps.type.Direction
 
 class NPCEncoder : DefinitionEncoder<NPCDefinitionFull> {
 
@@ -148,9 +150,9 @@ class NPCEncoder : DefinitionEncoder<NPCDefinitionFull> {
             writeShort(definition.height)
         }
 
-        if (definition.respawnDirection.toInt() != 4) {
+        if (definition.respawnDirection != Direction.SOUTH) {
             writeByte(125)
-            writeByte(definition.respawnDirection.toInt())
+            writeByte(definition.respawnDirection.toRespawnDirectionInt())
         }
 
         if (definition.renderEmote != -1) {

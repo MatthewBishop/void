@@ -2,6 +2,7 @@ package world.gregs.voidps.cache.definition.data
 
 import world.gregs.voidps.cache.Definition
 import world.gregs.voidps.cache.definition.*
+import world.gregs.voidps.type.Direction
 
 data class NPCDefinitionFull(
     override var id: Int = -1,
@@ -38,7 +39,7 @@ data class NPCDefinitionFull(
     var translations: Array<IntArray?>? = null,
     var hitbarSprite: Int = -1,
     var height: Int = -1,
-    var respawnDirection: Byte = 4,
+    var respawnDirection: Direction = Direction.SOUTH,
     var renderEmote: Int = -1,
     var idleSound: Int = -1,
     var crawlSound: Int = -1,
@@ -212,7 +213,7 @@ data class NPCDefinitionFull(
         result = 31 * result + (translations?.contentDeepHashCode() ?: 0)
         result = 31 * result + hitbarSprite
         result = 31 * result + height
-        result = 31 * result + respawnDirection
+        result = 31 * result + respawnDirection.toRespawnDirectionInt()
         result = 31 * result + renderEmote
         result = 31 * result + idleSound
         result = 31 * result + crawlSound
@@ -250,5 +251,31 @@ data class NPCDefinitionFull(
 
     companion object {
         val EMPTY = NPCDefinitionFull()
+
+        fun Int.getRespawnDirection(): Direction {
+            return when (this) {
+                0 -> Direction.NORTH
+                1 -> Direction.NORTH_WEST
+                2 -> Direction.NORTH_EAST
+                3 -> Direction.SOUTH_WEST
+                4 -> Direction.SOUTH
+                5 -> Direction.WEST
+                6 -> Direction.EAST
+                7 -> Direction.SOUTH_EAST
+                else -> throw IllegalArgumentException("Unsupported direction: $this")
+            }
+        }
+
+        fun Direction.toRespawnDirectionInt(): Int = when (this) {
+            Direction.NORTH -> 0
+            Direction.NORTH_WEST -> 1
+            Direction.NORTH_EAST -> 2
+            Direction.SOUTH_WEST -> 3
+            Direction.SOUTH -> 4
+            Direction.WEST -> 5
+            Direction.EAST -> 6
+            Direction.SOUTH_EAST -> 7
+            else -> throw IllegalArgumentException("Unsupported direction: $this")
+        }
     }
 }
