@@ -3,10 +3,11 @@ package world.gregs.voidps.tools.convert
 import world.gregs.voidps.buffer.read.Reader
 import world.gregs.voidps.cache.DefinitionDecoder
 import world.gregs.voidps.cache.Index.NPCS
+import world.gregs.voidps.cache.definition.Transforms
 import world.gregs.voidps.cache.definition.data.NPCDefinitionFull
 import world.gregs.voidps.cache.definition.data.NPCDefinitionFull.Companion.getRespawnDirection
 
-class NPCDecoder718(val member: Boolean = true) : DefinitionDecoder<NPCDefinitionFull>(NPCS) {
+class NPCDecoder718(val member: Boolean = true, val extendedTransforms: Boolean = false) : DefinitionDecoder<NPCDefinitionFull>(NPCS) {
 
     override fun create(size: Int) = Array(size) { NPCDefinitionFull(it) }
 
@@ -42,7 +43,7 @@ class NPCDecoder718(val member: Boolean = true) : DefinitionDecoder<NPCDefinitio
             101 -> shadowModifier = 5 * buffer.readByte()
             102 -> headIcon = buffer.readShort()
             103 -> rotation = buffer.readShort()
-            106, 118 -> readTransforms(buffer, opcode == 118)
+            106, 118 -> if(extendedTransforms) readTransforms910(buffer, opcode == 118) else readTransforms(buffer, opcode == 118)
             107 -> clickable = false
             109 -> slowWalk = false
             111 -> animateIdle = false
@@ -133,7 +134,86 @@ class NPCDecoder718(val member: Boolean = true) : DefinitionDecoder<NPCDefinitio
             165 -> anInt2831 = buffer.readUnsignedByte()
             168 -> anInt2862 = buffer.readUnsignedByte()
             249 -> readParameters(buffer)
+
+            //RS3 opcodes to support up to 941 below.
+            44 -> {
+                //NOOP: recol
+                buffer.readShort()
+            }
+            45 -> {
+                //NOOP: retex
+                buffer.readShort()
+            }
+            169 -> {
+                //NOOP: antimacro = false
+            }
+            in 170..175 -> {
+                //NOOP: cursor
+                buffer.readShort()
+            }
+            178 -> {
+                //NOOP: empty
+            }
+            179 -> {
+                //NOOP: clickbox (min x/y/z then max x/y/z)
+                buffer.readSmart()
+                buffer.readSmart()
+                buffer.readSmart()
+                buffer.readSmart()
+                buffer.readSmart()
+                buffer.readSmart()
+            }
+            180 -> {
+                //NOOP: fadeInDuration
+                buffer.readByte()
+            }
+            181 -> {
+                //NOOP: spotshadowtexture + alpha
+                buffer.readShort()
+                buffer.readByte()
+            }
+            182 -> {
+                //NOOP: transmogfakenpc = true;
+            }
+            183 -> {
+                buffer.readByte()
+            }
+            184 -> {
+                buffer.readByte()
+            }
+            185 -> {
+                //NOOP: bool = true;
+            }
+            253 -> {
+                buffer.readByte()
+            }
         }
     }
 
+    private fun Transforms.readTransforms910(buffer: Reader, isLast: Boolean) {
+        varbit = buffer.readShort()
+        if (varbit == 65535) {
+            varbit = -1
+        }
+        varp = buffer.readShort()
+        if (varp == 65535) {
+            varp = -1
+        }
+        var last = -1
+        if (isLast) {
+            last = buffer.readUnsignedShort()
+            if (last == 65535) {
+                last = -1
+            }
+        }
+        val length = buffer.readSmart() //smart instead of the byte in 718
+        transforms = IntArray(length + 2)
+        for (count in 0..length) {
+            transforms!![count] = buffer.readUnsignedShort()
+            if (transforms!![count] == 65535) {
+                transforms!![count] = -1
+            }
+        }
+        transforms!![length + 1] = last
+    }
 }
