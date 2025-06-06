@@ -12,7 +12,7 @@ object NPCDecoderTest {
     fun main(args: Array<String>) {
         val other = File("./data941-jun 5 2025/")
         val otherCache = CacheDelegate(other.path)
-        val npcDefinitionsRS3 = NPCDecoderRS3().load(otherCache)
+        val npcDefinitionsRS3 = NPCDecoder718(extendedTransforms = true).load(otherCache)
         write(npcDefinitionsRS3, File("./rs3defs.json"))
     }
 
