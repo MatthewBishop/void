@@ -16,7 +16,7 @@ object RunescapeWiki {
 
     fun export(pages: String, wiki: String = "runescape.wiki", currentOnly: Boolean = true, includeTemplates: Boolean = false): BufferedInputStream {
         val doc = Jsoup.connect("https://$wiki/w/Special:Export")
-            .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36")
+            .userAgent("Advo_ on discord")
             .get()
         val form: FormElement = doc.select("form").first { it.attr("action") == "/w/Special:Export" } as FormElement
         val text = form.select("textarea").first { it.attr("name") == "pages" }
@@ -108,7 +108,8 @@ object RunescapeWiki {
     }
 
     fun getCategoryLinks(url: String, wiki: String = "runescape.wiki", list: MutableList<String> = mutableListOf()): List<String> {
-        val connect = Jsoup.connect("https://$wiki/$url")
+        val connect = Jsoup.connect("https://$wiki/$url").userAgent("Advo_ on discord").header("Accept-Language", "en-US,en;q=0.5")
+
         val response = connect.execute()
         if (response.statusCode() != 200) {
             println("Page not found: $wiki $url")
@@ -130,7 +131,7 @@ object RunescapeWiki {
     }
 
     fun getCategories(wiki: String = "runescape.wiki", url: String = "/w/Special:Categories?limit=500", list: MutableList<String> = mutableListOf()): List<String> {
-        val doc = Jsoup.connect("https://${wiki}$url").get()
+        val doc = Jsoup.connect("https://${wiki}$url").userAgent("Advo_ on discord").header("Accept-Language", "en-US,en;q=0.5").get()
         val elements = doc.select("div[class$=mw-spcontent] ul li")
         for (ele in elements) {
             val link = ele.select("a")
@@ -165,7 +166,7 @@ object RunescapeWiki {
     }
 
     private fun getAllPages(list: MutableList<String>, wiki: String, url: String): List<String> {
-        val doc = Jsoup.connect("https://${wiki}$url").get()
+        val doc = Jsoup.connect("https://${wiki}$url").userAgent("Advo_ on discord").header("Accept-Language", "en-US,en;q=0.5").get()
         val elements = doc.select("div[class$=mw-allpages-body] a")
         for (ele in elements) {
             list.add(ele.attr("title"))
@@ -178,7 +179,26 @@ object RunescapeWiki {
     }
 
     private fun getNamespaces(wiki: String): Map<String, Int> {
-        val doc = Jsoup.connect("https://$wiki/w/Special:AllPages").get()
+        val doc = Jsoup.connect("https://$wiki/w/Special:AllPages")
+//            .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36")
+//            .header("Accept-Language", "en-US,en;q=0.9")
+//            .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
+            .userAgent("Advo_ on discord").header("Accept-Language", "en-US,en;q=0.5")
+//            .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0")
+//            .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
+//            .header("Accept-Language", "en-US,en;q=0.9")
+//            .header("Accept-Encoding", "gzip, deflate, br, zstd")
+//            .header("Upgrade-Insecure-Requests", "1")
+//            .header("Sec-Fetch-Dest", "document")
+//            .header("Sec-Fetch-Mode", "navigate")
+//            .header("Sec-Fetch-Site", "none")
+//            .header("Sec-Fetch-User", "?1")
+//            .header("Sec-CH-UA", "\"Microsoft Edge\";v=\"135\", \"Not-A.Brand\";v=\"8\", \"Chromium\";v=\"135\"")
+//            .header("Sec-CH-UA-Mobile", "?0")
+//            .header("Sec-CH-UA-Platform", "\"Windows\"")
+//            .header("Priority", "u=0, i")
+//            .cookie("theme", "light") // <-- Add more cookies if needed
+            .get()
         val options = doc.select("div[class$=mw-widget-namespaceInputWidget] option")
         return options.associate { it.text() to it.attr("value").toInt() }
     }

@@ -1,6 +1,6 @@
 package world.gregs.voidps.type
 
-enum class Direction(deltaX: Int, deltaY: Int) {
+enum class Direction(deltaX: Int, deltaY: Int) {//has the same name
     NORTH_WEST(-1, 1),
     NORTH(0, 1),
     NORTH_EAST(1, 1),
