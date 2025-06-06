@@ -71,5 +71,31 @@ enum class Direction(deltaX: Int, deltaY: Int) {
         fun of(deltaX: Int, deltaY: Int): Direction {
             return all.firstOrNull { it.delta.equals(deltaX, deltaY) } ?: NONE
         }
+
+        fun Int.getRespawnDirection(): Direction {
+            return when (this) {
+                0 -> Direction.NORTH
+                1 -> Direction.NORTH_WEST
+                2 -> Direction.NORTH_EAST
+                3 -> Direction.SOUTH_WEST
+                4 -> Direction.SOUTH
+                5 -> Direction.WEST
+                6 -> Direction.EAST
+                7 -> Direction.SOUTH_EAST
+                else -> throw IllegalArgumentException("Unsupported direction: $this")
+            }
+        }
+
+        fun Direction.toRespawnDirectionInt(): Int = when (this) {
+            Direction.NORTH -> 0
+            Direction.NORTH_WEST -> 1
+            Direction.NORTH_EAST -> 2
+            Direction.SOUTH_WEST -> 3
+            Direction.SOUTH -> 4
+            Direction.WEST -> 5
+            Direction.EAST -> 6
+            Direction.SOUTH_EAST -> 7
+            else -> throw IllegalArgumentException("Unsupported direction: $this")
+        }
     }
 }

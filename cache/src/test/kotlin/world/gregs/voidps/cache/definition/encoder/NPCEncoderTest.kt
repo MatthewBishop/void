@@ -9,6 +9,7 @@ import world.gregs.voidps.cache.Cache
 import world.gregs.voidps.cache.CacheDelegate
 import world.gregs.voidps.cache.definition.data.NPCDefinitionFull
 import world.gregs.voidps.cache.definition.decoder.NPCDecoderFull
+import world.gregs.voidps.type.Direction
 import java.nio.ByteBuffer
 
 internal class NPCEncoderTest {
@@ -50,7 +51,7 @@ internal class NPCEncoderTest {
             translations = arrayOf(intArrayOf(1, 64, 126), intArrayOf(4, 27, 84), intArrayOf(35, 87, 70)),
             hitbarSprite = 30000,
             height = 15000,
-            respawnDirection = 50,
+            respawnDirection = Direction.NORTH,
             renderEmote = 6128,
             idleSound = 1000,
             crawlSound = 2000,

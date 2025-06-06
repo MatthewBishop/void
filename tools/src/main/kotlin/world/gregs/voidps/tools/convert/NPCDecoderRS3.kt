@@ -5,6 +5,8 @@ import world.gregs.voidps.cache.DefinitionDecoder
 import world.gregs.voidps.cache.Index.NPCS
 import world.gregs.voidps.cache.definition.Transforms
 import world.gregs.voidps.cache.definition.data.NPCDefinitionFull
+import world.gregs.voidps.type.Direction
+import world.gregs.voidps.type.Direction.Companion.getRespawnDirection
 
 class NPCDecoderRS3(val member: Boolean = true) : DefinitionDecoder<NPCDefinitionFull>(NPCS) {
 
@@ -77,7 +79,7 @@ class NPCDecoderRS3(val member: Boolean = true) : DefinitionDecoder<NPCDefinitio
             }
             122 -> hitbarSprite = buffer.readBigSmart()
             123 -> height = buffer.readShort()
-            125 -> respawnDirection = buffer.readByte().toByte()
+            125 -> respawnDirection = buffer.readByte().getRespawnDirection()
             127 -> renderEmote = buffer.readShort()
             128 -> buffer.readUnsignedByte()
             134 -> {

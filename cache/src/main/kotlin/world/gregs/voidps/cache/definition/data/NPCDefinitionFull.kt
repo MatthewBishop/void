@@ -2,6 +2,8 @@ package world.gregs.voidps.cache.definition.data
 
 import world.gregs.voidps.cache.Definition
 import world.gregs.voidps.cache.definition.*
+import world.gregs.voidps.type.Direction
+import world.gregs.voidps.type.Direction.Companion.toRespawnDirectionInt
 
 data class NPCDefinitionFull(
     override var id: Int = -1,
@@ -38,7 +40,7 @@ data class NPCDefinitionFull(
     var translations: Array<IntArray?>? = null,
     var hitbarSprite: Int = -1,
     var height: Int = -1,
-    var respawnDirection: Byte = 4,
+    var respawnDirection: Direction = Direction.SOUTH,
     var renderEmote: Int = -1,
     var idleSound: Int = -1,
     var crawlSound: Int = -1,
@@ -212,7 +214,7 @@ data class NPCDefinitionFull(
         result = 31 * result + (translations?.contentDeepHashCode() ?: 0)
         result = 31 * result + hitbarSprite
         result = 31 * result + height
-        result = 31 * result + respawnDirection
+        result = 31 * result + respawnDirection.toRespawnDirectionInt()
         result = 31 * result + renderEmote
         result = 31 * result + idleSound
         result = 31 * result + crawlSound
