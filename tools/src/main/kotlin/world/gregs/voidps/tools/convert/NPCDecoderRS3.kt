@@ -1,0 +1,216 @@
+package world.gregs.voidps.tools.convert
+
+import world.gregs.voidps.buffer.read.Reader
+import world.gregs.voidps.cache.DefinitionDecoder
+import world.gregs.voidps.cache.Index.NPCS
+import world.gregs.voidps.cache.definition.Transforms
+import world.gregs.voidps.cache.definition.data.NPCDefinitionFull
+
+class NPCDecoderRS3(val member: Boolean = true) : DefinitionDecoder<NPCDefinitionFull>(NPCS) {
+
+    override fun create(size: Int) = Array(size) { NPCDefinitionFull(it) }
+
+    override fun getFile(id: Int) = id and 0x7f
+
+    override fun getArchive(id: Int) = id ushr 7
+
+    override  fun NPCDefinitionFull.read(opcode: Int, buffer: Reader) {
+        when (opcode) {
+            1 -> {
+                val length = buffer.readUnsignedByte()
+                modelIds = IntArray(length)
+                for (count in 0 until length) {
+                    modelIds!![count] = buffer.readBigSmart()
+                    if (modelIds!![count] == 65535) {
+                        modelIds!![count] = -1
+                    }
+                }
+            }
+            2 -> name = buffer.readString()
+            12 -> size = buffer.readUnsignedByte()
+            in 30..34 -> options[-30 + opcode] = buffer.readString()
+            40 -> readColours(buffer)
+            41 -> readTextures(buffer)
+            42 -> readColourPalette(buffer)
+            44 -> {
+                // NOOP: recol
+                buffer.readShort()
+            }
+            45 -> {
+                // NOOP: retex
+                buffer.readShort()
+            }
+            60 -> dialogueModels = IntArray(buffer.readUnsignedByte()) { buffer.readBigSmart() }
+            93 -> drawMinimapDot = false
+            95 -> combat = buffer.readShort()
+            97 -> scaleXY = buffer.readShort()
+            98 -> scaleZ = buffer.readShort()
+            99 -> priorityRender = true
+            100 -> lightModifier = buffer.readByte()
+            101 -> shadowModifier = 5 * buffer.readByte()
+            102 -> headIcon = buffer.readShort()
+            103 -> rotation = buffer.readShort()
+            106, 118 -> readTransforms910(buffer, opcode == 118)
+            107 -> clickable = false
+            109 -> slowWalk = false
+            111 -> animateIdle = false
+            113 -> {
+                primaryShadowColour = buffer.readShort().toShort()
+                secondaryShadowColour = buffer.readShort().toShort()
+            }
+            114 -> {
+                primaryShadowModifier = buffer.readByte().toByte()
+                secondaryShadowModifier = buffer.readByte().toByte()
+            }
+            119 -> walkMask = buffer.readByte().toByte()
+            121 -> {
+                translations = arrayOfNulls(modelIds!!.size)
+                val length = buffer.readUnsignedByte()
+                for (count in 0 until length) {
+                    val index = buffer.readUnsignedByte()
+                    translations!![index] = intArrayOf(
+                        buffer.readByte(),
+                        buffer.readByte(),
+                        buffer.readByte()
+                    )
+                }
+            }
+            122 -> hitbarSprite = buffer.readBigSmart()
+            123 -> height = buffer.readShort()
+            125 -> respawnDirection = buffer.readByte().toByte()
+            127 -> renderEmote = buffer.readShort()
+            128 -> buffer.readUnsignedByte()
+            134 -> {
+                idleSound = buffer.readShort()
+                if (idleSound == 65535) {
+                    idleSound = -1
+                }
+                crawlSound = buffer.readShort()
+                if (crawlSound == 65535) {
+                    crawlSound = -1
+                }
+                walkSound = buffer.readShort()
+                if (walkSound == 65535) {
+                    walkSound = -1
+                }
+                runSound = buffer.readShort()
+                if (runSound == 65535) {
+                    runSound = -1
+                }
+                soundDistance = buffer.readUnsignedByte()
+            }
+            135 -> {
+                primaryCursorOp = buffer.readUnsignedByte()
+                primaryCursor = buffer.readShort()
+            }
+            136 -> {
+                secondaryCursorOp = buffer.readUnsignedByte()
+                secondaryCursor = buffer.readShort()
+            }
+            137 -> attackCursor = buffer.readShort()
+            138 -> armyIcon = buffer.readBigSmart()
+            139 -> spriteId = buffer.readBigSmart()
+            140 -> ambientSoundVolume = buffer.readUnsignedByte()
+            141 -> visiblePriority = true
+            142 -> mapFunction = buffer.readShort()
+            143 -> invisiblePriority = true
+            in 150..154 -> {
+                options[opcode - 150] = buffer.readString()
+                if (!member) {
+                    options[opcode - 150] = null
+                }
+            }
+            155 -> {
+                hue = buffer.readByte().toByte()
+                saturation = buffer.readByte().toByte()
+                lightness = buffer.readByte().toByte()
+                opacity = buffer.readByte().toByte()
+            }
+            158 -> mainOptionIndex = 1.toByte()
+            159 -> mainOptionIndex = 0.toByte()
+            160 -> {
+                val length = buffer.readUnsignedByte()
+                campaigns = IntArray(length) { buffer.readShort() }
+            }
+            162 -> aBoolean2883 = true
+            163 -> anInt2803 = buffer.readUnsignedByte()
+            164 -> {
+                anInt2844 = buffer.readShort()
+                anInt2852 = buffer.readShort()
+            }
+            165 -> anInt2831 = buffer.readUnsignedByte()
+            168 -> anInt2862 = buffer.readUnsignedByte()
+            169 -> {
+                //NOOP: antimacro = false
+            }
+            in 170..<176 -> {
+                //NOOP: cursor
+                buffer.readShort()
+            }
+            178 -> {
+                //NOOP: empty
+            }
+            179 -> {
+                //NOOP: clickbox (min x/y/z then max x/y/z)
+                buffer.readSmart()
+                buffer.readSmart()
+                buffer.readSmart()
+                buffer.readSmart()
+                buffer.readSmart()
+                buffer.readSmart()
+            }
+            180 -> {
+                //NOOP: fadeInDuration
+                buffer.readByte()
+            }
+            181 -> {
+                //NOOP: spotshadowtexture + alpha
+                buffer.readShort()
+                buffer.readByte()
+            }
+            182 -> {
+                //NOOP: transmogfakenpc = true;
+            }
+            183 -> {
+                buffer.readByte()
+            }
+            184 -> {
+                buffer.readByte()
+            }
+            185 -> {
+                //NOOP: bool = true;
+            }
+            253 -> {
+                buffer.readByte()
+            }
+            249 -> readParameters(buffer)
+        }
+    }
+
+    private fun Transforms.readTransforms910(buffer: Reader, isLast: Boolean) {
+        varbit = buffer.readShort()
+        if (varbit == 65535) {
+            varbit = -1
+        }
+        varp = buffer.readShort()
+        if (varp == 65535) {
+            varp = -1
+        }
+        var last = -1
+        if (isLast) {
+            last = buffer.readUnsignedShort()
+            if (last == 65535) {
+                last = -1
+            }
+        }
+        val length = buffer.readSmart() //smart instead of byte in 718
+        transforms = IntArray(length + 2)
+        for (count in 0..length) {
+            transforms!![count] = buffer.readUnsignedShort()
+            if (transforms!![count] == 65535) {
+                transforms!![count] = -1
+            }
+        }
+        transforms!![length + 1] = last
+    }
+}
