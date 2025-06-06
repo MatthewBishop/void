@@ -28,5 +28,8 @@ dependencies {
     implementation("it.unimi.dsi:fastutil:${findProperty("fastUtilVersion")}")
     implementation("org.rsmod:rsmod-pathfinder:${findProperty("pathfinderVersion")}")
 
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+    implementation("com.google.code.gson:gson:2.13.1")
+
     testImplementation("io.mockk:mockk:${findProperty("mockkVersion")}")
 }
