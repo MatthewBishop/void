@@ -43,8 +43,8 @@ class AnimationDecoderFull : DefinitionDecoder<AnimationDefinitionFull>(ANIMATIO
             9 -> animatingPrecedence = buffer.readUnsignedByte()
             10 -> walkingPrecedence = buffer.readUnsignedByte()
             11 -> replayMode = buffer.readUnsignedByte()
-            12 -> {
-                val length = buffer.readUnsignedByte()
+            12, 112 -> {
+                val length = if(opcode == 12) buffer.readUnsignedByte() else buffer.readShort()
                 expressionFrames = IntArray(length) { buffer.readShort() }
                 for (count in 0 until length) {
                     expressionFrames!![count] = (buffer.readShort() shl 16) + expressionFrames!![count]
@@ -67,16 +67,17 @@ class AnimationDecoderFull : DefinitionDecoder<AnimationDefinitionFull>(ANIMATIO
             14 -> aBoolean691 = true
             15 -> tweened = true
             18 -> useSounds = true
-            19 -> {
+            19, 119 -> {
                 if (volumes == null) {
                     volumes = IntArray(sounds!!.size)
                     for (index in sounds!!.indices) {
                         volumes!![index] = 255
                     }
                 }
-                volumes!![buffer.readUnsignedByte()] = buffer.readUnsignedByte()
+                val length = if(opcode == 19) buffer.readUnsignedByte() else buffer.readShort()
+                volumes!![length] = buffer.readUnsignedByte()
             }
-            20 -> {
+            20, 120 -> {
                 if (primarySpeeds == null || secondarySpeeds == null) {
                     primarySpeeds = IntArray(sounds!!.size)
                     secondarySpeeds = IntArray(sounds!!.size)
@@ -85,9 +86,33 @@ class AnimationDecoderFull : DefinitionDecoder<AnimationDefinitionFull>(ANIMATIO
                         secondarySpeeds!![index] = 256
                     }
                 }
-                val length = buffer.readUnsignedByte()
+                val length = if(opcode == 20) buffer.readUnsignedByte() else buffer.readShort()
                 primarySpeeds!![length] = buffer.readShort()
                 secondarySpeeds!![length] = buffer.readShort()
+            }
+            22 -> {
+                buffer.readByte()
+            }
+            23 -> {
+                buffer.readShort()
+            }
+            24 -> {
+                buffer.readShort()
+            }
+            25 -> {
+                //skeletal_animation
+                buffer.readShort()
+            }
+            26 -> {
+                //skeletal_range
+                buffer.readShort()
+                buffer.readShort()
+            }
+            27 -> {
+                buffer.readByte()
+            }
+            249 -> {
+                readParameters(buffer)
             }
         }
     }

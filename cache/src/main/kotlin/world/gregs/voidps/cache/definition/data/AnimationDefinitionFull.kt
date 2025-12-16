@@ -2,6 +2,7 @@ package world.gregs.voidps.cache.definition.data
 
 import world.gregs.voidps.cache.Definition
 import world.gregs.voidps.cache.definition.Extra
+import world.gregs.voidps.cache.definition.Parameterized
 
 data class AnimationDefinitionFull(
     override var id: Int = -1,
@@ -25,8 +26,9 @@ data class AnimationDefinitionFull(
     var primarySpeeds: IntArray? = null,
     var secondarySpeeds: IntArray? = null,
     override var stringId: String = "",
+    override var params: Map<Int, Any>? = null,
     override var extras: Map<String, Any>? = null
-) : Definition, Extra {
+) : Definition, Parameterized, Extra {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
